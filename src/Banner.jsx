@@ -13,12 +13,12 @@ const ADS = [
     )
   },
   {
-    bg: '#00050a', border: '#1a6aff',
+    bg: '#ffffff', border: '#5ccc00',
     content: (
       <div className="ad-generic">
         <img src="/uploads/kazaa.jpeg" alt="Kazaa" className="ad-kazaa-logo" />
-        <span className="ad-claim">download <em>FREE</em> mp3s<br/>no cd required !!!</span>
-        <span className="ad-cta">CLICK HERE</span>
+        <span className="ad-claim ad-claim-dark">download <em>FREE</em> mp3s<br/>no cd required !!!</span>
+        <span className="ad-cta ad-cta-green">CLICK HERE</span>
       </div>
     )
   },

@@ -490,21 +490,37 @@ export default function App() {
 
       {booting && (
         <div className="boot">
-          <div className="crt">
-            <div className="crtscan" />
-            <img className="bootlogoimg" src="/uploads/logo-trans.png" alt="filth.fm" />
-            <div className="bootsub">all-night dial-up radio est. 1994 v.90 ready</div>
-            {bootLines.map((l, i) => <div key={i} className="termline">{l}</div>)}
-            {bootLines.length > 0 && (
-              <div className="bootbar">
-                <div className="bootbar-fill" style={{ width: bootPct + '%' }} />
-                <span className="bootpct">{bootPct}%</span>
+          <div className="splash">
+            <div className="splash-header">
+              <img className="splash-logo" src="/uploads/logo-trans.png" alt="filth.fm" />
+              <div className="splash-title">
+                <div className="splash-name">FILTH.FM</div>
+                <div className="splash-ver">Static Noise Injector v1.94</div>
               </div>
-            )}
+            </div>
+            <div className="splash-body">
+              <div className="splash-credits">
+                midnight_listener, parking_lot_prophet,<br />
+                dial_up_shaman, jnco_archbishop,<br />
+                the_flannel_council, static_operative_7
+              </div>
+              <div className="splash-copy">Copyright 1994–2026 Static FM Underground. All frequencies reserved.</div>
+              {bootLines.length > 0 && (
+                <>
+                  <div className="splash-status">
+                    <span>{bootLines[bootLines.length - 1]}</span>
+                    <span className="splash-pct">{bootPct}%</span>
+                  </div>
+                  <div className="bootbar">
+                    <div className="bootbar-fill" style={{ width: bootPct + '%' }} />
+                  </div>
+                </>
+              )}
+            </div>
             <div className="bootbtns">
               {bootLines.length === 0
-                ? <button className="connectbtn" onClick={connect}>CONNECT @ 56.6k</button>
-                : <button className="skipbtn" onClick={skip}>[ SKIP HANDSHAKE ]</button>
+                ? <button className="connectbtn" onClick={connect}>▶ CONNECT @ 56.6k</button>
+                : <button className="skipbtn" onClick={skip}>[ SKIP ]</button>
               }
             </div>
           </div>

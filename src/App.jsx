@@ -32,7 +32,8 @@ const COL = {
 
 const EQ_LABELS = ['PRE','60','170','310','600','1K','3K','6K','12K','14K','16K']
 
-const SC_PARAMS = 'auto_play=false&buying=false&liking=false&download=false&sharing=false&show_artwork=false&show_comments=false&show_playcount=false&show_user=false&hide_related=true&visual=false&callback=true'
+const scUrl = (trackUrl, autoPlay = false) =>
+  `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&auto_play=${autoPlay}&buying=false&liking=false&download=false&sharing=false&show_artwork=false&show_comments=false&show_playcount=false&show_user=false&hide_related=true&visual=false&callback=true`
 
 function fmt(s) {
   s = Math.max(0, Math.floor(s))
@@ -152,8 +153,7 @@ export default function App() {
     const track = ch.tracks[trackIdx]
     if (!track.scUrl || !scIframeRef.current) return
     scReadyRef.current = false
-    const src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(track.scUrl)}&${SC_PARAMS}`
-    scIframeRef.current.src = src
+    scIframeRef.current.src = scUrl(track.scUrl, pendingPlayRef.current)
     setElapsed(0)
 
     const tryBind = () => {
@@ -352,7 +352,7 @@ export default function App() {
         title="sc-player"
         style={{ display: 'none' }}
         allow="autoplay"
-        src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(curTrack.scUrl)}&${SC_PARAMS}`}
+        src={scUrl(curTrack.scUrl, false)}
       />
 
       <div className="desktop">

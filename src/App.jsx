@@ -407,7 +407,7 @@ export default function App() {
             <div className="controls">
               <div className="transport">
                 <button className="rbtn" onClick={() => changeTrack(-1)}><IconPrev /></button>
-                <button className="rbtn" onClick={scPlay}><IconPlay /></button>
+                <button className="rbtn eject" onClick={scPlay}><IconPlay /></button>
                 <button className="rbtn" onClick={scPause}><IconPause /></button>
                 <button className="rbtn" onClick={scStop}><IconStop /></button>
                 <button className="rbtn" onClick={() => changeTrack(1)}><IconNext /></button>

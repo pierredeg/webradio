@@ -412,11 +412,7 @@ export default function App() {
                 <button className="rbtn" onClick={scStop}><IconStop /></button>
                 <button className="rbtn" onClick={() => changeTrack(1)}><IconNext /></button>
               </div>
-              <div className="secondary">
-                <button className={shuffle ? 'rbtn sm on' : 'rbtn sm'} onClick={() => setShuffle(s => !s)}>⇄</button>
-                <button className={repeat ? 'rbtn sm on' : 'rbtn sm'} onClick={() => setRepeat(r => !r)}>↻</button>
-                <button className="rbtn sm eject" onClick={eject}><IconEject /></button>
-              </div>
+
               <div className="vol">
                 <div className="volrow">
                   <span>VOL</span>

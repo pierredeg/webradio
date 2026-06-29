@@ -7,7 +7,7 @@ const ADS = [
     content: (
       <div className="ad-ozzfest">
         <span className="ad-small">GOD CAN'T HELP YOU IT'S...</span>
-        <span className="ad-big">OZZFEST <em>'99</em></span>
+        <img src="/uploads/ozzfest.jpeg" alt="Ozzfest" className="ad-ozzfest-logo" />
         <span className="ad-sub">BLACK SABBATH · FINAL USA PERFORMANCE</span>
       </div>
     )

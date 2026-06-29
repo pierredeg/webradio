@@ -118,3 +118,8 @@
 .ad-claim-dark { color: #222; }
 .ad-claim-dark em { color: #3aaa00; }
 .ad-cta-green { background: #5ccc00; color: #fff; animation: blink 1s steps(2) infinite; }
+.ad-ozzfest-logo {
+  height: 38px; width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(200,0,0,.6));
+}

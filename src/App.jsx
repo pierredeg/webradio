@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
 import './App.css'
+import Banner from './Banner.jsx'
 
 const BOOT_SEQ = [
   'ATZ','OK','ATDT 1-800-STATIC-FM','DIALING THE OPERATOR...',
@@ -451,6 +452,7 @@ export default function App() {
               </div>
             </div>
 
+            <Banner />
             <div className="seclabel">Playlist</div>
             <div className="plbody">
               <div className="pltex" />

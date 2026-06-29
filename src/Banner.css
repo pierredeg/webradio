@@ -1,0 +1,110 @@
+.banner-wrap {
+  position: relative;
+  width: 100%;
+  height: 72px;
+  border: 1px solid;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  transition: opacity .3s;
+  cursor: pointer;
+}
+.fade-in  { opacity: 1; }
+.fade-out { opacity: 0; }
+
+.banner-inner {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  padding: 6px 12px;
+}
+
+.banner-tag {
+  position: absolute; top: 3px; right: 5px;
+  font-family: 'ChiKareGo2', monospace;
+  font-size: 8px; letter-spacing: 1px;
+  color: rgba(255,255,255,.25);
+}
+
+/* shared ad elements */
+.ad-ozzfest, .ad-warped {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  text-align: center;
+}
+.ad-small {
+  font-family: 'ChiKareGo2', monospace;
+  font-size: 9px; letter-spacing: 2px; color: #cc0000;
+  text-transform: uppercase;
+}
+.ad-big {
+  font-family: 'ChiKareGo2', monospace;
+  font-size: 22px; letter-spacing: 2px; color: #ff2a2a;
+  line-height: 1;
+  text-shadow: 0 0 12px rgba(200,0,0,.6);
+}
+.ad-big em { font-style: normal; color: #ff6a6a; }
+.ad-sub {
+  font-family: 'ChiKareGo2', monospace;
+  font-size: 9px; letter-spacing: 1px; color: #aa4444;
+  text-transform: uppercase;
+}
+
+/* warped */
+.ad-warped .ad-big { color: #cc88ff; text-shadow: 0 0 12px rgba(150,0,255,.5); }
+.ad-warped .ad-big em { color: #e8aaff; }
+.ad-warped .ad-small { color: #8844cc; }
+.ad-warped .ad-sub { color: #7744aa; }
+
+/* generic (kazaa, aim) */
+.ad-generic {
+  display: flex; align-items: center; gap: 14px;
+}
+.ad-logo {
+  font-family: 'ChiKareGo2', monospace;
+  font-size: 28px; letter-spacing: 2px; color: #1a6aff;
+  line-height: 1; flex-shrink: 0;
+  text-shadow: 0 0 10px rgba(30,100,255,.5);
+}
+.ad-claim {
+  font-family: 'ChiKareGo2', monospace;
+  font-size: 12px; color: #aac4ff; line-height: 1.4;
+}
+.ad-claim em { font-style: normal; color: #fff; }
+.ad-cta {
+  font-family: 'ChiKareGo2', monospace;
+  font-size: 10px; letter-spacing: 1px;
+  background: #1a6aff; color: #fff;
+  padding: 4px 8px; border-radius: 3px;
+  white-space: nowrap; flex-shrink: 0;
+  animation: blink 1s steps(2) infinite;
+}
+
+/* jnco */
+.ad-jnco {
+  display: flex; align-items: center; gap: 16px; width: 100%;
+}
+.ad-brand {
+  font-family: 'ChiKareGo2', monospace;
+  font-size: 32px; letter-spacing: 4px; color: #ff8a2a;
+  text-shadow: 0 0 14px rgba(255,100,0,.5); flex-shrink: 0;
+}
+.ad-brand sup { font-size: 14px; }
+.ad-jnco .ad-claim {
+  font-size: 11px; color: #c2a070; line-height: 1.4;
+}
+.ad-jnco .ad-claim em { font-style: normal; color: #ff8a2a; }
+
+/* hmv */
+.ad-hmv {
+  display: flex; align-items: center; gap: 14px; width: 100%;
+}
+.ad-hmv .ad-logo {
+  font-family: Georgia, serif;
+  font-size: 34px; font-weight: bold; font-style: italic;
+  letter-spacing: 0; text-shadow: none;
+}
+.ad-hmv .ad-claim { font-size: 11px; color: #ccc; }
+.ad-hmv .ad-claim em { font-style: normal; color: #ffcc00; }
+.ad-hmv .ad-cta {
+  font-size: 9px; padding: 3px 6px; border-radius: 2px;
+  animation: none;
+}

@@ -243,10 +243,15 @@
   gap: 16px;
 }
 .splash-logo {
-  height: 32px; width: auto; max-width: 130px;
-  display: block; object-fit: contain;
+  display: block;
+  width: auto;
+  height: auto;
+  max-height: 44px;
+  max-width: 60%;
+  object-fit: contain;
   filter: drop-shadow(0 2px 8px rgba(255,140,40,.3));
-  flex-shrink: 0;
+  flex-shrink: 1;
+  min-width: 0;
 }
 .splash-title { flex: 1; }
 .splash-name {

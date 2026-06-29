@@ -492,8 +492,8 @@ export default function App() {
         <div className="boot">
           <div className="splash">
             <div className="splash-header">
+              <img className="splash-logo" src="/uploads/logo-trans.png" alt="filth.fm" />
               <div className="splash-title">
-                <div className="splash-name">FILTH.FM</div>
                 <div className="splash-ver">Static Noise Injector v1.94</div>
               </div>
             </div>

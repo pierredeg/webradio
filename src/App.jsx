@@ -200,10 +200,21 @@ export default function App() {
       scPlay()
       return
     }
+    // Set iframe src synchronously inside the gesture to satisfy iOS autoplay policy
+    const track = ch.tracks[i]
+    if (scIframeRef.current && track.scUrl) {
+      scReadyRef.current = false
+      scIframeRef.current.src = scUrl(track.scUrl, true)
+      // Rebind widget after iframe reloads
+      const tryBind = () => {
+        if (window.SC) bindWidget(true)
+        else setTimeout(tryBind, 300)
+      }
+      setTimeout(tryBind, 400)
+    }
     setTrackIdx(i)
-    pendingPlayRef.current = true
     setElapsed(0)
-  }, [trackIdx, scPlay])
+  }, [trackIdx, ch.tracks, scPlay, bindWidget])
 
   // Volume sync
   useEffect(() => {

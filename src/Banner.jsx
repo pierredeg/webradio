@@ -42,12 +42,12 @@ const ADS = [
     )
   },
   {
-    bg: '#0a0800', border: '#ccaa00',
+    bg: '#ffffff', border: '#e8007a',
     content: (
       <div className="ad-hmv">
-        <span className="ad-logo" style={{color:'#e00'}}>hmv</span>
+        <img src="/uploads/hmv.png" alt="hmv" className="ad-hmv-logo" />
         <span className="ad-claim">BUY 2 GET 1 FREE<br/><em>nu-metal · alt-rock · grunge</em></span>
-        <span className="ad-cta" style={{background:'#e00'}}>IN STORE NOW</span>
+        <span className="ad-cta" style={{background:'#e8007a'}}>IN STORE NOW</span>
       </div>
     )
   },

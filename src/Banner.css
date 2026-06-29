@@ -102,12 +102,9 @@
   font-size: 34px; font-weight: bold; font-style: italic;
   letter-spacing: 0; text-shadow: none;
 }
-.ad-hmv .ad-claim { font-size: 11px; color: #ccc; }
-.ad-hmv .ad-claim em { font-style: normal; color: #ffcc00; }
-.ad-hmv .ad-cta {
-  font-size: 9px; padding: 3px 6px; border-radius: 2px;
-  animation: none;
-}
+.ad-hmv .ad-claim { font-size: 11px; color: #222; }
+.ad-hmv .ad-claim em { font-style: normal; color: #e8007a; }
+.ad-hmv .ad-cta { font-size: 9px; padding: 3px 6px; border-radius: 2px; animation: none; }
 
 .ad-kazaa-logo {
   height: 48px; width: auto;
@@ -122,4 +119,9 @@
   height: 38px; width: auto;
   object-fit: contain;
   filter: drop-shadow(0 0 8px rgba(200,0,0,.6));
+}
+.ad-hmv-logo {
+  height: 40px; width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
 }

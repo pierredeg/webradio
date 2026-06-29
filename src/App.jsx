@@ -16,11 +16,11 @@ const CHANNELS = {
   mall: {
     name: 'MALL RATS', freq: '99.5', bitrate: '112 kbps', album: "JNCO Sermon '99",
     tracks: [
-      { artist: 'KORN', title: 'Freak on a Leash', sec: 242, scUrl: 'https://soundcloud.com/korn/freak-on-a-leash' },
-      { artist: 'DEFTONES', title: 'My Own Summer', sec: 228, scUrl: 'https://soundcloud.com/deftones/my-own-summer-shove-it' },
+      { artist: 'KORN', title: 'Freak on a Leash', sec: 242, scUrl: 'https://soundcloud.com/kornofficial/freak-on-a-leash-2' },
+      { artist: 'DEFTONES', title: 'My Own Summer', sec: 228, scUrl: 'https://soundcloud.com/deftones_official/my-own-summer-shove-it' },
       { artist: 'LIMP BIZKIT', title: 'Nookie', sec: 253, scUrl: 'https://soundcloud.com/limpbizkit/nookie' },
-      { artist: 'SYSTEM OF A DOWN', title: 'Chop Suey!', sec: 210, scUrl: 'https://soundcloud.com/system-of-a-down/chop-suey' },
-      { artist: 'RAGE AGAINST THE MACHINE', title: 'Killing in the Name', sec: 312, scUrl: 'https://soundcloud.com/rageagainstthemachine/killing-in-the-name' },
+      { artist: 'SYSTEM OF A DOWN', title: 'Chop Suey!', sec: 210, scUrl: 'https://soundcloud.com/system-of-a-down-official/chop-suey' },
+      { artist: 'RAGE AGAINST THE MACHINE', title: 'Killing in the Name', sec: 312, scUrl: 'https://soundcloud.com/rageagainstthemachineofficial/killing-in-the-name-remastered' },
     ]
   }
 }

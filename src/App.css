@@ -243,16 +243,16 @@
   gap: 16px;
 }
 .splash-logo {
-  height: 52px; width: auto; display: block;
+  height: 32px; width: auto; max-width: 130px;
+  display: block; object-fit: contain;
   filter: drop-shadow(0 2px 8px rgba(255,140,40,.3));
   flex-shrink: 0;
 }
 .splash-title { flex: 1; }
 .splash-name {
-  font-size: 28px; letter-spacing: 3px; color: #fff;
-  text-shadow: 0 0 20px rgba(255,140,40,.4);
-  line-height: 1;
-  margin-bottom: 4px;
+  font-size: 32px; letter-spacing: 4px; color: #fff;
+  text-shadow: 0 0 24px rgba(255,140,40,.5), 0 0 4px rgba(255,140,40,.3);
+  line-height: 1; margin-bottom: 6px;
 }
 .splash-ver { font-size: 13px; letter-spacing: 1px; color: #ff8a2a; }
 .splash-body { padding: 18px 24px 20px; }

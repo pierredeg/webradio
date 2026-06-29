@@ -413,8 +413,8 @@ export default function App() {
                 <button className="rbtn" onClick={() => changeTrack(1)}><IconNext /></button>
               </div>
               <div className="secondary">
-                <button className={shuffle ? 'rbtn sm on' : 'rbtn sm'} onClick={() => setShuffle(s => !s)}>RND</button>
-                <button className={repeat ? 'rbtn sm on' : 'rbtn sm'} onClick={() => setRepeat(r => !r)}>REP</button>
+                <button className={shuffle ? 'rbtn sm on' : 'rbtn sm'} onClick={() => setShuffle(s => !s)}>⇄</button>
+                <button className={repeat ? 'rbtn sm on' : 'rbtn sm'} onClick={() => setRepeat(r => !r)}>↻</button>
                 <button className="rbtn sm eject" onClick={eject}><IconEject /></button>
               </div>
               <div className="vol">
@@ -476,8 +476,8 @@ export default function App() {
               <div className="pltool">
                 <button className="rbtn sm">+</button>
                 <button className="rbtn sm">-</button>
-                <button className="rbtn sm">list</button>
-                <button className="rbtn sm">cfg</button>
+                <button className="rbtn sm">☰</button>
+                <button className="rbtn sm">⚙</button>
                 <div className="pllcd">
                   <span>{fmt(elapsed)}</span>
                   <span className="pltotal">/ {fmt(total)}</span>

@@ -187,7 +187,7 @@
   box-shadow: inset 0 1px 1px rgba(255,255,255,.8), inset 0 -3px 5px rgba(120,40,0,.4), 0 1px 2px rgba(0,0,0,.3);
 }
 .vol { margin-left: auto; display: flex; flex-direction: column; gap: 5px; }
-.volrow { display: flex; align-items: center; gap: 7px; font-size: 9px; font-weight: bold; color: #c2c7ce; }
+.volrow { display: flex; align-items: center; gap: 7px; font-family: 'ChiKareGo2', monospace; font-size: 11px; letter-spacing: 1px; color: #c2c7ce; }
 .volrow .slider { width: 96px; height: 6px; }
 
 .eqbody {

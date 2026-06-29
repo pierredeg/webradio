@@ -170,7 +170,7 @@
   background: radial-gradient(circle at 50% 26%,#5c616a 0%,#3c4047 38%,#26292d 74%,#15171a 100%);
   border: 1px solid #0c0d0f;
   display: flex; align-items: center; justify-content: center;
-  font-size: 11px; color: #dfe3e8; cursor: pointer;
+  font-family: 'ChiKareGo2', monospace; font-size: 11px; color: #dfe3e8; cursor: pointer;
   box-shadow: inset 0 1px 1px rgba(255,255,255,.22), inset 0 -3px 5px rgba(0,0,0,.5), 0 1px 2px rgba(0,0,0,.4);
   letter-spacing: -1px;
 }

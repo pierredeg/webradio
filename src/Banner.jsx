@@ -16,7 +16,7 @@ const ADS = [
     bg: '#00050a', border: '#1a6aff',
     content: (
       <div className="ad-generic">
-        <span className="ad-logo">KAZAA</span>
+        <img src="/uploads/kazaa.jpeg" alt="Kazaa" className="ad-kazaa-logo" />
         <span className="ad-claim">download <em>FREE</em> mp3s<br/>no cd required !!!</span>
         <span className="ad-cta">CLICK HERE</span>
       </div>

@@ -108,3 +108,10 @@
   font-size: 9px; padding: 3px 6px; border-radius: 2px;
   animation: none;
 }
+
+.ad-kazaa-logo {
+  height: 48px; width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(80,200,0,.4));
+}

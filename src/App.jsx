@@ -16,11 +16,11 @@ const CHANNELS = {
   mall: {
     name: 'MALL RATS', freq: '99.5', bitrate: '112 kbps', album: "JNCO Sermon '99",
     tracks: [
-      { artist: 'PARKING LOT MESSIAH', title: 'Backwards Cap', sec: 201 },
-      { artist: 'NU-TRON', title: 'Food Court Riot', sec: 168 },
-      { artist: 'RAGECARGO', title: 'Drop-D Detention', sec: 235 },
-      { artist: 'SK8 OR CRY', title: 'Curfew', sec: 153 },
-      { artist: 'THE LIMITED TOO', title: 'Maximum Aggro', sec: 190 }
+      { artist: 'KORN', title: 'Freak on a Leash', sec: 242, scUrl: 'https://soundcloud.com/korn/freak-on-a-leash' },
+      { artist: 'DEFTONES', title: 'My Own Summer', sec: 228, scUrl: 'https://soundcloud.com/deftones/my-own-summer-shove-it' },
+      { artist: 'LIMP BIZKIT', title: 'Nookie', sec: 253, scUrl: 'https://soundcloud.com/limpbizkit/nookie' },
+      { artist: 'SYSTEM OF A DOWN', title: 'Chop Suey!', sec: 210, scUrl: 'https://soundcloud.com/system-of-a-down/chop-suey' },
+      { artist: 'RAGE AGAINST THE MACHINE', title: 'Killing in the Name', sec: 312, scUrl: 'https://soundcloud.com/rageagainstthemachine/killing-in-the-name' },
     ]
   }
 }
@@ -30,6 +30,8 @@ const COL = {
 }
 
 const EQ_LABELS = ['PRE','60','170','310','600','1K','3K','6K','12K','14K','16K']
+
+const SC_PARAMS = 'auto_play=false&buying=false&liking=false&download=false&sharing=false&show_artwork=false&show_comments=false&show_playcount=false&show_user=false&hide_related=true&visual=false&callback=true'
 
 function fmt(s) {
   s = Math.max(0, Math.floor(s))
@@ -85,11 +87,17 @@ export default function App() {
   const peaksRef = useRef([])
   const connectingRef = useRef(false)
 
+  // SoundCloud
+  const scIframeRef = useRef(null)
+  const scWidgetRef = useRef(null)
+  const scReadyRef = useRef(false)
+  const pendingPlayRef = useRef(false)
+
   const [booting, setBooting] = useState(true)
   const [bootLines, setBootLines] = useState([])
   const [bootPct, setBootPct] = useState(0)
   const [channel] = useState('mall')
-  const [playing, setPlaying] = useState(true)
+  const [playing, setPlaying] = useState(false)
   const [elapsed, setElapsed] = useState(0)
   const [trackIdx, setTrackIdx] = useState(0)
   const [zapping] = useState(false)
@@ -103,6 +111,115 @@ export default function App() {
   const curTrack = ch.tracks[trackIdx]
   const col = COL[channel]
 
+  // Load SC Widget API script once
+  useEffect(() => {
+    if (document.querySelector('script[data-sc]')) return
+    const s = document.createElement('script')
+    s.src = 'https://w.soundcloud.com/player/api.js'
+    s.dataset.sc = '1'
+    document.body.appendChild(s)
+  }, [])
+
+  const bindWidget = useCallback((autoPlay) => {
+    if (!window.SC || !scIframeRef.current) return
+    const widget = window.SC.Widget(scIframeRef.current)
+    scWidgetRef.current = widget
+
+    widget.bind(window.SC.Widget.Events.READY, () => {
+      scReadyRef.current = true
+      widget.setVolume(volume)
+      if (autoPlay || pendingPlayRef.current) {
+        pendingPlayRef.current = false
+        widget.play()
+        setPlaying(true)
+      }
+    })
+    widget.bind(window.SC.Widget.Events.PLAY, () => setPlaying(true))
+    widget.bind(window.SC.Widget.Events.PAUSE, () => setPlaying(false))
+    widget.bind(window.SC.Widget.Events.PLAY_PROGRESS, (e) => {
+      setElapsed(Math.floor(e.currentPosition / 1000))
+    })
+    widget.bind(window.SC.Widget.Events.FINISH, () => {
+      const nextIdx = (trackIdx + 1) % ch.tracks.length
+      setTrackIdx(nextIdx)
+      setElapsed(0)
+    })
+  }, [trackIdx, ch.tracks.length, volume])
+
+  // Load new track into iframe when trackIdx changes
+  useEffect(() => {
+    const track = ch.tracks[trackIdx]
+    if (!track.scUrl || !scIframeRef.current) return
+    scReadyRef.current = false
+    const src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(track.scUrl)}&${SC_PARAMS}`
+    scIframeRef.current.src = src
+    setElapsed(0)
+
+    const tryBind = () => {
+      if (window.SC) {
+        bindWidget(false)
+      } else {
+        setTimeout(tryBind, 300)
+      }
+    }
+    // SC iframe fires READY after src change; rebind after brief delay
+    const t = setTimeout(tryBind, 400)
+    return () => clearTimeout(t)
+  }, [trackIdx]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const scPlay = useCallback(() => {
+    if (scWidgetRef.current && scReadyRef.current) {
+      scWidgetRef.current.play()
+    } else {
+      pendingPlayRef.current = true
+    }
+  }, [])
+
+  const scPause = useCallback(() => {
+    if (scWidgetRef.current) scWidgetRef.current.pause()
+  }, [])
+
+  const scStop = useCallback(() => {
+    if (scWidgetRef.current) {
+      scWidgetRef.current.pause()
+      scWidgetRef.current.seekTo(0)
+      setElapsed(0)
+    }
+  }, [])
+
+  const changeTrack = useCallback((d) => {
+    const nextIdx = (trackIdx + d + ch.tracks.length) % ch.tracks.length
+    setTrackIdx(nextIdx)
+    pendingPlayRef.current = true
+    setElapsed(0)
+  }, [trackIdx, ch.tracks.length])
+
+  const pickTrack = useCallback((i) => {
+    if (i === trackIdx) {
+      scPlay()
+      return
+    }
+    setTrackIdx(i)
+    pendingPlayRef.current = true
+    setElapsed(0)
+  }, [trackIdx, scPlay])
+
+  // Volume sync
+  useEffect(() => {
+    if (scWidgetRef.current && scReadyRef.current) {
+      scWidgetRef.current.setVolume(volume)
+    }
+  }, [volume])
+
+  // Seek
+  const onSeek = useCallback((e) => {
+    const val = +e.target.value
+    setElapsed(val)
+    if (scWidgetRef.current && scReadyRef.current) {
+      scWidgetRef.current.seekTo(val * 1000)
+    }
+  }, [])
+
   const connect = useCallback(() => {
     if (connectingRef.current) return
     connectingRef.current = true
@@ -115,7 +232,11 @@ export default function App() {
         i++
         bootTimerRef.current = setTimeout(step, 200 + Math.random() * 230)
       } else {
-        bootTimerRef.current = setTimeout(() => setBooting(false), 750)
+        bootTimerRef.current = setTimeout(() => {
+          setBooting(false)
+          // Auto-play first track after boot
+          pendingPlayRef.current = true
+        }, 750)
       }
     }
     step()
@@ -125,22 +246,18 @@ export default function App() {
     clearTimeout(bootTimerRef.current)
     connectingRef.current = false
     setBooting(false)
+    pendingPlayRef.current = true
   }, [])
 
   const eject = useCallback(() => {
     clearTimeout(bootTimerRef.current)
     connectingRef.current = false
+    scPause()
     setBootLines([])
     setBootPct(0)
     setPlaying(false)
     setBooting(true)
-  }, [])
-
-  const changeTrack = useCallback((d) => {
-    setTrackIdx(prev => (prev + d + ch.tracks.length) % ch.tracks.length)
-    setElapsed(0)
-    setPlaying(true)
-  }, [ch.tracks.length])
+  }, [scPause])
 
   const startFader = useCallback((i, e) => {
     e.preventDefault()
@@ -163,21 +280,7 @@ export default function App() {
     window.addEventListener('mouseup', up)
   }, [])
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (!playing || booting || zapping) return
-      setElapsed(prev => {
-        const len = CHANNELS[channel].tracks[trackIdx].sec
-        if (prev + 1 >= len) {
-          setTrackIdx(ti => (ti + 1) % CHANNELS[channel].tracks.length)
-          return 0
-        }
-        return prev + 1
-      })
-    }, 1000)
-    return () => clearInterval(timer)
-  }, [playing, booting, zapping, channel, trackIdx])
-
+  // Canvas animation loop
   useEffect(() => {
     const loop = () => {
       rafRef.current = requestAnimationFrame(loop)
@@ -242,6 +345,15 @@ export default function App() {
 
   return (
     <div className={`device ${channel}`}>
+      {/* Hidden SoundCloud iframe */}
+      <iframe
+        ref={scIframeRef}
+        title="sc-player"
+        style={{ display: 'none' }}
+        allow="autoplay"
+        src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(curTrack.scUrl)}&${SC_PARAMS}`}
+      />
+
       <div className="desktop">
         <div className="geo" style={{ right: 14, top: 18, textAlign: 'right' }}>
           <div className="badge" style={{ marginBottom: 6 }}>best viewed @ 1024x768</div>
@@ -282,7 +394,7 @@ export default function App() {
               <input
                 type="range" className="slider seek"
                 min={0} max={curTrack.sec} value={elapsed}
-                onChange={e => setElapsed(+e.target.value)}
+                onChange={onSeek}
               />
               {zapping && (
                 <div className="static">
@@ -295,9 +407,9 @@ export default function App() {
             <div className="controls">
               <div className="transport">
                 <button className="rbtn" onClick={() => changeTrack(-1)}><IconPrev /></button>
-                <button className="rbtn" onClick={() => setPlaying(true)}><IconPlay /></button>
-                <button className="rbtn" onClick={() => setPlaying(false)}><IconPause /></button>
-                <button className="rbtn" onClick={() => { setPlaying(false); setElapsed(0) }}><IconStop /></button>
+                <button className="rbtn" onClick={scPlay}><IconPlay /></button>
+                <button className="rbtn" onClick={scPause}><IconPause /></button>
+                <button className="rbtn" onClick={scStop}><IconStop /></button>
                 <button className="rbtn" onClick={() => changeTrack(1)}><IconNext /></button>
               </div>
               <div className="secondary">
@@ -351,7 +463,7 @@ export default function App() {
                   <div
                     key={i}
                     className={i === trackIdx ? 'prow cur' : 'prow'}
-                    onClick={() => { setTrackIdx(i); setElapsed(0); setPlaying(true) }}
+                    onClick={() => pickTrack(i)}
                   >
                     <div className="pl-l">
                       <span className="prnum">{String(i + 1).padStart(2, '0')}.</span>

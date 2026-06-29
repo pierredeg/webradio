@@ -311,39 +311,69 @@
   .desktop { padding: 12px 8px 32px; }
   .stack { width: 100%; }
 
-  /* hide decorative geo badges on mobile */
   .geo { display: none; }
 
-  /* controls: stack transport + secondary on one line, vol below */
+  /* transport: 5 big round buttons across full width */
   .controls {
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 7px 8px;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
   }
-  .transport { gap: 5px; }
-  .rbtn { width: 30px; height: 30px; font-size: 10px; }
-  .rbtn.sm { width: 24px; height: 24px; font-size: 9px; }
-  .pico { height: 9px; }
+  .transport {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    width: 100%;
+  }
+  .rbtn {
+    width: 100%;
+    height: 52px;
+    border-radius: 12px;
+    font-size: 13px;
+  }
+  .pico { height: 14px; }
 
-  /* vol section full width below transport */
+  /* secondary row: shuffle + repeat + eject spread */
+  .secondary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    width: 100%;
+  }
+  .rbtn.sm {
+    width: 100%;
+    height: 44px;
+    border-radius: 10px;
+    font-size: 16px;
+  }
+
+  /* vol full width */
   .vol {
     margin-left: 0;
     width: 100%;
-    flex-direction: row;
-    gap: 10px;
+    flex-direction: column;
+    gap: 8px;
   }
-  .volrow { flex: 1; }
-  .volrow .slider { width: 100%; }
+  .volrow { width: 100%; gap: 10px; font-size: 11px; }
+  .volrow .slider { flex: 1; height: 10px; }
+  .volrow .slider::-webkit-slider-thumb { width: 20px; height: 26px; }
 
-  /* EQ faders: tighter */
-  .eqfaders { gap: 4px; }
-  .fader { width: 7px; }
+  /* seek bar taller for fat fingers */
+  .seek { height: 10px; margin-top: 12px; }
+  .seek::-webkit-slider-thumb { width: 20px; height: 26px; }
+
+  /* playlist rows bigger tap targets */
+  .prow { padding: 8px 13px; font-size: 15px; }
+  .pltool .rbtn.sm { height: 36px; width: 36px; border-radius: 8px; }
+
+  /* EQ faders slightly wider */
+  .fader { width: 10px; }
   .eqlbl { font-size: 8px; }
 
-  /* playlist rows truncation */
-  .pl-l { max-width: calc(100vw - 120px); }
+  /* pl truncation */
+  .pl-l { max-width: calc(100vw - 110px); }
 
-  /* marquee font */
+  /* text sizing */
   .mq-track { font-size: 15px; }
   .bignum { font-size: 28px; }
   .chtag { font-size: 13px; }

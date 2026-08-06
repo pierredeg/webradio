@@ -1,0 +1,26 @@
+{
+  "name": "review-scanner",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Estimates the share of Google Maps reviews carrying inauthenticity signals, with the evidence attached.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test 'test/*.test.js'",
+    "scan": "node scripts/scan.mjs",
+    "fixtures": "node scripts/generate-fixtures.mjs"
+  },
+  "dependencies": {
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.2",
+    "vite": "^8.1.0"
+  },
+  "optionalDependencies": {
+    "playwright": "^1.50.0"
+  }
+}

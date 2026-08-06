@@ -1,0 +1,1162 @@
+{
+  "source": "synthetic",
+  "collectedAt": "2026-08-01T00:00:00.000Z",
+  "place": {
+    "id": "synthetic-clean",
+    "name": "Atelier Rénovation Nord (fictif)",
+    "category": "renovation",
+    "city": "Paris",
+    "rating": 4.3,
+    "reviewCount": 82
+  },
+  "reviews": [
+    {
+      "id": "clean-0",
+      "rating": 5,
+      "text": "Chantier de 5 mois pour un 74 m² à rénover entièrement : les réserves ont été levées en une semaine, et la peinture a été impeccable, rien à redire. Bémol : la communication est perfectible en milieu de chantier. Globalement satisfaits.",
+      "publishedAt": "2023-01-10T12:40:24.324Z",
+      "language": "fr",
+      "author": {
+        "id": "a-0",
+        "name": "Léa Girard",
+        "reviewCount": 17,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-1",
+      "rating": 4,
+      "text": "Projet de 6 mois sur un appartement du 19e : le budget a été tenu à 5% près, ce qui est rare, et la pose du carrelage a été impeccable, rien à redire. Bémol : la peinture a dû être reprise une fois. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2023-01-11T17:26:59.061Z",
+      "language": "fr",
+      "author": {
+        "id": "a-1",
+        "name": "Nicolas Fontaine",
+        "reviewCount": 28,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-2",
+      "rating": 2,
+      "text": "Devis compétitif mais plusieurs suppléments en cours de route qu'on n'avait pas anticipés. Lisez bien les postes exclus.",
+      "publishedAt": "2023-01-22T07:51:56.021Z",
+      "language": "fr",
+      "author": {
+        "id": "a-2",
+        "name": "Olivier Roussel",
+        "reviewCount": 9,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-3",
+      "rating": 5,
+      "text": "Nous cherchions un interlocuteur unique pour l'entrée et le couloir : le conducteur de travaux répondait dans la journée, et les plans 3D nous ont vraiment aidés à trancher sur les volumes. Bémol : la peinture a dû être reprise une fois. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2023-01-22T10:47:07.457Z",
+      "language": "fr",
+      "author": {
+        "id": "a-3",
+        "name": "Paul Petit",
+        "reviewCount": 3,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-4",
+      "rating": 5,
+      "text": "Rénovation complète de notre 43 m² dans le 1e : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et les réserves ont été levées en une semaine. Bémol : le planning initial était optimiste de 8 semaines. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-01-29T23:06:43.832Z",
+      "language": "fr",
+      "author": {
+        "id": "a-4",
+        "name": "Antoine Dubois",
+        "reviewCount": 28,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-5",
+      "rating": 5,
+      "text": "Refonte de l'entrée et le couloir après achat, dans le 17e : les réserves ont été levées en une semaine, et le budget a été tenu à 6% près, ce qui est rare. Bémol : la électricité a dû être reprise une fois. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2023-02-08T23:23:18.124Z",
+      "language": "fr",
+      "author": {
+        "id": "a-5",
+        "name": "Sarah Fontaine",
+        "reviewCount": 35,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-6",
+      "rating": 5,
+      "text": "Chantier de 5 mois pour un 69 m² à rénover entièrement : la coordination entre les corps de métier était réelle, et le chantier était nettoyé tous les soirs, les voisins ont apprécié. Bémol : il a fallu relancer deux fois pour les finitions de électricité. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2023-03-04T03:49:45.842Z",
+      "language": "fr",
+      "author": {
+        "id": "a-6",
+        "name": "Julien L.",
+        "reviewCount": 87,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-7",
+      "rating": 3,
+      "text": "Nous avons confié la réfection de le séjour à cette équipe : la coordination entre les corps de métier était réelle. Bémol : il a fallu relancer deux fois pour les finitions de plomberie. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2023-03-10T09:35:00.145Z",
+      "language": "fr",
+      "author": {
+        "id": "a-7",
+        "name": "Alice Lefèvre",
+        "reviewCount": 50,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-8",
+      "rating": 1,
+      "text": "",
+      "publishedAt": "2023-03-13T09:00:56.282Z",
+      "language": "fr",
+      "author": {
+        "id": "a-8",
+        "name": "Camille Dubois",
+        "reviewCount": 77,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-9",
+      "rating": 5,
+      "text": "Rénovation complète de notre 81 m² dans le 15e : le chantier était nettoyé tous les soirs, les voisins ont apprécié, et le budget a été tenu à 4% près, ce qui est rare. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2023-03-29T05:58:43.234Z",
+      "language": "fr",
+      "author": {
+        "id": "a-9",
+        "name": "Sarah Fontaine",
+        "reviewCount": 17,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-10",
+      "rating": 4,
+      "text": "Projet de 2 mois sur un appartement du 17e : le devis détaillait chaque poste, sans zone grise, et la pose du carrelage a été impeccable, rien à redire. Bémol : il a fallu relancer deux fois pour les finitions de menuiserie. Globalement satisfaits.",
+      "publishedAt": "2023-04-01T20:15:35.817Z",
+      "language": "fr",
+      "author": {
+        "id": "a-10",
+        "name": "Paul C.",
+        "reviewCount": 9,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-11",
+      "rating": 5,
+      "text": "Chantier de 6 mois pour un 55 m² à rénover entièrement : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et le devis détaillait chaque poste, sans zone grise. Bémol : la livraison du plan de travail a décalé la fin de 7 semaines. Globalement satisfaits.",
+      "publishedAt": "2023-05-08T11:35:16.946Z",
+      "language": "fr",
+      "author": {
+        "id": "a-11",
+        "name": "Nicolas Fontaine",
+        "reviewCount": 38,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-12",
+      "rating": 1,
+      "text": "",
+      "publishedAt": "2023-05-13T07:56:45.369Z",
+      "language": "fr",
+      "author": {
+        "id": "a-12",
+        "name": "Marc B.",
+        "reviewCount": 49,
+        "hasPhoto": false,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-13",
+      "rating": 1,
+      "text": "Le chantier a été abandonné trois semaines sans prévenir. Il a fallu passer par un courrier recommandé pour obtenir une reprise.",
+      "publishedAt": "2023-05-13T09:15:58.355Z",
+      "language": "fr",
+      "author": {
+        "id": "a-13",
+        "name": "Sarah Girard",
+        "reviewCount": 54,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-14",
+      "rating": 4,
+      "text": "Chantier de 3 mois pour un 62 m² à rénover entièrement : le chantier était nettoyé tous les soirs, les voisins ont apprécié, et la peinture a été impeccable, rien à redire. Bémol : il a fallu relancer deux fois pour les finitions de électricité. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-05-27T11:18:17.229Z",
+      "language": "fr",
+      "author": {
+        "id": "a-14",
+        "name": "Chloé Fontaine",
+        "reviewCount": 88,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-15",
+      "rating": 3,
+      "text": "Nous cherchions un interlocuteur unique pour l'entrée et le couloir : les réserves ont été levées en une semaine. Bémol : il a fallu relancer deux fois pour les finitions de électricité. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2023-06-22T12:58:58.173Z",
+      "language": "fr",
+      "author": {
+        "id": "a-15",
+        "name": "Chloé Marchand",
+        "reviewCount": 75,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-16",
+      "rating": 5,
+      "text": "Chantier de 3 mois pour un 72 m² à rénover entièrement : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et le devis détaillait chaque poste, sans zone grise. Bémol : la livraison du plan de travail a décalé la fin de 5 semaines. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-07-26T00:49:44.187Z",
+      "language": "fr",
+      "author": {
+        "id": "a-16",
+        "name": "Sophie Lefèvre",
+        "reviewCount": 67,
+        "hasPhoto": false,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-17",
+      "rating": 5,
+      "text": "Chantier de 5 mois pour un 47 m² à rénover entièrement : le devis détaillait chaque poste, sans zone grise, et le conducteur de travaux répondait dans la journée. Bémol : quelques suppléments non anticipés sur l'électricité. Globalement satisfaits.",
+      "publishedAt": "2023-07-31T00:04:23.915Z",
+      "language": "fr",
+      "author": {
+        "id": "a-17",
+        "name": "Inès M.",
+        "reviewCount": 22,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-18",
+      "rating": 4,
+      "text": "Projet de 5 mois sur un appartement du 17e : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et le devis détaillait chaque poste, sans zone grise. Bémol : la livraison du plan de travail a décalé la fin de 8 semaines. Nous referions appel à eux.",
+      "publishedAt": "2023-08-01T02:52:09.655Z",
+      "language": "fr",
+      "author": {
+        "id": "a-18",
+        "name": "Sophie Petit",
+        "reviewCount": 4,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-19",
+      "rating": 5,
+      "text": "Refonte de deux chambres après achat, dans le 20e : le budget a été tenu à 7% près, ce qui est rare, et les plans 3D nous ont vraiment aidés à trancher sur les volumes. Nous referions appel à eux.",
+      "publishedAt": "2023-08-06T09:46:02.975Z",
+      "language": "fr",
+      "author": {
+        "id": "a-19",
+        "name": "Sarah Petit",
+        "reviewCount": 82,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-20",
+      "rating": 1,
+      "text": "Trois mois de retard, des finitions à reprendre, et un solde réclamé avant la levée des réserves. Je ne recommande pas en l'état.",
+      "publishedAt": "2023-09-01T19:19:04.512Z",
+      "language": "fr",
+      "author": {
+        "id": "a-20",
+        "name": "Paul B.",
+        "reviewCount": 24,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-21",
+      "rating": 5,
+      "text": "Refonte de la salle de bain après achat, dans le 9e : la coordination entre les corps de métier était réelle, et le budget a été tenu à 3% près, ce qui est rare. Bémol : la menuiserie a dû être reprise une fois. Globalement satisfaits.",
+      "publishedAt": "2023-09-25T03:38:35.317Z",
+      "language": "fr",
+      "author": {
+        "id": "a-21",
+        "name": "Damien Lefèvre",
+        "reviewCount": 2,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-22",
+      "rating": 3,
+      "text": "",
+      "publishedAt": "2023-09-28T14:11:19.894Z",
+      "language": "fr",
+      "author": {
+        "id": "a-22",
+        "name": "Chloé Girard",
+        "reviewCount": 29,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-23",
+      "rating": 4,
+      "text": "Nous avons confié la réfection de la salle de bain à cette équipe : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et le conducteur de travaux répondait dans la journée. Bémol : la livraison du plan de travail a décalé la fin de 3 semaines. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-09-29T03:36:29.288Z",
+      "language": "fr",
+      "author": {
+        "id": "a-23",
+        "name": "Maxime Bertrand",
+        "reviewCount": 13,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-24",
+      "rating": 5,
+      "text": "Projet de 3 mois sur un appartement du 15e : la coordination entre les corps de métier était réelle, et les plans 3D nous ont vraiment aidés à trancher sur les volumes. Globalement satisfaits.",
+      "publishedAt": "2023-09-30T08:43:22.574Z",
+      "language": "fr",
+      "author": {
+        "id": "a-24",
+        "name": "Alice Lefèvre",
+        "reviewCount": 64,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-25",
+      "rating": 5,
+      "text": "Projet de 8 mois sur un appartement du 11e : le chantier était nettoyé tous les soirs, les voisins ont apprécié, et la coordination entre les corps de métier était réelle. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-10-08T12:56:36.289Z",
+      "language": "fr",
+      "author": {
+        "id": "a-25",
+        "name": "Vincent L.",
+        "reviewCount": 33,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-26",
+      "rating": 1,
+      "text": "Le chantier a été abandonné trois semaines sans prévenir. Il a fallu passer par un courrier recommandé pour obtenir une reprise.",
+      "publishedAt": "2023-10-10T02:54:27.304Z",
+      "language": "fr",
+      "author": {
+        "id": "a-26",
+        "name": "Inès Fontaine",
+        "reviewCount": 75,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-27",
+      "rating": 5,
+      "text": "Projet de 3 mois sur un appartement du 19e : le conducteur de travaux répondait dans la journée, et les plans 3D nous ont vraiment aidés à trancher sur les volumes. Bémol : il a fallu relancer deux fois pour les finitions de peinture. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2023-10-17T10:32:16.368Z",
+      "language": "fr",
+      "author": {
+        "id": "a-27",
+        "name": "Maxime Lefèvre",
+        "reviewCount": 3,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-28",
+      "rating": 5,
+      "text": "Chantier de 3 mois pour un 36 m² à rénover entièrement : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et les réserves ont été levées en une semaine. Bémol : la livraison du plan de travail a décalé la fin de 2 semaines. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-11-03T22:21:42.714Z",
+      "language": "fr",
+      "author": {
+        "id": "a-28",
+        "name": "Manon Fontaine",
+        "reviewCount": 5,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-29",
+      "rating": 1,
+      "text": "Beaucoup de promesses à la signature, beaucoup moins de réactivité une fois l'acompte versé. Dossier toujours en cours de résolution.",
+      "publishedAt": "2023-11-26T12:28:04.980Z",
+      "language": "fr",
+      "author": {
+        "id": "a-29",
+        "name": "Vincent D.",
+        "reviewCount": 31,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-30",
+      "rating": 5,
+      "text": "Nous avons confié la réfection de le séjour à cette équipe : la plomberie a été impeccable, rien à redire, et le devis détaillait chaque poste, sans zone grise. Bémol : la communication est perfectible en milieu de chantier. Globalement satisfaits.",
+      "publishedAt": "2023-12-07T16:14:33.716Z",
+      "language": "fr",
+      "author": {
+        "id": "a-30",
+        "name": "Sophie L.",
+        "reviewCount": 51,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-31",
+      "rating": 5,
+      "text": "Chantier de 5 mois pour un 94 m² à rénover entièrement : le budget a été tenu à 6% près, ce qui est rare, et le devis détaillait chaque poste, sans zone grise. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-12-16T06:40:11.087Z",
+      "language": "fr",
+      "author": {
+        "id": "a-31",
+        "name": "Julien Fontaine",
+        "reviewCount": 3,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-32",
+      "rating": 1,
+      "text": "Trois mois de retard, des finitions à reprendre, et un solde réclamé avant la levée des réserves. Je ne recommande pas en l'état.",
+      "publishedAt": "2023-12-17T01:16:22.124Z",
+      "language": "fr",
+      "author": {
+        "id": "a-32",
+        "name": "Nicolas Roussel",
+        "reviewCount": 6,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-33",
+      "rating": 5,
+      "text": "Nous cherchions un interlocuteur unique pour la salle de bain : le budget a été tenu à 5% près, ce qui est rare, et le chantier était nettoyé tous les soirs, les voisins ont apprécié. Bémol : la communication est perfectible en milieu de chantier. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2023-12-17T08:13:54.342Z",
+      "language": "fr",
+      "author": {
+        "id": "a-33",
+        "name": "Alice Moreau",
+        "reviewCount": 8,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-34",
+      "rating": 1,
+      "text": "Trois mois de retard, des finitions à reprendre, et un solde réclamé avant la levée des réserves. Je ne recommande pas en l'état.",
+      "publishedAt": "2023-12-25T21:39:28.780Z",
+      "language": "fr",
+      "author": {
+        "id": "a-34",
+        "name": "Maxime C.",
+        "reviewCount": 19,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-35",
+      "rating": 2,
+      "text": "Correct sans plus. L'équipe est sympathique, le suivi administratif est perfectible.",
+      "publishedAt": "2023-12-30T21:55:55.731Z",
+      "language": "fr",
+      "author": {
+        "id": "a-35",
+        "name": "Olivier Petit",
+        "reviewCount": 34,
+        "hasPhoto": false,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-36",
+      "rating": 1,
+      "text": "Le chantier a été abandonné trois semaines sans prévenir. Il a fallu passer par un courrier recommandé pour obtenir une reprise.",
+      "publishedAt": "2024-01-20T18:45:09.796Z",
+      "language": "fr",
+      "author": {
+        "id": "a-36",
+        "name": "Sarah Lefèvre",
+        "reviewCount": 88,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-37",
+      "rating": 5,
+      "text": "Projet de 7 mois sur un appartement du 13e : le budget a été tenu à 5% près, ce qui est rare, et les réserves ont été levées en une semaine. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2024-02-07T16:24:30.633Z",
+      "language": "fr",
+      "author": {
+        "id": "a-37",
+        "name": "Nadia Marchand",
+        "reviewCount": 78,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-38",
+      "rating": 3,
+      "text": "Projet de 6 mois sur un appartement du 2e : les réserves ont été levées en une semaine. Bémol : la plomberie a dû être reprise une fois. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2024-02-14T07:01:30.148Z",
+      "language": "fr",
+      "author": {
+        "id": "a-38",
+        "name": "Alice Lefèvre",
+        "reviewCount": 14,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-39",
+      "rating": 4,
+      "text": "Chantier de 2 mois pour un 86 m² à rénover entièrement : le conducteur de travaux répondait dans la journée, et le devis détaillait chaque poste, sans zone grise. Bémol : il a fallu relancer deux fois pour les finitions de peinture. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2024-02-18T06:56:05.720Z",
+      "language": "fr",
+      "author": {
+        "id": "a-39",
+        "name": "Nadia Lefèvre",
+        "reviewCount": 49,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-40",
+      "rating": 5,
+      "text": "Nous cherchions un interlocuteur unique pour la salle de bain : le budget a été tenu à 2% près, ce qui est rare, et le devis détaillait chaque poste, sans zone grise. Bémol : la pose du carrelage a dû être reprise une fois. Globalement satisfaits.",
+      "publishedAt": "2024-02-22T12:16:31.369Z",
+      "language": "fr",
+      "author": {
+        "id": "a-40",
+        "name": "Maxime Marchand",
+        "reviewCount": 1,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-41",
+      "rating": 5,
+      "text": "Chantier de 8 mois pour un 64 m² à rénover entièrement : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et le budget a été tenu à 1% près, ce qui est rare. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2024-02-27T02:29:24.991Z",
+      "language": "fr",
+      "author": {
+        "id": "a-41",
+        "name": "Marc Bertrand",
+        "reviewCount": 61,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-42",
+      "rating": 5,
+      "text": "Nous avons confié la réfection de l'entrée et le couloir à cette équipe : le conducteur de travaux répondait dans la journée, et le devis détaillait chaque poste, sans zone grise. Bémol : il a fallu relancer deux fois pour les finitions de électricité. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2024-03-15T22:30:47.003Z",
+      "language": "fr",
+      "author": {
+        "id": "a-42",
+        "name": "Marc Lefèvre",
+        "reviewCount": 10,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-43",
+      "rating": 5,
+      "text": "Refonte de le séjour après achat, dans le 7e : la coordination entre les corps de métier était réelle, et le chantier était nettoyé tous les soirs, les voisins ont apprécié. Globalement satisfaits.",
+      "publishedAt": "2024-04-12T11:03:43.297Z",
+      "language": "fr",
+      "author": {
+        "id": "a-43",
+        "name": "Vincent M.",
+        "reviewCount": 2,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-44",
+      "rating": 5,
+      "text": "Nous cherchions un interlocuteur unique pour la cuisine : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et la coordination entre les corps de métier était réelle. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2024-04-18T04:05:15.073Z",
+      "language": "fr",
+      "author": {
+        "id": "a-44",
+        "name": "Karim Moreau",
+        "reviewCount": 27,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-45",
+      "rating": 4,
+      "text": "Projet de 5 mois sur un appartement du 12e : le chantier était nettoyé tous les soirs, les voisins ont apprécié, et la coordination entre les corps de métier était réelle. Bémol : la pose du carrelage a dû être reprise une fois. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2024-04-30T00:17:25.277Z",
+      "language": "fr",
+      "author": {
+        "id": "a-45",
+        "name": "Marc C.",
+        "reviewCount": 15,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-46",
+      "rating": 5,
+      "text": "Projet de 4 mois sur un appartement du 11e : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et le devis détaillait chaque poste, sans zone grise. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2024-05-15T03:53:02.758Z",
+      "language": "fr",
+      "author": {
+        "id": "a-46",
+        "name": "Marc N.",
+        "reviewCount": 68,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-47",
+      "rating": 5,
+      "text": "Projet de 4 mois sur un appartement du 8e : la peinture a été impeccable, rien à redire, et les plans 3D nous ont vraiment aidés à trancher sur les volumes. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2024-05-16T16:53:12.616Z",
+      "language": "fr",
+      "author": {
+        "id": "a-47",
+        "name": "Alice C.",
+        "reviewCount": 8,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-48",
+      "rating": 4,
+      "text": "Refonte de la salle de bain après achat, dans le 20e : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et la menuiserie a été impeccable, rien à redire. Bémol : il a fallu relancer deux fois pour les finitions de électricité. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2024-05-22T11:03:12.373Z",
+      "language": "fr",
+      "author": {
+        "id": "a-48",
+        "name": "Camille N.",
+        "reviewCount": 16,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-49",
+      "rating": 5,
+      "text": "Nous cherchions un interlocuteur unique pour l'entrée et le couloir : le conducteur de travaux répondait dans la journée, et le devis détaillait chaque poste, sans zone grise. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2024-05-22T19:49:29.548Z",
+      "language": "fr",
+      "author": {
+        "id": "a-49",
+        "name": "Antoine D.",
+        "reviewCount": 40,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-50",
+      "rating": 5,
+      "text": "Chantier de 2 mois pour un 48 m² à rénover entièrement : le devis détaillait chaque poste, sans zone grise, et le chantier était nettoyé tous les soirs, les voisins ont apprécié. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2024-06-02T13:40:56.197Z",
+      "language": "fr",
+      "author": {
+        "id": "a-50",
+        "name": "Léa Moreau",
+        "reviewCount": 27,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-51",
+      "rating": 5,
+      "text": "Projet de 3 mois sur un appartement du 5e : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et le devis détaillait chaque poste, sans zone grise. Bémol : la communication est perfectible en milieu de chantier. Globalement satisfaits.",
+      "publishedAt": "2024-06-14T12:16:31.491Z",
+      "language": "fr",
+      "author": {
+        "id": "a-51",
+        "name": "Karim N.",
+        "reviewCount": 89,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-52",
+      "rating": 5,
+      "text": "Rénovation complète de notre 36 m² dans le 18e : le conducteur de travaux répondait dans la journée, et la coordination entre les corps de métier était réelle. Globalement satisfaits.",
+      "publishedAt": "2024-08-08T19:17:46.041Z",
+      "language": "fr",
+      "author": {
+        "id": "a-52",
+        "name": "Olivier L.",
+        "reviewCount": 4,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-53",
+      "rating": 5,
+      "text": "",
+      "publishedAt": "2024-08-11T00:15:30.641Z",
+      "language": "fr",
+      "author": {
+        "id": "a-53",
+        "name": "Hélène D.",
+        "reviewCount": 33,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-54",
+      "rating": 2,
+      "text": "Devis compétitif mais plusieurs suppléments en cours de route qu'on n'avait pas anticipés. Lisez bien les postes exclus.",
+      "publishedAt": "2024-08-11T08:51:24.985Z",
+      "language": "fr",
+      "author": {
+        "id": "a-54",
+        "name": "Olivier Marchand",
+        "reviewCount": 37,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-55",
+      "rating": 4,
+      "text": "Nous cherchions un interlocuteur unique pour le séjour : le budget a été tenu à 1% près, ce qui est rare, et les réserves ont été levées en une semaine. Bémol : quelques suppléments non anticipés sur l'électricité. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2024-08-31T23:32:30.606Z",
+      "language": "fr",
+      "author": {
+        "id": "a-55",
+        "name": "Julien N.",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-56",
+      "rating": 5,
+      "text": "Rénovation complète de notre 36 m² dans le 11e : la coordination entre les corps de métier était réelle, et le conducteur de travaux répondait dans la journée. Bémol : le planning initial était optimiste de 5 semaines. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2024-09-10T21:13:59.739Z",
+      "language": "fr",
+      "author": {
+        "id": "a-56",
+        "name": "Sophie Dubois",
+        "reviewCount": 2,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-57",
+      "rating": 5,
+      "text": "Refonte de l'entrée et le couloir après achat, dans le 2e : le chantier était nettoyé tous les soirs, les voisins ont apprécié, et le devis détaillait chaque poste, sans zone grise. Bémol : quelques suppléments non anticipés sur l'électricité. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2024-09-11T17:44:32.872Z",
+      "language": "fr",
+      "author": {
+        "id": "a-57",
+        "name": "Julien Roussel",
+        "reviewCount": 2,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-58",
+      "rating": 5,
+      "text": "Chantier de 3 mois pour un 79 m² à rénover entièrement : le devis détaillait chaque poste, sans zone grise, et le chantier était nettoyé tous les soirs, les voisins ont apprécié. Bémol : quelques suppléments non anticipés sur l'électricité. Globalement satisfaits.",
+      "publishedAt": "2024-09-15T01:55:03.538Z",
+      "language": "fr",
+      "author": {
+        "id": "a-58",
+        "name": "Alice Moreau",
+        "reviewCount": 34,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-59",
+      "rating": 1,
+      "text": "Beaucoup de promesses à la signature, beaucoup moins de réactivité une fois l'acompte versé. Dossier toujours en cours de résolution.",
+      "publishedAt": "2024-10-17T23:54:18.761Z",
+      "language": "fr",
+      "author": {
+        "id": "a-59",
+        "name": "Maxime M.",
+        "reviewCount": 23,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-60",
+      "rating": 5,
+      "text": "Rénovation complète de notre 97 m² dans le 7e : la peinture a été impeccable, rien à redire, et le conducteur de travaux répondait dans la journée. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2024-10-20T22:01:03.330Z",
+      "language": "fr",
+      "author": {
+        "id": "a-60",
+        "name": "Nicolas Lefèvre",
+        "reviewCount": 33,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-61",
+      "rating": 1,
+      "text": "Beaucoup de promesses à la signature, beaucoup moins de réactivité une fois l'acompte versé. Dossier toujours en cours de résolution.",
+      "publishedAt": "2024-10-30T21:39:51.397Z",
+      "language": "fr",
+      "author": {
+        "id": "a-61",
+        "name": "Karim Marchand",
+        "reviewCount": 61,
+        "hasPhoto": false,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-62",
+      "rating": 5,
+      "text": "Chantier de 8 mois pour un 52 m² à rénover entièrement : la coordination entre les corps de métier était réelle, et la plomberie a été impeccable, rien à redire. Nous referions appel à eux.",
+      "publishedAt": "2024-11-03T10:06:42.186Z",
+      "language": "fr",
+      "author": {
+        "id": "a-62",
+        "name": "Nadia Marchand",
+        "reviewCount": 40,
+        "hasPhoto": false,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-63",
+      "rating": 5,
+      "text": "Chantier de 8 mois pour un 84 m² à rénover entièrement : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et la menuiserie a été impeccable, rien à redire. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2024-11-03T14:22:37.568Z",
+      "language": "fr",
+      "author": {
+        "id": "a-63",
+        "name": "Vincent Fontaine",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-64",
+      "rating": 1,
+      "text": "Le chantier a été abandonné trois semaines sans prévenir. Il a fallu passer par un courrier recommandé pour obtenir une reprise.",
+      "publishedAt": "2024-11-08T08:33:29.586Z",
+      "language": "fr",
+      "author": {
+        "id": "a-64",
+        "name": "Hélène C.",
+        "reviewCount": 40,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-65",
+      "rating": 5,
+      "text": "Nous cherchions un interlocuteur unique pour l'entrée et le couloir : le budget a été tenu à 2% près, ce qui est rare, et les réserves ont été levées en une semaine. Globalement satisfaits.",
+      "publishedAt": "2024-11-11T23:08:11.366Z",
+      "language": "fr",
+      "author": {
+        "id": "a-65",
+        "name": "Sarah M.",
+        "reviewCount": 11,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-66",
+      "rating": 5,
+      "text": "Nous avons confié la réfection de la salle de bain à cette équipe : les réserves ont été levées en une semaine, et le chantier était nettoyé tous les soirs, les voisins ont apprécié. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2024-12-22T00:37:03.607Z",
+      "language": "fr",
+      "author": {
+        "id": "a-66",
+        "name": "Inès Roussel",
+        "reviewCount": 8,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-67",
+      "rating": 4,
+      "text": "Projet de 4 mois sur un appartement du 7e : le devis détaillait chaque poste, sans zone grise, et les réserves ont été levées en une semaine. Bémol : la peinture a dû être reprise une fois. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2025-01-11T09:12:37.131Z",
+      "language": "fr",
+      "author": {
+        "id": "a-67",
+        "name": "Vincent N.",
+        "reviewCount": 81,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-68",
+      "rating": 5,
+      "text": "",
+      "publishedAt": "2025-01-29T19:55:29.729Z",
+      "language": "fr",
+      "author": {
+        "id": "a-68",
+        "name": "Claire N.",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-69",
+      "rating": 1,
+      "text": "Le chantier a été abandonné trois semaines sans prévenir. Il a fallu passer par un courrier recommandé pour obtenir une reprise.",
+      "publishedAt": "2025-02-27T04:57:07.410Z",
+      "language": "fr",
+      "author": {
+        "id": "a-69",
+        "name": "Alice N.",
+        "reviewCount": 79,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-70",
+      "rating": 5,
+      "text": "Chantier de 2 mois pour un 37 m² à rénover entièrement : le budget a été tenu à 1% près, ce qui est rare, et le devis détaillait chaque poste, sans zone grise. Bémol : quelques suppléments non anticipés sur l'électricité. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2025-03-01T04:19:57.371Z",
+      "language": "fr",
+      "author": {
+        "id": "a-70",
+        "name": "Hélène Fontaine",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-71",
+      "rating": 5,
+      "text": "Rénovation complète de notre 29 m² dans le 1e : la pose du carrelage a été impeccable, rien à redire, et les plans 3D nous ont vraiment aidés à trancher sur les volumes. Bémol : la livraison du plan de travail a décalé la fin de 7 semaines. Globalement satisfaits.",
+      "publishedAt": "2025-04-02T22:50:05.544Z",
+      "language": "fr",
+      "author": {
+        "id": "a-71",
+        "name": "Manon Petit",
+        "reviewCount": 47,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-72",
+      "rating": 5,
+      "text": "Nous avons confié la réfection de le séjour à cette équipe : la pose du carrelage a été impeccable, rien à redire, et la coordination entre les corps de métier était réelle. Nous referions appel à eux.",
+      "publishedAt": "2025-04-03T18:44:59.872Z",
+      "language": "fr",
+      "author": {
+        "id": "a-72",
+        "name": "Camille Dubois",
+        "reviewCount": 63,
+        "hasPhoto": false,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-73",
+      "rating": 5,
+      "text": "Nous avons confié la réfection de la salle de bain à cette équipe : la coordination entre les corps de métier était réelle, et le chantier était nettoyé tous les soirs, les voisins ont apprécié. Bémol : il a fallu relancer deux fois pour les finitions de plomberie. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2025-05-11T11:25:35.708Z",
+      "language": "fr",
+      "author": {
+        "id": "a-73",
+        "name": "Antoine Moreau",
+        "reviewCount": 17,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-74",
+      "rating": 5,
+      "text": "Rénovation complète de notre 47 m² dans le 1e : les réserves ont été levées en une semaine, et le budget a été tenu à 2% près, ce qui est rare. Bémol : la plomberie a dû être reprise une fois. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2025-05-12T10:39:27.890Z",
+      "language": "fr",
+      "author": {
+        "id": "a-74",
+        "name": "Thomas D.",
+        "reviewCount": 32,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-75",
+      "rating": 5,
+      "text": "Chantier de 3 mois pour un 87 m² à rénover entièrement : le chantier était nettoyé tous les soirs, les voisins ont apprécié, et le budget a été tenu à 1% près, ce qui est rare. Bémol : quelques suppléments non anticipés sur l'électricité. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2025-05-29T21:56:45.749Z",
+      "language": "fr",
+      "author": {
+        "id": "a-75",
+        "name": "Hélène L.",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-76",
+      "rating": 1,
+      "text": "Trois mois de retard, des finitions à reprendre, et un solde réclamé avant la levée des réserves. Je ne recommande pas en l'état.",
+      "publishedAt": "2025-06-01T01:13:38.899Z",
+      "language": "fr",
+      "author": {
+        "id": "a-76",
+        "name": "Léa Roussel",
+        "reviewCount": 40,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-77",
+      "rating": 2,
+      "text": "Correct sans plus. L'équipe est sympathique, le suivi administratif est perfectible.",
+      "publishedAt": "2025-06-07T19:41:24.829Z",
+      "language": "fr",
+      "author": {
+        "id": "a-77",
+        "name": "Vincent Petit",
+        "reviewCount": 88,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-78",
+      "rating": 5,
+      "text": "Chantier de 5 mois pour un 36 m² à rénover entièrement : le chantier était nettoyé tous les soirs, les voisins ont apprécié, et le conducteur de travaux répondait dans la journée. Nous referions appel à eux.",
+      "publishedAt": "2025-06-11T19:38:21.965Z",
+      "language": "fr",
+      "author": {
+        "id": "a-78",
+        "name": "Chloé C.",
+        "reviewCount": 31,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "clean-79",
+      "rating": 5,
+      "text": "Rénovation complète de notre 46 m² dans le 11e : la coordination entre les corps de métier était réelle, et les plans 3D nous ont vraiment aidés à trancher sur les volumes. Bémol : la plomberie a dû être reprise une fois. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2025-06-20T13:11:56.687Z",
+      "language": "fr",
+      "author": {
+        "id": "a-79",
+        "name": "Vincent M.",
+        "reviewCount": 8,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-80",
+      "rating": 5,
+      "text": "Nous cherchions un interlocuteur unique pour deux chambres : les réserves ont été levées en une semaine, et la peinture a été impeccable, rien à redire. Bémol : quelques suppléments non anticipés sur l'électricité. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2025-07-09T22:26:15.475Z",
+      "language": "fr",
+      "author": {
+        "id": "a-80",
+        "name": "Claire N.",
+        "reviewCount": 27,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "clean-81",
+      "rating": 1,
+      "text": "Le chantier a été abandonné trois semaines sans prévenir. Il a fallu passer par un courrier recommandé pour obtenir une reprise.",
+      "publishedAt": "2025-07-10T11:24:44.492Z",
+      "language": "fr",
+      "author": {
+        "id": "a-81",
+        "name": "Vincent L.",
+        "reviewCount": 18,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    }
+  ]
+}

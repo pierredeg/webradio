@@ -1,0 +1,1624 @@
+{
+  "source": "synthetic",
+  "collectedAt": "2026-08-01T00:00:00.000Z",
+  "place": {
+    "id": "synthetic-contaminated",
+    "name": "Rénovation Prestige Capitale (fictif)",
+    "category": "renovation",
+    "city": "Paris",
+    "rating": 4.8,
+    "reviewCount": 97
+  },
+  "reviews": [
+    {
+      "id": "org-0",
+      "rating": 5,
+      "text": "Chantier de 6 mois pour un 116 m² à rénover entièrement : le chantier était nettoyé tous les soirs, les voisins ont apprécié, et les réserves ont été levées en une semaine. Bémol : la peinture a dû être reprise une fois. Nous referions appel à eux.",
+      "publishedAt": "2023-02-03T06:43:04.957Z",
+      "language": "fr",
+      "author": {
+        "id": "a-0",
+        "name": "Hélène Dubois",
+        "reviewCount": 22,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-1",
+      "rating": 2,
+      "text": "",
+      "publishedAt": "2023-02-08T10:53:21.172Z",
+      "language": "fr",
+      "author": {
+        "id": "a-1",
+        "name": "Antoine Petit",
+        "reviewCount": 25,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "org-2",
+      "rating": 5,
+      "text": "Refonte de le séjour après achat, dans le 18e : le devis détaillait chaque poste, sans zone grise, et le chantier était nettoyé tous les soirs, les voisins ont apprécié. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-02-12T06:20:11.439Z",
+      "language": "fr",
+      "author": {
+        "id": "a-2",
+        "name": "Marc Girard",
+        "reviewCount": 28,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-3",
+      "rating": 1,
+      "text": "Beaucoup de promesses à la signature, beaucoup moins de réactivité une fois l'acompte versé. Dossier toujours en cours de résolution.",
+      "publishedAt": "2023-02-12T16:27:52.658Z",
+      "language": "fr",
+      "author": {
+        "id": "a-3",
+        "name": "Chloé C.",
+        "reviewCount": 8,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-4",
+      "rating": 5,
+      "text": "Refonte de la cuisine après achat, dans le 16e : le chantier était nettoyé tous les soirs, les voisins ont apprécié, et le budget a été tenu à 8% près, ce qui est rare. Bémol : la menuiserie a dû être reprise une fois. Globalement satisfaits.",
+      "publishedAt": "2023-02-13T02:33:05.772Z",
+      "language": "fr",
+      "author": {
+        "id": "a-4",
+        "name": "Pierre B.",
+        "reviewCount": 9,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-5",
+      "rating": 5,
+      "text": "Rénovation complète de notre 110 m² dans le 15e : le budget a été tenu à 1% près, ce qui est rare, et les réserves ont été levées en une semaine. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-02-20T01:57:20.235Z",
+      "language": "fr",
+      "author": {
+        "id": "a-5",
+        "name": "Maxime Bertrand",
+        "reviewCount": 85,
+        "hasPhoto": false,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "org-6",
+      "rating": 5,
+      "text": "Chantier de 7 mois pour un 36 m² à rénover entièrement : le chantier était nettoyé tous les soirs, les voisins ont apprécié, et la peinture a été impeccable, rien à redire. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-02-27T04:13:44.139Z",
+      "language": "fr",
+      "author": {
+        "id": "a-6",
+        "name": "Hélène Girard",
+        "reviewCount": 28,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-7",
+      "rating": 5,
+      "text": "Chantier de 3 mois pour un 74 m² à rénover entièrement : le devis détaillait chaque poste, sans zone grise, et la pose du carrelage a été impeccable, rien à redire. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2023-02-27T10:23:09.911Z",
+      "language": "fr",
+      "author": {
+        "id": "a-7",
+        "name": "Alice Bertrand",
+        "reviewCount": 18,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-8",
+      "rating": 5,
+      "text": "Nous avons confié la réfection de la salle de bain à cette équipe : le budget a été tenu à 2% près, ce qui est rare, et les réserves ont été levées en une semaine. Bémol : il a fallu relancer deux fois pour les finitions de pose du carrelage. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-03-05T11:40:14.358Z",
+      "language": "fr",
+      "author": {
+        "id": "a-8",
+        "name": "Camille D.",
+        "reviewCount": 18,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-9",
+      "rating": 1,
+      "text": "",
+      "publishedAt": "2023-04-13T15:13:19.539Z",
+      "language": "fr",
+      "author": {
+        "id": "a-9",
+        "name": "Nicolas Fontaine",
+        "reviewCount": 83,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-10",
+      "rating": 5,
+      "text": "Nous cherchions un interlocuteur unique pour deux chambres : le conducteur de travaux répondait dans la journée, et la plomberie a été impeccable, rien à redire. Bémol : la communication est perfectible en milieu de chantier. Nous referions appel à eux.",
+      "publishedAt": "2023-04-15T08:28:53.292Z",
+      "language": "fr",
+      "author": {
+        "id": "a-10",
+        "name": "Camille Dubois",
+        "reviewCount": 4,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-11",
+      "rating": 5,
+      "text": "Refonte de le séjour après achat, dans le 10e : le chantier était nettoyé tous les soirs, les voisins ont apprécié, et le devis détaillait chaque poste, sans zone grise. Bémol : quelques suppléments non anticipés sur l'électricité. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2023-04-23T07:24:20.911Z",
+      "language": "fr",
+      "author": {
+        "id": "a-11",
+        "name": "Antoine Moreau",
+        "reviewCount": 43,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "org-12",
+      "rating": 4,
+      "text": "Chantier de 7 mois pour un 28 m² à rénover entièrement : le conducteur de travaux répondait dans la journée, et les plans 3D nous ont vraiment aidés à trancher sur les volumes. Bémol : la électricité a dû être reprise une fois. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2023-04-28T04:12:03.047Z",
+      "language": "fr",
+      "author": {
+        "id": "a-12",
+        "name": "Antoine M.",
+        "reviewCount": 18,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-13",
+      "rating": 5,
+      "text": "Projet de 7 mois sur un appartement du 4e : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et les réserves ont été levées en une semaine. Bémol : la livraison du plan de travail a décalé la fin de 8 semaines. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2023-05-22T03:33:25.444Z",
+      "language": "fr",
+      "author": {
+        "id": "a-13",
+        "name": "Camille L.",
+        "reviewCount": 1,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-14",
+      "rating": 5,
+      "text": "Projet de 7 mois sur un appartement du 10e : le conducteur de travaux répondait dans la journée, et les réserves ont été levées en une semaine. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2023-06-08T06:43:50.989Z",
+      "language": "fr",
+      "author": {
+        "id": "a-14",
+        "name": "Nicolas Bertrand",
+        "reviewCount": 89,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-15",
+      "rating": 5,
+      "text": "Nous cherchions un interlocuteur unique pour l'entrée et le couloir : le budget a été tenu à 8% près, ce qui est rare, et le devis détaillait chaque poste, sans zone grise. Bémol : quelques suppléments non anticipés sur l'électricité. Nous referions appel à eux.",
+      "publishedAt": "2023-06-16T15:24:22.506Z",
+      "language": "fr",
+      "author": {
+        "id": "a-15",
+        "name": "Thomas C.",
+        "reviewCount": 67,
+        "hasPhoto": false,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "org-16",
+      "rating": 1,
+      "text": "",
+      "publishedAt": "2023-06-24T07:31:53.074Z",
+      "language": "fr",
+      "author": {
+        "id": "a-16",
+        "name": "Antoine L.",
+        "reviewCount": 2,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-17",
+      "rating": 5,
+      "text": "",
+      "publishedAt": "2023-06-25T20:45:49.486Z",
+      "language": "fr",
+      "author": {
+        "id": "a-17",
+        "name": "Olivier Moreau",
+        "reviewCount": 4,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-18",
+      "rating": 3,
+      "text": "Refonte de le séjour après achat, dans le 17e : le chantier était nettoyé tous les soirs, les voisins ont apprécié. Bémol : la électricité a dû être reprise une fois. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-07-02T09:38:45.287Z",
+      "language": "fr",
+      "author": {
+        "id": "a-18",
+        "name": "Vincent C.",
+        "reviewCount": 5,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-19",
+      "rating": 5,
+      "text": "Refonte de l'entrée et le couloir après achat, dans le 4e : les réserves ont été levées en une semaine, et la menuiserie a été impeccable, rien à redire. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-07-08T16:15:05.160Z",
+      "language": "fr",
+      "author": {
+        "id": "a-19",
+        "name": "Antoine Girard",
+        "reviewCount": 83,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-20",
+      "rating": 5,
+      "text": "Refonte de la salle de bain après achat, dans le 10e : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et les réserves ont été levées en une semaine. Bémol : la livraison du plan de travail a décalé la fin de 4 semaines. Globalement satisfaits.",
+      "publishedAt": "2023-07-26T09:21:11.815Z",
+      "language": "fr",
+      "author": {
+        "id": "a-20",
+        "name": "Julien Girard",
+        "reviewCount": 74,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-21",
+      "rating": 5,
+      "text": "Nous avons confié la réfection de l'entrée et le couloir à cette équipe : les réserves ont été levées en une semaine, et la menuiserie a été impeccable, rien à redire. Globalement satisfaits.",
+      "publishedAt": "2023-09-02T13:07:20.888Z",
+      "language": "fr",
+      "author": {
+        "id": "a-21",
+        "name": "Chloé L.",
+        "reviewCount": 17,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-22",
+      "rating": 5,
+      "text": "Chantier de 3 mois pour un 49 m² à rénover entièrement : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et les réserves ont été levées en une semaine. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2023-09-06T09:53:45.724Z",
+      "language": "fr",
+      "author": {
+        "id": "a-22",
+        "name": "Chloé Dubois",
+        "reviewCount": 14,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-23",
+      "rating": 3,
+      "text": "",
+      "publishedAt": "2023-09-10T19:28:12.287Z",
+      "language": "fr",
+      "author": {
+        "id": "a-23",
+        "name": "Maxime Lefèvre",
+        "reviewCount": 10,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-24",
+      "rating": 1,
+      "text": "Le chantier a été abandonné trois semaines sans prévenir. Il a fallu passer par un courrier recommandé pour obtenir une reprise.",
+      "publishedAt": "2023-09-27T07:03:01.370Z",
+      "language": "fr",
+      "author": {
+        "id": "a-24",
+        "name": "Sophie Dubois",
+        "reviewCount": 51,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-25",
+      "rating": 5,
+      "text": "Nous avons confié la réfection de la cuisine à cette équipe : le conducteur de travaux répondait dans la journée, et les plans 3D nous ont vraiment aidés à trancher sur les volumes. Bémol : il a fallu relancer deux fois pour les finitions de peinture. Globalement satisfaits.",
+      "publishedAt": "2023-10-01T04:24:15.025Z",
+      "language": "fr",
+      "author": {
+        "id": "a-25",
+        "name": "Olivier N.",
+        "reviewCount": 20,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-26",
+      "rating": 5,
+      "text": "Nous avons confié la réfection de deux chambres à cette équipe : les réserves ont été levées en une semaine, et la électricité a été impeccable, rien à redire. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2023-10-01T17:15:24.743Z",
+      "language": "fr",
+      "author": {
+        "id": "a-26",
+        "name": "Antoine Lefèvre",
+        "reviewCount": 27,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-27",
+      "rating": 3,
+      "text": "Projet de 8 mois sur un appartement du 7e : le conducteur de travaux répondait dans la journée. Bémol : la plomberie a dû être reprise une fois. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2023-10-02T18:44:25.849Z",
+      "language": "fr",
+      "author": {
+        "id": "a-27",
+        "name": "Maxime Lefèvre",
+        "reviewCount": 33,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "org-28",
+      "rating": 5,
+      "text": "Nous cherchions un interlocuteur unique pour le séjour : le conducteur de travaux répondait dans la journée, et les plans 3D nous ont vraiment aidés à trancher sur les volumes. Bémol : il a fallu relancer deux fois pour les finitions de pose du carrelage. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2023-10-19T06:01:18.093Z",
+      "language": "fr",
+      "author": {
+        "id": "a-28",
+        "name": "Hélène Roussel",
+        "reviewCount": 67,
+        "hasPhoto": false,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "org-29",
+      "rating": 5,
+      "text": "",
+      "publishedAt": "2023-11-02T21:25:08.140Z",
+      "language": "fr",
+      "author": {
+        "id": "a-29",
+        "name": "Sarah Dubois",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-30",
+      "rating": 4,
+      "text": "",
+      "publishedAt": "2023-12-02T23:09:24.358Z",
+      "language": "fr",
+      "author": {
+        "id": "a-30",
+        "name": "Julien N.",
+        "reviewCount": 57,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "org-31",
+      "rating": 1,
+      "text": "",
+      "publishedAt": "2023-12-05T02:54:51.320Z",
+      "language": "fr",
+      "author": {
+        "id": "a-31",
+        "name": "Thomas L.",
+        "reviewCount": 31,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-32",
+      "rating": 1,
+      "text": "Trois mois de retard, des finitions à reprendre, et un solde réclamé avant la levée des réserves. Je ne recommande pas en l'état.",
+      "publishedAt": "2023-12-28T12:32:34.434Z",
+      "language": "fr",
+      "author": {
+        "id": "a-32",
+        "name": "Hélène C.",
+        "reviewCount": 61,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "org-33",
+      "rating": 1,
+      "text": "",
+      "publishedAt": "2024-01-04T08:37:46.155Z",
+      "language": "fr",
+      "author": {
+        "id": "a-33",
+        "name": "Nadia Girard",
+        "reviewCount": 19,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-34",
+      "rating": 1,
+      "text": "Beaucoup de promesses à la signature, beaucoup moins de réactivité une fois l'acompte versé. Dossier toujours en cours de résolution.",
+      "publishedAt": "2024-02-11T10:07:44.715Z",
+      "language": "fr",
+      "author": {
+        "id": "a-34",
+        "name": "Léa Petit",
+        "reviewCount": 18,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-35",
+      "rating": 2,
+      "text": "",
+      "publishedAt": "2024-02-14T06:11:41.340Z",
+      "language": "fr",
+      "author": {
+        "id": "a-35",
+        "name": "Inès M.",
+        "reviewCount": 3,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-36",
+      "rating": 5,
+      "text": "Chantier de 3 mois pour un 98 m² à rénover entièrement : la menuiserie a été impeccable, rien à redire, et le conducteur de travaux répondait dans la journée. Bémol : le planning initial était optimiste de 3 semaines. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2024-02-15T16:21:45.567Z",
+      "language": "fr",
+      "author": {
+        "id": "a-36",
+        "name": "Camille Marchand",
+        "reviewCount": 80,
+        "hasPhoto": false,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "org-37",
+      "rating": 4,
+      "text": "",
+      "publishedAt": "2024-02-17T19:20:10.524Z",
+      "language": "fr",
+      "author": {
+        "id": "a-37",
+        "name": "Léa Petit",
+        "reviewCount": 20,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "pack-0-4",
+      "rating": 5,
+      "text": "Excellente agence d'architecture, rénovation appartement Paris parfaite. Très professionnel, je recommande !",
+      "publishedAt": "2024-03-11T20:24:42.187Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-0-4",
+        "name": "Chloé Bertrand",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-0-6",
+      "rating": 5,
+      "text": "Nickel ! Rénovation appartement Paris réussie, entreprise sérieuse et très professionnelle. À recommander !",
+      "publishedAt": "2024-03-11T20:37:37.664Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-0-6",
+        "name": "Nicolas Petit",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-0-1",
+      "rating": 5,
+      "text": "Excellente agence d'architecture, rénovation appartement Paris parfaite. Très professionnel, je recommande !",
+      "publishedAt": "2024-03-12T03:29:31.511Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-0-1",
+        "name": "Pierre Petit",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-0-2",
+      "rating": 5,
+      "text": "Super rénovation de mon appartement à Paris, travaux au top et équipe très pro. Je recommande vivement cette entreprise !",
+      "publishedAt": "2024-03-12T19:10:41.525Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-0-2",
+        "name": "Manon Lefèvre",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5"
+        ]
+      }
+    },
+    {
+      "id": "pack-0-10",
+      "rating": 5,
+      "text": "Très professionnel, travaux de rénovation impeccables à Paris. Rien à dire, je recommande vivement !",
+      "publishedAt": "2024-03-13T02:04:28.604Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-0-10",
+        "name": "Pierre B.",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5"
+        ]
+      }
+    },
+    {
+      "id": "pack-0-3",
+      "rating": 5,
+      "text": "Nickel ! Rénovation appartement Paris réussie, entreprise sérieuse et très professionnelle. À recommander !",
+      "publishedAt": "2024-03-13T18:36:09.606Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-0-3",
+        "name": "Camille B.",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-0-11",
+      "rating": 5,
+      "text": "Excellente agence d'architecture, rénovation appartement Paris parfaite. Très professionnel, je recommande !",
+      "publishedAt": "2024-03-13T23:40:53.985Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-0-11",
+        "name": "Hélène Roussel",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5"
+        ]
+      }
+    },
+    {
+      "id": "pack-0-0",
+      "rating": 5,
+      "text": "Nickel ! Rénovation appartement Paris réussie, entreprise sérieuse et très professionnelle. À recommander !",
+      "publishedAt": "2024-03-14T02:06:29.442Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-0-0",
+        "name": "Maxime C.",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-4",
+          "p-farm-5"
+        ]
+      }
+    },
+    {
+      "id": "pack-0-7",
+      "rating": 5,
+      "text": "Excellente agence d'architecture, rénovation appartement Paris parfaite. Très professionnel, je recommande !",
+      "publishedAt": "2024-03-14T13:13:57.673Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-0-7",
+        "name": "Paul Bertrand",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-0-8",
+      "rating": 5,
+      "text": "Super rénovation de mon appartement à Paris, travaux au top et équipe très pro. Je recommande vivement cette entreprise !",
+      "publishedAt": "2024-03-14T16:41:56.017Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-0-8",
+        "name": "Léa Moreau",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-0-12",
+      "rating": 5,
+      "text": "Super entreprise de rénovation à Paris ! Travaux impeccables, équipe très professionnelle. Je recommande vivement !",
+      "publishedAt": "2024-03-14T17:05:51.001Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-0-12",
+        "name": "Claire Dubois",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-0-5",
+      "rating": 5,
+      "text": "Nickel ! Rénovation appartement Paris réussie, entreprise sérieuse et très professionnelle. À recommander !",
+      "publishedAt": "2024-03-15T00:26:33.524Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-0-5",
+        "name": "Paul Bertrand",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-0-9",
+      "rating": 5,
+      "text": "Parfait du début à la fin, une équipe à l'écoute et un travail soigné. Que demander de plus ? Je recommande !",
+      "publishedAt": "2024-03-15T10:47:45.283Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-0-9",
+        "name": "Manon D.",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "org-38",
+      "rating": 5,
+      "text": "Chantier de 5 mois pour un 83 m² à rénover entièrement : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et les réserves ont été levées en une semaine. Bémol : quelques suppléments non anticipés sur l'électricité. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2024-03-30T08:43:58.706Z",
+      "language": "fr",
+      "author": {
+        "id": "a-38",
+        "name": "Camille Roussel",
+        "reviewCount": 6,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-39",
+      "rating": 5,
+      "text": "",
+      "publishedAt": "2024-04-14T20:46:42.014Z",
+      "language": "fr",
+      "author": {
+        "id": "a-39",
+        "name": "Damien Marchand",
+        "reviewCount": 6,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-40",
+      "rating": 5,
+      "text": "Rénovation complète de notre 60 m² dans le 12e : le devis détaillait chaque poste, sans zone grise, et la coordination entre les corps de métier était réelle. Globalement satisfaits.",
+      "publishedAt": "2024-04-15T03:07:45.756Z",
+      "language": "fr",
+      "author": {
+        "id": "a-40",
+        "name": "Hélène Girard",
+        "reviewCount": 86,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-41",
+      "rating": 3,
+      "text": "Refonte de la salle de bain après achat, dans le 4e : la menuiserie a été impeccable, rien à redire. Bémol : la communication est perfectible en milieu de chantier. Nous referions appel à eux.",
+      "publishedAt": "2024-05-01T04:20:58.923Z",
+      "language": "fr",
+      "author": {
+        "id": "a-41",
+        "name": "Julien Girard",
+        "reviewCount": 27,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "org-42",
+      "rating": 1,
+      "text": "Le chantier a été abandonné trois semaines sans prévenir. Il a fallu passer par un courrier recommandé pour obtenir une reprise.",
+      "publishedAt": "2024-05-12T07:51:54.316Z",
+      "language": "fr",
+      "author": {
+        "id": "a-42",
+        "name": "Damien Moreau",
+        "reviewCount": 8,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-43",
+      "rating": 1,
+      "text": "Beaucoup de promesses à la signature, beaucoup moins de réactivité une fois l'acompte versé. Dossier toujours en cours de résolution.",
+      "publishedAt": "2024-05-24T12:11:58.108Z",
+      "language": "fr",
+      "author": {
+        "id": "a-43",
+        "name": "Sarah Lefèvre",
+        "reviewCount": 35,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-44",
+      "rating": 4,
+      "text": "Projet de 5 mois sur un appartement du 15e : les réserves ont été levées en une semaine, et les plans 3D nous ont vraiment aidés à trancher sur les volumes. Bémol : le planning initial était optimiste de 6 semaines. Globalement satisfaits.",
+      "publishedAt": "2024-05-27T22:14:31.611Z",
+      "language": "fr",
+      "author": {
+        "id": "a-44",
+        "name": "Manon Roussel",
+        "reviewCount": 67,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-45",
+      "rating": 4,
+      "text": "Chantier de 6 mois pour un 110 m² à rénover entièrement : le chantier était nettoyé tous les soirs, les voisins ont apprécié, et le devis détaillait chaque poste, sans zone grise. Bémol : la communication est perfectible en milieu de chantier. Bon rapport qualité-prix pour Paris.",
+      "publishedAt": "2024-06-09T15:06:21.250Z",
+      "language": "fr",
+      "author": {
+        "id": "a-45",
+        "name": "Pierre Petit",
+        "reviewCount": 79,
+        "hasPhoto": true,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "org-46",
+      "rating": 5,
+      "text": "Rénovation complète de notre 75 m² dans le 18e : le chantier était nettoyé tous les soirs, les voisins ont apprécié, et les plans 3D nous ont vraiment aidés à trancher sur les volumes. Bémol : il a fallu relancer deux fois pour les finitions de plomberie. Globalement satisfaits.",
+      "publishedAt": "2024-06-13T03:00:28.384Z",
+      "language": "fr",
+      "author": {
+        "id": "a-46",
+        "name": "Manon Lefèvre",
+        "reviewCount": 46,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-47",
+      "rating": 2,
+      "text": "Travail de qualité sur la partie menuiserie, beaucoup moins sur la peinture qu'il a fallu reprendre. Le SAV a fini par intervenir.",
+      "publishedAt": "2024-06-24T19:00:47.458Z",
+      "language": "fr",
+      "author": {
+        "id": "a-47",
+        "name": "Sophie Petit",
+        "reviewCount": 14,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-48",
+      "rating": 3,
+      "text": "Rénovation complète de notre 110 m² dans le 16e : le devis détaillait chaque poste, sans zone grise. Bémol : la électricité a dû être reprise une fois. Nous referions appel à eux.",
+      "publishedAt": "2024-06-26T07:24:27.532Z",
+      "language": "fr",
+      "author": {
+        "id": "a-48",
+        "name": "Claire Roussel",
+        "reviewCount": 14,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-49",
+      "rating": 5,
+      "text": "",
+      "publishedAt": "2024-06-29T14:58:40.169Z",
+      "language": "fr",
+      "author": {
+        "id": "a-49",
+        "name": "Inès Moreau",
+        "reviewCount": 37,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-50",
+      "rating": 5,
+      "text": "Projet de 8 mois sur un appartement du 11e : les réserves ont été levées en une semaine, et la peinture a été impeccable, rien à redire. Bémol : la livraison du plan de travail a décalé la fin de 8 semaines. Nous referions appel à eux.",
+      "publishedAt": "2024-07-07T13:37:03.413Z",
+      "language": "fr",
+      "author": {
+        "id": "a-50",
+        "name": "Hélène Lefèvre",
+        "reviewCount": 10,
+        "hasPhoto": false,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-51",
+      "rating": 5,
+      "text": "Chantier de 4 mois pour un 75 m² à rénover entièrement : les réserves ont été levées en une semaine, et le devis détaillait chaque poste, sans zone grise. Prestation conforme à ce qui était vendu.",
+      "publishedAt": "2024-07-11T23:45:47.532Z",
+      "language": "fr",
+      "author": {
+        "id": "a-51",
+        "name": "Vincent Petit",
+        "reviewCount": 48,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-52",
+      "rating": 5,
+      "text": "Refonte de la salle de bain après achat, dans le 11e : le conducteur de travaux répondait dans la journée, et le budget a été tenu à 2% près, ce qui est rare. Bémol : il a fallu relancer deux fois pour les finitions de peinture. Globalement satisfaits.",
+      "publishedAt": "2024-08-02T07:53:02.859Z",
+      "language": "fr",
+      "author": {
+        "id": "a-52",
+        "name": "Paul D.",
+        "reviewCount": 2,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-53",
+      "rating": 5,
+      "text": "Nous avons confié la réfection de la cuisine à cette équipe : les plans 3D nous ont vraiment aidés à trancher sur les volumes, et le devis détaillait chaque poste, sans zone grise. Bémol : le planning initial était optimiste de 2 semaines. Nous referions appel à eux.",
+      "publishedAt": "2024-08-24T22:00:06.745Z",
+      "language": "fr",
+      "author": {
+        "id": "a-53",
+        "name": "Karim Dubois",
+        "reviewCount": 73,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-54",
+      "rating": 5,
+      "text": "",
+      "publishedAt": "2024-09-08T01:54:49.483Z",
+      "language": "fr",
+      "author": {
+        "id": "a-54",
+        "name": "Thomas Dubois",
+        "reviewCount": 86,
+        "hasPhoto": false,
+        "isLocalGuide": true
+      }
+    },
+    {
+      "id": "org-55",
+      "rating": 5,
+      "text": "",
+      "publishedAt": "2024-10-04T01:12:11.383Z",
+      "language": "fr",
+      "author": {
+        "id": "a-55",
+        "name": "Olivier Lefèvre",
+        "reviewCount": 31,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-56",
+      "rating": 5,
+      "text": "Refonte de la cuisine après achat, dans le 7e : le devis détaillait chaque poste, sans zone grise, et le budget a été tenu à 3% près, ce qui est rare. Globalement satisfaits.",
+      "publishedAt": "2024-10-27T01:05:40.906Z",
+      "language": "fr",
+      "author": {
+        "id": "a-56",
+        "name": "Chloé Girard",
+        "reviewCount": 14,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "org-57",
+      "rating": 5,
+      "text": "Projet de 5 mois sur un appartement du 16e : le conducteur de travaux répondait dans la journée, et la menuiserie a été impeccable, rien à redire. Bémol : la communication est perfectible en milieu de chantier. À voir dans la durée mais bon bilan.",
+      "publishedAt": "2024-11-09T07:28:57.139Z",
+      "language": "fr",
+      "author": {
+        "id": "a-57",
+        "name": "Léa Bertrand",
+        "reviewCount": 16,
+        "hasPhoto": true,
+        "isLocalGuide": false
+      }
+    },
+    {
+      "id": "pack-1-6",
+      "rating": 5,
+      "text": "Super rénovation de mon appartement à Paris, travaux au top et équipe très pro. Je recommande vivement cette entreprise !",
+      "publishedAt": "2025-01-20T15:45:39.541Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-1-6",
+        "name": "Pierre Petit",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-1-5",
+      "rating": 5,
+      "text": "Nickel ! Rénovation appartement Paris réussie, entreprise sérieuse et très professionnelle. À recommander !",
+      "publishedAt": "2025-01-20T19:36:26.752Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-1-5",
+        "name": "Paul Petit",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-1-12",
+      "rating": 5,
+      "text": "Excellente agence d'architecture, rénovation appartement Paris parfaite. Très professionnel, je recommande !",
+      "publishedAt": "2025-01-21T14:41:34.224Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-1-12",
+        "name": "Émilie Fontaine",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-1-2",
+      "rating": 5,
+      "text": "Super rénovation de mon appartement à Paris, travaux au top et équipe très pro. Je recommande vivement cette entreprise !",
+      "publishedAt": "2025-01-21T17:43:09.468Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-1-2",
+        "name": "Alice L.",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-3",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-1-8",
+      "rating": 5,
+      "text": "Super entreprise de rénovation à Paris ! Travaux impeccables, équipe très professionnelle. Je recommande vivement !",
+      "publishedAt": "2025-01-21T19:18:45.613Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-1-8",
+        "name": "Inès Moreau",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-2",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-1-0",
+      "rating": 5,
+      "text": "Parfait du début à la fin, une équipe à l'écoute et un travail soigné. Que demander de plus ? Je recommande !",
+      "publishedAt": "2025-01-21T19:21:50.935Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-1-0",
+        "name": "Maxime Dubois",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-2",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-1-3",
+      "rating": 5,
+      "text": "Très professionnel, travaux de rénovation impeccables à Paris. Rien à dire, je recommande vivement !",
+      "publishedAt": "2025-01-22T06:04:24.340Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-1-3",
+        "name": "Nadia B.",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-1-11",
+      "rating": 5,
+      "text": "Super rénovation de mon appartement à Paris, travaux au top et équipe très pro. Je recommande vivement cette entreprise !",
+      "publishedAt": "2025-01-22T08:53:26.462Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-1-11",
+        "name": "Manon D.",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5"
+        ]
+      }
+    },
+    {
+      "id": "pack-1-7",
+      "rating": 5,
+      "text": "Super entreprise de rénovation à Paris ! Travaux impeccables, équipe très professionnelle. Je recommande vivement !",
+      "publishedAt": "2025-01-22T19:38:27.639Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-1-7",
+        "name": "Chloé Marchand",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-1-4",
+      "rating": 5,
+      "text": "Nickel ! Rénovation appartement Paris réussie, entreprise sérieuse et très professionnelle. À recommander !",
+      "publishedAt": "2025-01-22T19:46:25.483Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-1-4",
+        "name": "Hélène Moreau",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-1-1",
+      "rating": 5,
+      "text": "Parfait du début à la fin, une équipe à l'écoute et un travail soigné. Que demander de plus ? Je recommande !",
+      "publishedAt": "2025-01-22T22:56:27.512Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-1-1",
+        "name": "Sophie Dubois",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-5"
+        ]
+      }
+    },
+    {
+      "id": "pack-1-9",
+      "rating": 5,
+      "text": "Super rénovation de mon appartement à Paris, travaux au top et équipe très pro. Je recommande vivement cette entreprise !",
+      "publishedAt": "2025-01-23T10:52:09.334Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-1-9",
+        "name": "Nicolas Bertrand",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-4",
+          "p-farm-5"
+        ]
+      }
+    },
+    {
+      "id": "pack-1-10",
+      "rating": 5,
+      "text": "Super rénovation de mon appartement à Paris, travaux au top et équipe très pro. Je recommande vivement cette entreprise !",
+      "publishedAt": "2025-01-23T13:38:33.673Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-1-10",
+        "name": "Vincent Dubois",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-2-8",
+      "rating": 5,
+      "text": "Super entreprise de rénovation à Paris ! Travaux impeccables, équipe très professionnelle. Je recommande vivement !",
+      "publishedAt": "2026-05-04T19:20:09.024Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-2-8",
+        "name": "Émilie Moreau",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-2-10",
+      "rating": 5,
+      "text": "Excellente agence d'architecture, rénovation appartement Paris parfaite. Très professionnel, je recommande !",
+      "publishedAt": "2026-05-05T10:28:13.426Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-2-10",
+        "name": "Damien Lefèvre",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-2-11",
+      "rating": 5,
+      "text": "Super rénovation de mon appartement à Paris, travaux au top et équipe très pro. Je recommande vivement cette entreprise !",
+      "publishedAt": "2026-05-05T22:55:53.269Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-2-11",
+        "name": "Nadia Moreau",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-2-12",
+      "rating": 5,
+      "text": "Nickel ! Rénovation appartement Paris réussie, entreprise sérieuse et très professionnelle. À recommander !",
+      "publishedAt": "2026-05-05T23:36:31.418Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-2-12",
+        "name": "Manon Fontaine",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-2-6",
+      "rating": 5,
+      "text": "Parfait du début à la fin, une équipe à l'écoute et un travail soigné. Que demander de plus ? Je recommande !",
+      "publishedAt": "2026-05-06T00:28:13.300Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-2-6",
+        "name": "Maxime L.",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-2-2",
+      "rating": 5,
+      "text": "Super rénovation de mon appartement à Paris, travaux au top et équipe très pro. Je recommande vivement cette entreprise !",
+      "publishedAt": "2026-05-06T04:50:22.787Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-2-2",
+        "name": "Claire Girard",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-2",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-2-4",
+      "rating": 5,
+      "text": "Très professionnel, travaux de rénovation impeccables à Paris. Rien à dire, je recommande vivement !",
+      "publishedAt": "2026-05-06T05:21:58.247Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-2-4",
+        "name": "Camille Bertrand",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-2-1",
+      "rating": 5,
+      "text": "Super entreprise de rénovation à Paris ! Travaux impeccables, équipe très professionnelle. Je recommande vivement !",
+      "publishedAt": "2026-05-06T18:32:30.390Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-2-1",
+        "name": "Maxime Moreau",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-2-0",
+      "rating": 5,
+      "text": "Très professionnel, travaux de rénovation impeccables à Paris. Rien à dire, je recommande vivement !",
+      "publishedAt": "2026-05-07T03:14:38.721Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-2-0",
+        "name": "Sarah Moreau",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-2-7",
+      "rating": 5,
+      "text": "Parfait du début à la fin, une équipe à l'écoute et un travail soigné. Que demander de plus ? Je recommande !",
+      "publishedAt": "2026-05-07T04:29:49.832Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-2-7",
+        "name": "Damien C.",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-2-3",
+      "rating": 5,
+      "text": "Parfait du début à la fin, une équipe à l'écoute et un travail soigné. Que demander de plus ? Je recommande !",
+      "publishedAt": "2026-05-07T06:03:52.849Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-2-3",
+        "name": "Olivier Lefèvre",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5",
+          "p-farm-6"
+        ]
+      }
+    },
+    {
+      "id": "pack-2-9",
+      "rating": 5,
+      "text": "Super entreprise de rénovation à Paris ! Travaux impeccables, équipe très professionnelle. Je recommande vivement !",
+      "publishedAt": "2026-05-07T17:18:41.784Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-2-9",
+        "name": "Vincent Bertrand",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5"
+        ]
+      }
+    },
+    {
+      "id": "pack-2-5",
+      "rating": 5,
+      "text": "Parfait du début à la fin, une équipe à l'écoute et un travail soigné. Que demander de plus ? Je recommande !",
+      "publishedAt": "2026-05-08T01:57:15.878Z",
+      "language": "fr",
+      "author": {
+        "id": "a-thin-2-5",
+        "name": "Hélène Fontaine",
+        "reviewCount": 1,
+        "hasPhoto": false,
+        "isLocalGuide": false,
+        "alsoReviewed": [
+          "p-farm-1",
+          "p-farm-2",
+          "p-farm-3",
+          "p-farm-4",
+          "p-farm-5"
+        ]
+      }
+    }
+  ]
+}

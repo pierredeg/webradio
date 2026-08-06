@@ -1,0 +1,199 @@
+/* Design tokens. Light and dark are both selected, not flipped. */
+:root {
+  color-scheme: light;
+  --surface-1: #fcfcfb;
+  --page: #f9f9f7;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.1);
+
+  --series-1: #2a78d6;
+  --series-1-wash: rgba(42, 120, 214, 0.12);
+
+  /* Status palette — fixed, never themed, always shipped with a label. */
+  --status-good: #0ca30c;
+  --status-warning: #fab219;
+  --status-serious: #ec835a;
+  --status-critical: #d03b3b;
+
+  --radius: 10px;
+  --font: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme='light'])) {
+    color-scheme: dark;
+    --surface-1: #1a1a19;
+    --page: #0d0d0d;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --border: rgba(255, 255, 255, 0.1);
+    --series-1: #3987e5;
+    --series-1-wash: rgba(57, 135, 229, 0.18);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --surface-1: #1a1a19;
+  --page: #0d0d0d;
+  --text-primary: #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted: #898781;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --border: rgba(255, 255, 255, 0.1);
+  --series-1: #3987e5;
+  --series-1-wash: rgba(57, 135, 229, 0.18);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--page);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.app { max-width: 1080px; margin: 0 auto; padding: 32px 20px 80px; }
+
+header h1 { font-size: 22px; margin: 0 0 4px; font-weight: 650; }
+header p { margin: 0; color: var(--text-secondary); font-size: 14px; }
+
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-top: 20px;
+}
+
+.card h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+  font-weight: 600;
+}
+
+/* --- data loader --------------------------------------------------------- */
+.loader { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.loader select,
+.loader button,
+.loader label.file {
+  font: inherit;
+  font-size: 14px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.loader input[type='file'] { display: none; }
+.error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(208, 59, 59, 0.12);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+/* --- hero ---------------------------------------------------------------- */
+.hero { display: flex; gap: 32px; flex-wrap: wrap; align-items: flex-start; }
+.hero-figure { font-size: 60px; font-weight: 660; line-height: 1; letter-spacing: -0.02em; }
+.hero-meta { flex: 1; min-width: 260px; }
+.hero-range { color: var(--text-secondary); font-size: 14px; margin-top: 8px; }
+
+.verdict { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 560; }
+.verdict-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.verdict-good { background: var(--status-good); }
+.verdict-warning { background: var(--status-warning); }
+.verdict-serious { background: var(--status-serious); }
+.verdict-critical { background: var(--status-critical); }
+.verdict-unknown { background: var(--text-muted); }
+
+.caveat {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  border-left: 2px solid var(--axis);
+  padding-left: 12px;
+}
+
+.stat-row { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 18px; }
+.stat { min-width: 110px; }
+.stat-label { font-size: 12px; color: var(--text-muted); }
+.stat-value { font-size: 20px; font-weight: 600; }
+
+/* --- charts -------------------------------------------------------------- */
+.chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.chart-scroll { overflow-x: auto; }
+.legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-swatch { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+
+.axis-label { font-size: 11px; fill: var(--text-muted); }
+.value-label { font-size: 11px; fill: var(--text-secondary); }
+
+.tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--text-primary);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  z-index: 20;
+  max-width: 260px;
+}
+.tooltip strong { display: block; margin-bottom: 2px; }
+
+.toggle {
+  font: inherit;
+  font-size: 12px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+th { color: var(--text-muted); font-weight: 600; font-size: 12px; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* --- review list --------------------------------------------------------- */
+.review { padding: 14px 0; border-bottom: 1px solid var(--grid); }
+.review:last-child { border-bottom: none; }
+.review-head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.review-score { font-variant-numeric: tabular-nums; font-weight: 620; min-width: 52px; }
+.review-meta { color: var(--text-muted); font-size: 13px; }
+.review-text { margin: 6px 0 8px; font-size: 14px; color: var(--text-secondary); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  font-size: 12px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--series-1-wash);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+.chip-weight { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+footer { margin-top: 32px; font-size: 12px; color: var(--text-muted); }
+footer p { margin: 6px 0; }

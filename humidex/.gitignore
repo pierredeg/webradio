@@ -1,0 +1,5 @@
+# Données téléchargées et sorties de la chaîne
+cache/
+out/
+tests/fixture_cache/
+__pycache__/

@@ -1,0 +1,1429 @@
+<!doctype html>
+<html lang="fr" prefix="og: https://ogp.me/ns#">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Humidex — Sainte-Maxime (Var)</title>
+<meta name="description" content="Série historique du humidex reconstituée à partir des données horaires Météo-France, pour la région de Sainte-Maxime (Var).">
+<style>
+/* ------------------------------------------------------------------ thème */
+:root{
+  color-scheme: light;
+  --paper:#f4f1ea;      /* fond de page */
+  --surface:#faf8f3;    /* surface des blocs et des graphiques */
+  --ink:#191712;
+  --ink-2:#4b463c;
+  --muted:#857e70;
+  --rule:#ded8ca;
+  --grid:#e7e1d4;
+  --axis:#c9c2b1;
+  --accent:#2a78d6;     /* série 1 */
+  --warm:#eb6834;       /* série 2 */
+  --trend:#4b463c;
+  --ring:rgba(25,23,18,.10);
+  /* paliers (rampe ordinale ambre, validée) */
+  --t1:#e5a05a; --t2:#d97b2c; --t3:#b55916; --t4:#82380c;
+  /* rampe séquentielle de la carte de chaleur */
+  --h1:#fdf1e2; --h2:#f8d9b4; --h3:#f2be86; --h4:#e8a25a;
+  --h5:#d97b2c; --h6:#b05615; --h7:#7a340b;
+  --void:#d9d5c8;       /* cellule sans donnée — gris franc, hors rampe ambre */
+  --shadow:0 1px 2px rgba(25,23,18,.04);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --paper:#101013; --surface:#17171b; --ink:#f4f2ec; --ink-2:#c3bfb4;
+    --muted:#8e8779; --rule:#2c2c31; --grid:#26262b; --axis:#3a3a40;
+    --accent:#3987e5; --warm:#d95926; --trend:#c3bfb4;
+    --ring:rgba(255,255,255,.10);
+    --t1:#f7d0a0; --t2:#eda65c; --t3:#dd7f2f; --t4:#bc5f1b;
+    --h1:#2a2118; --h2:#4a3316; --h3:#6f4715; --h4:#9a5e18;
+    --h5:#c47a25; --h6:#e29a44; --h7:#f4bd78;
+    --void:#33333a;
+    --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#101013; --surface:#17171b; --ink:#f4f2ec; --ink-2:#c3bfb4;
+  --muted:#8e8779; --rule:#2c2c31; --grid:#26262b; --axis:#3a3a40;
+  --accent:#3987e5; --warm:#d95926; --trend:#c3bfb4;
+  --ring:rgba(255,255,255,.10);
+  --t1:#f7d0a0; --t2:#eda65c; --t3:#dd7f2f; --t4:#bc5f1b;
+  --h1:#2a2118; --h2:#4a3316; --h3:#6f4715; --h4:#9a5e18;
+  --h5:#c47a25; --h6:#e29a44; --h7:#f4bd78;
+  --void:#1e1e22;
+  --shadow:none;
+}
+
+/* --------------------------------------------------------------- typo/base */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
+  font-size:17px; line-height:1.62; text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+}
+/* Les chiffres, l'appareil de lecture et les graphiques restent en linéale :
+   la sérif porte le texte courant, jamais les données. */
+.ui,.num,table,figcaption,.legend,.tt,.tag,.kpi-value,.kpi-unit,button,select,th,td,
+.axis,.scale,.note-inline{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+.num,th,td,.axis{font-variant-numeric:tabular-nums}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+.prose{max-width:64ch}
+h1,h2,h3{line-height:1.18;letter-spacing:-.012em;font-weight:600;margin:0}
+h1{font-size:clamp(2.1rem,1.3rem + 3.4vw,3.6rem);letter-spacing:-.022em}
+h2{font-size:clamp(1.45rem,1.1rem + 1.4vw,2rem);margin-bottom:.35em}
+h3{font-size:1.12rem;font-weight:600}
+p{margin:0 0 1.05em}
+a{color:inherit;text-underline-offset:.18em;text-decoration-thickness:.06em}
+strong{font-weight:600}
+.lede{font-size:1.14rem;color:var(--ink-2)}
+.small{font-size:.9rem}
+.muted{color:var(--muted)}
+
+/* ------------------------------------------------------------------ entête */
+header.masthead{border-bottom:1px solid var(--rule);padding:clamp(40px,7vw,86px) 0 clamp(26px,4vw,42px)}
+.eyebrow{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  margin:0 0 1.1em;font-weight:600;
+}
+.masthead .lede{margin-top:1.1em;max-width:60ch}
+.byline{
+  display:flex;flex-wrap:wrap;gap:.5em 1.4em;align-items:baseline;
+  margin-top:1.6em;font-size:.86rem;color:var(--muted);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.byline b{color:var(--ink-2);font-weight:600}
+
+.banner{
+  margin:0 0 1.8em;padding:.85em 1.1em;border-left:3px solid var(--warm);
+  background:color-mix(in srgb,var(--warm) 8%,var(--surface));
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.9rem;line-height:1.5;
+}
+.banner b{display:block;margin-bottom:.2em}
+
+/* --------------------------------------------------------------- indicateurs */
+.kpis{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);
+  margin:clamp(34px,5vw,54px) 0;box-shadow:var(--shadow);
+}
+.kpi{background:var(--surface);padding:1.5em 1.4em 1.4em}
+.kpi-label{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.74rem;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600;
+  margin-bottom:.7em;
+}
+.kpi-value{font-size:2.5rem;line-height:1;font-weight:600;letter-spacing:-.02em}
+.kpi-unit{font-size:.95rem;color:var(--ink-2);font-weight:500;margin-left:.22em}
+.kpi-note{font-size:.86rem;color:var(--ink-2);margin-top:.75em;line-height:1.45}
+.kpi-note .tag{
+  display:inline-block;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid var(--ring);border-radius:2px;padding:.12em .45em;margin-right:.4em;
+  color:var(--muted);font-weight:600;
+}
+
+/* ------------------------------------------------------------------ sections */
+section{padding:clamp(32px,5vw,58px) 0;border-top:1px solid var(--rule)}
+.sec-head{display:flex;gap:1.1em;align-items:baseline;margin-bottom:1.4em}
+.sec-num{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.78rem;font-weight:700;
+  color:var(--warm);letter-spacing:.08em;padding-top:.45em;flex:none;
+}
+
+/* ------------------------------------------------------------------ figures */
+figure{margin:1.9em 0 0;background:var(--surface);border:1px solid var(--rule);box-shadow:var(--shadow)}
+.fig-head{padding:1.15em 1.25em .2em}
+.fig-head h3{margin-bottom:.3em}
+.fig-head p{font-size:.92rem;color:var(--ink-2);margin:0 0 .2em;max-width:70ch}
+.chart{position:relative;padding:.6em 1.25em 1.15em}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.legend{
+  display:flex;flex-wrap:wrap;gap:.45em 1.25em;align-items:center;
+  padding:0 1.25em 1.1em;font-size:.84rem;color:var(--ink-2);
+}
+.legend span{display:inline-flex;align-items:center;gap:.45em}
+.swatch{width:22px;height:3px;border-radius:2px;flex:none}
+.swatch.box{width:12px;height:12px;border-radius:2px}
+.swatch.dash{background:none;border-top:2px dashed var(--trend);height:0}
+
+.toolbar{
+  display:flex;flex-wrap:wrap;gap:.5em;padding:0 1.25em 1em;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.toolbar button{
+  font:inherit;font-size:.82rem;padding:.34em .8em;cursor:pointer;
+  background:transparent;color:var(--ink-2);
+  border:1px solid var(--rule);border-radius:2px;
+}
+.toolbar button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.toolbar button:hover:not([aria-pressed="true"]){border-color:var(--muted)}
+
+/* L'infobulle est en position absolue : sans plafond de largeur ni remise à zéro
+   de sa position quand elle est masquée, elle élargirait le document et
+   provoquerait un défilement horizontal de la page sur petit écran. */
+.tt{
+  position:absolute;left:0;top:0;pointer-events:none;opacity:0;transition:opacity .1s;
+  background:var(--ink);color:var(--paper);padding:.5em .65em;border-radius:3px;
+  font-size:.8rem;line-height:1.45;z-index:5;
+  max-width:min(300px,calc(100% - 8px));
+  box-shadow:0 2px 10px rgba(0,0,0,.18);
+}
+.tt .row em{white-space:nowrap}
+.tt b{display:block;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;opacity:.72;margin-bottom:.25em;font-weight:600}
+.tt i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:.45em;vertical-align:baseline}
+.tt .row{display:flex;justify-content:space-between;gap:1.2em}
+.tt .row em{font-style:normal;font-variant-numeric:tabular-nums}
+
+details.data{border-top:1px solid var(--rule)}
+details.data > summary{
+  cursor:pointer;padding:.7em 1.25em;font-size:.84rem;color:var(--ink-2);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;list-style:none;
+}
+details.data > summary::-webkit-details-marker{display:none}
+details.data > summary::before{content:"▸ ";color:var(--muted)}
+details.data[open] > summary::before{content:"▾ "}
+details.data > summary:hover{color:var(--ink)}
+.tablewrap{overflow-x:auto;max-height:460px;overflow-y:auto;border-top:1px solid var(--rule)}
+
+/* ------------------------------------------------------------------ tableaux */
+table{border-collapse:collapse;width:100%;font-size:.84rem}
+th,td{padding:.5em .7em;text-align:right;white-space:nowrap;border-bottom:1px solid var(--grid)}
+th:first-child,td:first-child{text-align:left}
+thead th{
+  position:sticky;top:0;background:var(--surface);z-index:2;
+  font-weight:600;color:var(--ink-2);border-bottom:1px solid var(--axis);
+  font-size:.76rem;letter-spacing:.03em;
+}
+table.sortable thead th{cursor:pointer;user-select:none}
+table.sortable thead th::after{content:"";opacity:.3;margin-left:.35em}
+table.sortable thead th[aria-sort="ascending"]::after{content:"▲";opacity:.75}
+table.sortable thead th[aria-sort="descending"]::after{content:"▼";opacity:.75}
+tbody tr:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
+tr.excluded td{color:var(--muted);font-style:italic}
+td.dim{color:var(--muted)}
+
+/* ------------------------------------------------------------------ méthode */
+/* Le texte de la méthode garde une longueur de ligne lisible, mais les tableaux
+   qu'elle contient occupent toute la largeur disponible. */
+.method{max-width:none}
+.method h3,.method p,.method ul,.method dl,.method .formula{max-width:70ch}
+.method h3{margin:1.8em 0 .5em}
+.method ul{padding-left:1.15em;margin:0 0 1.05em}
+.method li{margin-bottom:.4em}
+.formula{
+  background:var(--surface);border:1px solid var(--rule);padding:.9em 1.1em;margin:.9em 0 1.3em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82rem;
+  line-height:1.75;overflow-x:auto;white-space:pre;
+}
+dl.facts{display:grid;grid-template-columns:minmax(140px,auto) 1fr;gap:.45em 1.4em;margin:0 0 1.4em;font-size:.94rem}
+dl.facts dt{color:var(--muted);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.84rem;padding-top:.15em}
+dl.facts dd{margin:0}
+
+.scale{display:flex;flex-wrap:wrap;align-items:center;gap:.5em .6em;padding:0 1.25em 1.1em;font-size:.78rem;color:var(--muted)}
+.scale .ramp{display:flex;height:10px;border-radius:2px;overflow:hidden;min-width:120px;max-width:190px;flex:1 1 120px}
+.scale .ramp i{height:100%;flex:1 1 0}
+
+footer{border-top:1px solid var(--rule);padding:2.4em 0 3.4em;font-size:.86rem;color:var(--muted)}
+.themetoggle{
+  position:fixed;top:14px;right:14px;z-index:10;font:inherit;font-size:.78rem;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:var(--surface);color:var(--ink-2);border:1px solid var(--rule);
+  border-radius:2px;padding:.35em .7em;cursor:pointer;box-shadow:var(--shadow);
+}
+.note-inline{font-size:.82rem;color:var(--muted);padding:0 1.25em 1.1em;margin:0}
+
+@media (max-width:640px){
+  body{font-size:16px}
+  .kpi-value{font-size:2.1rem}
+  dl.facts{grid-template-columns:1fr;gap:.1em .8em}
+  dl.facts dt{padding-top:.6em}
+  .sec-head{flex-direction:column;gap:.2em}
+  .sec-num{padding-top:0}
+}
+@media print{
+  .themetoggle,.toolbar,details.data{display:none}
+  body{background:#fff;font-size:11pt}
+  section{break-inside:avoid;border-top:1px solid #ccc}
+  figure{break-inside:avoid;box-shadow:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<button class="themetoggle ui" id="themetoggle" type="button" aria-label="Basculer le thème clair/sombre">◐ thème</button>
+
+<header class="masthead">
+  <div class="wrap">
+    <div id="synthetic-banner"></div>
+    <p class="eyebrow">Sainte-Maxime · Var · Données Météo-France</p>
+    <h1>La chaleur ressentie,<br>heure par heure</h1>
+    <p class="lede prose">
+      Météo-France ne publie pas de humidex. Cette série le reconstitue à partir des
+      températures et humidités relatives horaires de la station publique la plus proche
+      de Sainte-Maxime, puis en suit la dérive sur l'ensemble de l'historique exploitable.
+    </p>
+    <div class="byline" id="byline"></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="kpis" id="kpis"></div>
+
+  <section id="serie">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="prose">
+        <h2>La série annuelle</h2>
+        <p class="small muted" id="serie-intro"></p>
+      </div>
+    </div>
+    <figure>
+      <div class="fig-head">
+        <h3>Humidex moyen et maximum, par année</h3>
+        <p>La moyenne ne porte que sur les heures où le humidex est défini (T ≥ 20 °C) :
+           elle décrit l'intensité de la chaleur humide quand elle est là, pas sa fréquence.
+           Les deux grandeurs n'ont pas la même amplitude et occupent donc deux panneaux
+           d'échelles distinctes, sur un axe des années commun. La droite est la pente de
+           Sen, robuste aux valeurs extrêmes.</p>
+      </div>
+      <div class="chart" id="c-annual"></div>
+      <div class="legend" id="l-annual"></div>
+      <details class="data"><summary>Voir les valeurs</summary><div class="tablewrap" id="t-annual"></div></details>
+    </figure>
+  </section>
+
+  <section id="saison">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="prose">
+        <h2>Le rythme saisonnier</h2>
+        <p class="small muted">Où se loge la chaleur humide dans l'année, et comment cette
+           saison se déforme d'une décennie à l'autre.</p>
+      </div>
+    </div>
+    <figure>
+      <div class="fig-head">
+        <h3>Carte mois × année</h3>
+        <p>Chaque cellule est un mois. Les cases vides sont les mois où aucune heure
+           n'atteint 20 °C : le humidex n'y est pas défini.</p>
+      </div>
+      <div class="toolbar" id="hm-toolbar"></div>
+      <div class="chart" id="c-heat"></div>
+      <div class="scale" id="s-heat"></div>
+      <details class="data"><summary>Voir les valeurs</summary><div class="tablewrap" id="t-heat"></div></details>
+    </figure>
+    <figure>
+      <div class="fig-head">
+        <h3>Cycle moyen par mois</h3>
+        <p>Moyenne sur toutes les années retenues, séparée entre créneau diurne et nocturne.</p>
+      </div>
+      <div class="chart" id="c-clim"></div>
+      <div class="legend" id="l-clim"></div>
+      <details class="data"><summary>Voir les valeurs</summary><div class="tablewrap" id="t-clim"></div></details>
+    </figure>
+  </section>
+
+  <section id="paliers">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="prose">
+        <h2>Les paliers d'inconfort</h2>
+        <p class="small muted" id="paliers-intro"></p>
+      </div>
+    </div>
+    <figure>
+      <div class="fig-head">
+        <h3>Heures par an dans chaque tranche de humidex</h3>
+        <p>Tranches disjointes, afin que l'empilement se lise comme un total.
+           Les comptages sont ramenés à une année complète pour neutraliser les lacunes
+           résiduelles des années retenues.</p>
+      </div>
+      <div class="chart" id="c-bands"></div>
+      <div class="legend" id="l-bands"></div>
+      <details class="data"><summary>Voir les valeurs</summary><div class="tablewrap" id="t-bands"></div></details>
+    </figure>
+  </section>
+
+  <section id="journuit">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="prose">
+        <h2>Jour contre nuit</h2>
+        <p class="small muted" id="jn-intro"></p>
+      </div>
+    </div>
+    <figure>
+      <div class="fig-head">
+        <h3>Humidex moyen selon le créneau, par année</h3>
+        <p>Le créneau nocturne est celui qui détermine si la nuit permet de récupérer
+           de la chaleur du jour.</p>
+      </div>
+      <div class="chart" id="c-daynight"></div>
+      <div class="legend" id="l-daynight"></div>
+      <details class="data"><summary>Voir les valeurs</summary><div class="tablewrap" id="t-daynight"></div></details>
+    </figure>
+    <figure>
+      <div class="fig-head">
+        <h3>Profil d'une journée d'été</h3>
+        <p>Humidex moyen heure par heure (heure locale), de juin à septembre, toutes
+           années retenues confondues. Les bandes grisées marquent les deux créneaux.</p>
+      </div>
+      <div class="chart" id="c-hours"></div>
+      <div class="legend" id="l-hours"></div>
+      <details class="data"><summary>Voir les valeurs</summary><div class="tablewrap" id="t-hours"></div></details>
+    </figure>
+  </section>
+
+  <section id="tendances">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="prose">
+        <h2>Tendances</h2>
+        <p class="small muted">Pour chaque indicateur : pente des moindres carrés, test de
+          Mann-Kendall (non paramétrique, sans hypothèse de normalité) et pente de Sen
+          avec son intervalle de confiance à 95 %.</p>
+      </div>
+    </div>
+    <figure>
+      <div class="tablewrap" id="t-trends"></div>
+      <p class="note-inline">Une tendance est déclarée significative lorsque p &lt; 0,05 au test de Mann-Kendall.</p>
+    </figure>
+  </section>
+
+  <section id="synthese">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="prose">
+        <h2>Synthèse annuelle</h2>
+        <p class="small muted">Cliquer sur un en-tête pour trier. Les années grisées sont
+          exclues des analyses faute de complétude suffisante ; elles restent affichées
+          pour que la lacune soit visible.</p>
+      </div>
+    </div>
+    <figure>
+      <div class="tablewrap" id="t-synth"></div>
+    </figure>
+  </section>
+
+  <section id="methode">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="prose"><h2>Méthode, sources et limites</h2></div>
+    </div>
+    <div class="method">
+      <h3>Station retenue</h3>
+      <dl class="facts" id="station-facts"></dl>
+      <p id="station-why"></p>
+
+      <h3>Stations examinées</h3>
+      <p class="small muted">Toutes les stations du département apparaissant dans les fichiers,
+        classées par distance à Sainte-Maxime.</p>
+      <div class="tablewrap" id="t-cands" style="max-height:none"></div>
+
+      <h3>Du couple (T, U) au humidex</h3>
+      <p>Le point de rosée est repris des données quand Météo-France le publie ; sinon il est
+        calculé à partir de la température et de l'humidité relative par la formulation de
+        Magnus-Tetens. Le humidex suit ensuite la définition d'Environnement Canada.</p>
+      <div class="formula">α  = 17,27 · T / (237,7 + T) + ln(U / 100)
+Td = 237,7 · α / (17,27 − α)
+
+e       = 6,11 · exp[ 5417,7530 · (1/273,16 − 1/(273,15 + Td)) ]
+humidex = T + (5/9) · (e − 10)          calculé si T ≥ 20 °C, sinon non défini</div>
+      <p id="td-prov" class="small"></p>
+
+      <h3>Conventions retenues</h3>
+      <ul>
+        <li><b>Fuseau horaire.</b> Les fichiers Météo-France horodatent en UTC
+          (colonne <code>AAAAMMJJHH</code>). Tout est reconverti en heure locale
+          <span id="tz-name">Europe/Paris</span> avant découpage en années, mois et créneaux,
+          de sorte que les heures d'été et d'hiver sont traitées correctement.</li>
+        <li><b>Créneaux.</b> Jour = <span id="slot-day"></span> ; nuit = <span id="slot-night"></span>,
+          en heure locale, le créneau nocturne enjambant minuit.</li>
+        <li><b>Complétude.</b> Une heure est comptée disponible si <em>T et U</em> le sont
+          simultanément. Une année est retenue si elle atteint
+          <span id="thr-completeness"></span> des heures de l'année civile (8 760 h, 8 784 h
+          les années bissextiles).</li>
+        <li><b>Normalisation.</b> Les comptages d'heures par palier sont fournis bruts et
+          ramenés à une année complète (facteur = heures attendues / heures disponibles),
+          afin qu'une année à 85 % de complétude ne paraisse pas plus fraîche qu'une année pleine.</li>
+        <li><b>Doublons.</b> En cas d'horodatages répétés pour une même station, la dernière
+          valeur publiée est conservée — les fichiers <em>latest</em> corrigent les fichiers
+          d'archive.</li>
+      </ul>
+
+      <h3>Limites</h3>
+      <ul>
+        <li>Le humidex n'est <b>pas défini sous 20 °C</b>. La « moyenne annuelle » est donc une
+          moyenne conditionnelle : elle mesure l'intensité de la chaleur humide lorsqu'elle
+          survient, et non la chaleur moyenne de l'année. Une année qui compte davantage
+          d'heures au-dessus de 20 °C peut afficher une moyenne <em>plus basse</em> si ces
+          heures supplémentaires sont juste au-dessus du seuil. Les comptages par palier et
+          les maxima sont, sur ce point, plus directement interprétables.</li>
+        <li>La station retenue n'est pas à Sainte-Maxime : distance et exposition
+          (littoral, altitude, effet de site) introduisent un écart avec les conditions
+          ressenties en ville. Les stations littorales, ventilées, sous-estiment généralement
+          l'inconfort mesuré en fond de vallée ou en tissu urbain.</li>
+        <li>Les séries anciennes proviennent d'instruments et de protocoles qui ont changé
+          (passage au capteur automatique, déplacements de site). Les ruptures d'homogénéité
+          qui en découlent ne sont pas corrigées ici : la tendance mesurée mêle signal
+          climatique et historique instrumental.</li>
+        <li>Les codes qualité Météo-France (colonnes <code>Q…</code>) ne sont pas utilisés
+          pour filtrer par défaut ; toute valeur présente est retenue.</li>
+        <li>Le humidex n'est pas une température : c'est un indice de confort sans unité
+          physique, conventionnellement exprimé en degrés. Il ignore le vent et
+          le rayonnement solaire, deux facteurs déterminants sur le littoral varois.</li>
+        <li id="lim-gaps"></li>
+      </ul>
+
+      <h3>Reproduire</h3>
+      <p class="small">Source : <span class="ui">meteo.data.gouv.fr</span>, jeu « Données
+        climatologiques de base — horaires », fichiers CSV.gz par département.
+        Fichiers effectivement lus pour ce rapport :</p>
+      <ul class="small" id="src-files"></ul>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p id="footer-text"></p>
+</footer>
+
+<script id="humidex-data" type="application/json">{"meta": {"genere_le": "07/08/2026 18:51 UTC", "cible": {"nom": "Sainte-Maxime", "lat": 43.309, "lon": 6.638}, "departement": "83", "fuseau": "Europe/Paris", "seuil_completude": 0.8, "seuil_temperature": 20.0, "paliers": [30, 35, 40, 45], "plage_jour": [10, 18], "plage_nuit": [22, 6], "fichiers_sources": ["H_083_1995-2010.csv.gz", "H_083_latest-2011-2025.csv.gz"], "donnees_synthetiques": true}, "station": {"num_poste": "83061001", "nom": "FREJUS", "lat": 43.4, "lon": 6.7, "alti": 68.0, "distance_km": 11.3, "premiere_annee": 1998, "derniere_annee": 2025, "motif": "station éligible la plus proche de Sainte-Maxime", "couverture_tu": 0.9641}, "candidats": [{"num_poste": "83107001", "nom": "SAINTE-MAXIME-PLAGE", "distance_km": 3.2, "lat": 43.3, "lon": 6.6, "premiere_annee": 2014, "derniere_annee": 2025, "annees_exploitables": 0, "couverture_tu": 0.0, "eligible": false, "motif": "aucune donnée d'humidité", "retenue": false}, {"num_poste": "83061001", "nom": "FREJUS", "distance_km": 11.3, "lat": 43.4, "lon": 6.7, "premiere_annee": 1998, "derniere_annee": 2025, "annees_exploitables": 27, "couverture_tu": 0.9641, "eligible": true, "motif": "station éligible la plus proche de Sainte-Maxime", "retenue": true}, {"num_poste": "83101001", "nom": "CAP CAMARAT", "distance_km": 13.1, "lat": 43.2, "lon": 6.7, "premiere_annee": 1995, "derniere_annee": 2025, "annees_exploitables": 30, "couverture_tu": 0.9663, "eligible": true, "motif": "retenue possible", "retenue": false}, {"num_poste": "83034001", "nom": "LE LUC", "distance_km": 21.7, "lat": 43.4, "lon": 6.4, "premiere_annee": 2004, "derniere_annee": 2025, "annees_exploitables": 21, "couverture_tu": 0.9578, "eligible": true, "motif": "retenue possible", "retenue": false}, {"num_poste": "83069001", "nom": "HYERES-COTE-D-AZUR", "distance_km": 49.4, "lat": 43.1, "lon": 6.1, "premiere_annee": 1995, "derniere_annee": 2025, "annees_exploitables": 30, "couverture_tu": 0.9664, "eligible": true, "motif": "retenue possible", "retenue": false}], "provenance": {"n_hours": 245448, "n_hours_tu": 236641, "td_publie": 46535, "td_magnus": 190106, "part_td_publie": 0.19664808718692028, "n_humidex": 80035}, "periode": {"debut": 1998, "fin": 2025, "annees_retenues": 27, "annees_exclues": [{"annee": 2001, "completude": 32.5}, {"annee": 2026, "completude": 0.0}]}, "kpi": {"tendance_par_decennie": 0.4918, "tendance_ols_par_decennie": 0.5028, "tendance_p": 0.0, "tendance_significative": true, "tendance_lo": 0.4393, "tendance_hi": 0.5578, "annee_record": 2021, "humidex_record": 56.43609695888887, "date_record": "2021-07-11 15:00", "h35_fenetre_annees": 10, "h35_debut": 240.74, "h35_fin": 404.72999999999996, "h35_periode_debut": "1998–2008", "h35_periode_fin": "2016–2025", "h35_delta": 163.98999999999995, "h35_ratio": 1.6811913267425436, "tendance_nuit_par_decennie": 0.4491, "tendance_jour_par_decennie": 0.5808}, "annuel": [{"annee": 1998, "heures_avec_T_et_U": 8631, "heures_attendues": 8760, "completude": 0.9853, "heures_manquantes_pct": 1.4726, "heures_humidex_defini": 2737, "humidex_moyen": 28.3391, "humidex_median": 27.6267, "humidex_p95": 36.3072, "humidex_max": 46.2599, "date_max": "1998-07-10 18:00", "temperature_moyenne": 15.7735, "heures_sup30": 809, "heures_sup30_norm": 821.1, "heures_sup35": 203, "heures_sup35_norm": 206.0, "heures_sup40": 19, "heures_sup40_norm": 19.3, "heures_sup45": 1, "heures_sup45_norm": 1.0, "heures_30_35": 606, "heures_30_35_norm": 615.1, "heures_35_40": 184, "heures_35_40_norm": 186.8, "heures_40_45": 18, "heures_40_45_norm": 18.3, "heures_45_plus": 1, "heures_45_plus_norm": 1.0, "humidex_moyen_jour": 29.5822, "humidex_max_jour": 44.2297, "heures_jour_sup30": 474, "heures_jour_sup35": 134, "heures_jour_sup30_norm": 481.1, "heures_jour_sup35_norm": 136.0, "humidex_moyen_nuit": 26.2102, "humidex_max_nuit": 37.4196, "heures_nuit_sup30": 72, "heures_nuit_sup35": 6, "heures_nuit_sup30_norm": 73.2, "heures_nuit_sup35_norm": 6.1, "retenue": true}, {"annee": 1999, "heures_avec_T_et_U": 8658, "heures_attendues": 8760, "completude": 0.9884, "heures_manquantes_pct": 1.1644, "heures_humidex_defini": 2708, "humidex_moyen": 28.5655, "humidex_median": 27.7816, "humidex_p95": 36.6288, "humidex_max": 48.615, "date_max": "1999-07-11 19:00", "temperature_moyenne": 15.8725, "heures_sup30": 891, "heures_sup30_norm": 901.5, "heures_sup35": 262, "heures_sup35_norm": 265.1, "heures_sup40": 22, "heures_sup40_norm": 22.3, "heures_sup45": 1, "heures_sup45_norm": 1.0, "heures_30_35": 629, "heures_30_35_norm": 636.4, "heures_35_40": 240, "heures_35_40_norm": 242.8, "heures_40_45": 21, "heures_40_45_norm": 21.2, "heures_45_plus": 1, "heures_45_plus_norm": 1.0, "humidex_moyen_jour": 29.7801, "humidex_max_jour": 42.7584, "heures_jour_sup30": 503, "heures_jour_sup35": 165, "heures_jour_sup30_norm": 508.4, "heures_jour_sup35_norm": 166.8, "humidex_moyen_nuit": 26.4483, "humidex_max_nuit": 41.4936, "heures_nuit_sup30": 97, "heures_nuit_sup35": 14, "heures_nuit_sup30_norm": 98.1, "heures_nuit_sup35_norm": 14.2, "retenue": true}, {"annee": 2000, "heures_avec_T_et_U": 8694, "heures_attendues": 8784, "completude": 0.9898, "heures_manquantes_pct": 1.0246, "heures_humidex_defini": 2754, "humidex_moyen": 28.593, "humidex_median": 28.1017, "humidex_p95": 35.7764, "humidex_max": 42.3353, "date_max": "2000-07-04 17:00", "temperature_moyenne": 15.8663, "heures_sup30": 927, "heures_sup30_norm": 936.6, "heures_sup35": 200, "heures_sup35_norm": 202.1, "heures_sup40": 12, "heures_sup40_norm": 12.1, "heures_sup45": 0, "heures_sup45_norm": 0.0, "heures_30_35": 727, "heures_30_35_norm": 734.5, "heures_35_40": 188, "heures_35_40_norm": 189.9, "heures_40_45": 12, "heures_40_45_norm": 12.1, "heures_45_plus": 0, "heures_45_plus_norm": 0.0, "humidex_moyen_jour": 29.9318, "humidex_max_jour": 42.3353, "heures_jour_sup30": 548, "heures_jour_sup35": 138, "heures_jour_sup30_norm": 554.2, "heures_jour_sup35_norm": 139.6, "humidex_moyen_nuit": 26.3087, "humidex_max_nuit": 36.017, "heures_nuit_sup30": 83, "heures_nuit_sup35": 3, "heures_nuit_sup30_norm": 83.7, "heures_nuit_sup35_norm": 3.0, "retenue": true}, {"annee": 2001, "heures_avec_T_et_U": 2848, "heures_attendues": 8760, "completude": 0.3251, "heures_manquantes_pct": 67.4886, "heures_humidex_defini": 82, "humidex_moyen": 25.9989, "humidex_median": 25.3465, "humidex_p95": 32.012, "humidex_max": 33.3627, "date_max": "2001-04-22 15:00", "temperature_moyenne": 10.4721, "heures_sup30": 11, "heures_sup30_norm": 33.8, "heures_sup35": 0, "heures_sup35_norm": 0.0, "heures_sup40": 0, "heures_sup40_norm": 0.0, "heures_sup45": 0, "heures_sup45_norm": 0.0, "heures_30_35": 11, "heures_30_35_norm": 33.8, "heures_35_40": 0, "heures_35_40_norm": 0.0, "heures_40_45": 0, "heures_40_45_norm": 0.0, "heures_45_plus": 0, "heures_45_plus_norm": 0.0, "humidex_moyen_jour": 26.8127, "humidex_max_jour": 33.3627, "heures_jour_sup30": 9, "heures_jour_sup35": 0, "heures_jour_sup30_norm": 27.7, "heures_jour_sup35_norm": 0.0, "humidex_moyen_nuit": 23.4224, "humidex_max_nuit": 25.2678, "heures_nuit_sup30": 0, "heures_nuit_sup35": 0, "heures_nuit_sup30_norm": 0.0, "heures_nuit_sup35_norm": 0.0, "retenue": false}, {"annee": 2002, "heures_avec_T_et_U": 8653, "heures_attendues": 8760, "completude": 0.9878, "heures_manquantes_pct": 1.2215, "heures_humidex_defini": 2796, "humidex_moyen": 28.56, "humidex_median": 27.9624, "humidex_p95": 36.0745, "humidex_max": 42.8643, "date_max": "2002-07-07 19:00", "temperature_moyenne": 15.9515, "heures_sup30": 942, "heures_sup30_norm": 953.6, "heures_sup35": 221, "heures_sup35_norm": 223.7, "heures_sup40": 13, "heures_sup40_norm": 13.2, "heures_sup45": 0, "heures_sup45_norm": 0.0, "heures_30_35": 721, "heures_30_35_norm": 729.9, "heures_35_40": 208, "heures_35_40_norm": 210.6, "heures_40_45": 13, "heures_40_45_norm": 13.2, "heures_45_plus": 0, "heures_45_plus_norm": 0.0, "humidex_moyen_jour": 30.0016, "humidex_max_jour": 42.3192, "heures_jour_sup30": 575, "heures_jour_sup35": 161, "heures_jour_sup30_norm": 582.8, "heures_jour_sup35_norm": 163.2, "humidex_moyen_nuit": 26.1065, "humidex_max_nuit": 36.0856, "heures_nuit_sup30": 51, "heures_nuit_sup35": 1, "heures_nuit_sup30_norm": 51.6, "heures_nuit_sup35_norm": 1.0, "retenue": true}, {"annee": 2003, "heures_avec_T_et_U": 8646, "heures_attendues": 8760, "completude": 0.987, "heures_manquantes_pct": 1.3014, "heures_humidex_defini": 2837, "humidex_moyen": 28.47, "humidex_median": 27.9536, "humidex_p95": 35.7944, "humidex_max": 42.688, "date_max": "2003-07-31 17:00", "temperature_moyenne": 16.0334, "heures_sup30": 945, "heures_sup30_norm": 957.5, "heures_sup35": 210, "heures_sup35_norm": 212.8, "heures_sup40": 12, "heures_sup40_norm": 12.2, "heures_sup45": 0, "heures_sup45_norm": 0.0, "heures_30_35": 735, "heures_30_35_norm": 744.7, "heures_35_40": 198, "heures_35_40_norm": 200.6, "heures_40_45": 12, "heures_40_45_norm": 12.2, "heures_45_plus": 0, "heures_45_plus_norm": 0.0, "humidex_moyen_jour": 29.8694, "humidex_max_jour": 42.688, "heures_jour_sup30": 561, "heures_jour_sup35": 148, "heures_jour_sup30_norm": 569.0, "heures_jour_sup35_norm": 150.1, "humidex_moyen_nuit": 26.1073, "humidex_max_nuit": 35.7287, "heures_nuit_sup30": 83, "heures_nuit_sup35": 2, "heures_nuit_sup30_norm": 84.1, "heures_nuit_sup35_norm": 2.0, "retenue": true}, {"annee": 2004, "heures_avec_T_et_U": 8679, "heures_attendues": 8784, "completude": 0.988, "heures_manquantes_pct": 1.1954, "heures_humidex_defini": 2848, "humidex_moyen": 28.5644, "humidex_median": 27.8112, "humidex_p95": 36.5517, "humidex_max": 46.4484, "date_max": "2004-07-11 19:00", "temperature_moyenne": 16.0252, "heures_sup30": 943, "heures_sup30_norm": 954.4, "heures_sup35": 245, "heures_sup35_norm": 248.0, "heures_sup40": 32, "heures_sup40_norm": 32.4, "heures_sup45": 1, "heures_sup45_norm": 1.0, "heures_30_35": 698, "heures_30_35_norm": 706.4, "heures_35_40": 213, "heures_35_40_norm": 215.6, "heures_40_45": 31, "heures_40_45_norm": 31.4, "heures_45_plus": 1, "heures_45_plus_norm": 1.0, "humidex_moyen_jour": 30.0925, "humidex_max_jour": 44.8597, "heures_jour_sup30": 559, "heures_jour_sup35": 162, "heures_jour_sup30_norm": 566.0, "heures_jour_sup35_norm": 164.0, "humidex_moyen_nuit": 26.0703, "humidex_max_nuit": 42.688, "heures_nuit_sup30": 77, "heures_nuit_sup35": 10, "heures_nuit_sup30_norm": 77.7, "heures_nuit_sup35_norm": 10.1, "retenue": true}, {"annee": 2005, "heures_avec_T_et_U": 8647, "heures_attendues": 8760, "completude": 0.9871, "heures_manquantes_pct": 1.29, "heures_humidex_defini": 2841, "humidex_moyen": 28.7387, "humidex_median": 28.1169, "humidex_p95": 36.3083, "humidex_max": 43.7305, "date_max": "2005-06-15 14:00", "temperature_moyenne": 16.121, "heures_sup30": 970, "heures_sup30_norm": 982.7, "heures_sup35": 223, "heures_sup35_norm": 225.9, "heures_sup40": 33, "heures_sup40_norm": 33.4, "heures_sup45": 0, "heures_sup45_norm": 0.0, "heures_30_35": 747, "heures_30_35_norm": 756.8, "heures_35_40": 190, "heures_35_40_norm": 192.5, "heures_40_45": 33, "heures_40_45_norm": 33.4, "heures_45_plus": 0, "heures_45_plus_norm": 0.0, "humidex_moyen_jour": 30.3582, "humidex_max_jour": 43.7305, "heures_jour_sup30": 589, "heures_jour_sup35": 156, "heures_jour_sup30_norm": 595.9, "heures_jour_sup35_norm": 157.8, "humidex_moyen_nuit": 26.1918, "humidex_max_nuit": 36.8114, "heures_nuit_sup30": 81, "heures_nuit_sup35": 3, "heures_nuit_sup30_norm": 82.0, "heures_nuit_sup35_norm": 3.0, "retenue": true}, {"annee": 2006, "heures_avec_T_et_U": 8646, "heures_attendues": 8760, "completude": 0.987, "heures_manquantes_pct": 1.3014, "heures_humidex_defini": 2866, "humidex_moyen": 28.8231, "humidex_median": 28.2994, "humidex_p95": 36.2479, "humidex_max": 42.669, "date_max": "2006-08-12 15:00", "temperature_moyenne": 16.1652, "heures_sup30": 1045, "heures_sup30_norm": 1058.8, "heures_sup35": 245, "heures_sup35_norm": 248.2, "heures_sup40": 14, "heures_sup40_norm": 14.2, "heures_sup45": 0, "heures_sup45_norm": 0.0, "heures_30_35": 800, "heures_30_35_norm": 810.5, "heures_35_40": 231, "heures_35_40_norm": 234.0, "heures_40_45": 14, "heures_40_45_norm": 14.2, "heures_45_plus": 0, "heures_45_plus_norm": 0.0, "humidex_moyen_jour": 30.3265, "humidex_max_jour": 42.669, "heures_jour_sup30": 619, "heures_jour_sup35": 176, "heures_jour_sup30_norm": 627.6, "heures_jour_sup35_norm": 178.4, "humidex_moyen_nuit": 26.6042, "humidex_max_nuit": 38.0191, "heures_nuit_sup30": 98, "heures_nuit_sup35": 3, "heures_nuit_sup30_norm": 99.4, "heures_nuit_sup35_norm": 3.0, "retenue": true}, {"annee": 2007, "heures_avec_T_et_U": 8649, "heures_attendues": 8760, "completude": 0.9873, "heures_manquantes_pct": 1.2671, "heures_humidex_defini": 2858, "humidex_moyen": 28.9481, "humidex_median": 28.2897, "humidex_p95": 36.7542, "humidex_max": 47.8015, "date_max": "2007-07-12 15:00", "temperature_moyenne": 16.1523, "heures_sup30": 1046, "heures_sup30_norm": 1059.4, "heures_sup35": 267, "heures_sup35_norm": 270.4, "heures_sup40": 31, "heures_sup40_norm": 31.4, "heures_sup45": 4, "heures_sup45_norm": 4.1, "heures_30_35": 779, "heures_30_35_norm": 789.0, "heures_35_40": 236, "heures_35_40_norm": 239.0, "heures_40_45": 27, "heures_40_45_norm": 27.3, "heures_45_plus": 4, "heures_45_plus_norm": 4.1, "humidex_moyen_jour": 30.4385, "humidex_max_jour": 47.8015, "heures_jour_sup30": 605, "heures_jour_sup35": 178, "heures_jour_sup30_norm": 613.6, "heures_jour_sup35_norm": 180.5, "humidex_moyen_nuit": 26.486, "humidex_max_nuit": 39.1776, "heures_nuit_sup30": 89, "heures_nuit_sup35": 7, "heures_nuit_sup30_norm": 90.1, "heures_nuit_sup35_norm": 7.1, "retenue": true}, {"annee": 2008, "heures_avec_T_et_U": 8693, "heures_attendues": 8784, "completude": 0.9896, "heures_manquantes_pct": 1.036, "heures_humidex_defini": 2915, "humidex_moyen": 28.9993, "humidex_median": 28.2522, "humidex_p95": 36.9358, "humidex_max": 44.8429, "date_max": "2008-07-29 16:00", "temperature_moyenne": 16.2023, "heures_sup30": 1062, "heures_sup30_norm": 1073.1, "heures_sup35": 302, "heures_sup35_norm": 305.2, "heures_sup40": 35, "heures_sup40_norm": 35.4, "heures_sup45": 0, "heures_sup45_norm": 0.0, "heures_30_35": 760, "heures_30_35_norm": 768.0, "heures_35_40": 267, "heures_35_40_norm": 269.8, "heures_40_45": 35, "heures_40_45_norm": 35.4, "heures_45_plus": 0, "heures_45_plus_norm": 0.0, "humidex_moyen_jour": 30.4169, "humidex_max_jour": 44.8429, "heures_jour_sup30": 617, "heures_jour_sup35": 203, "heures_jour_sup30_norm": 625.1, "heures_jour_sup35_norm": 205.7, "humidex_moyen_nuit": 26.7157, "humidex_max_nuit": 41.0241, "heures_nuit_sup30": 99, "heures_nuit_sup35": 9, "heures_nuit_sup30_norm": 99.8, "heures_nuit_sup35_norm": 9.1, "retenue": true}, {"annee": 2009, "heures_avec_T_et_U": 8651, "heures_attendues": 8760, "completude": 0.9876, "heures_manquantes_pct": 1.2443, "heures_humidex_defini": 2978, "humidex_moyen": 28.95, "humidex_median": 28.2587, "humidex_p95": 36.7106, "humidex_max": 44.3285, "date_max": "2009-08-27 17:00", "temperature_moyenne": 16.2564, "heures_sup30": 1091, "heures_sup30_norm": 1104.7, "heures_sup35": 295, "heures_sup35_norm": 298.7, "heures_sup40": 26, "heures_sup40_norm": 26.3, "heures_sup45": 0, "heures_sup45_norm": 0.0, "heures_30_35": 796, "heures_30_35_norm": 806.0, "heures_35_40": 269, "heures_35_40_norm": 272.4, "heures_40_45": 26, "heures_40_45_norm": 26.3, "heures_45_plus": 0, "heures_45_plus_norm": 0.0, "humidex_moyen_jour": 30.4948, "humidex_max_jour": 44.3285, "heures_jour_sup30": 629, "heures_jour_sup35": 204, "heures_jour_sup30_norm": 634.2, "heures_jour_sup35_norm": 205.7, "humidex_moyen_nuit": 26.632, "humidex_max_nuit": 37.2401, "heures_nuit_sup30": 106, "heures_nuit_sup35": 8, "heures_nuit_sup30_norm": 107.5, "heures_nuit_sup35_norm": 8.1, "retenue": true}, {"annee": 2010, "heures_avec_T_et_U": 8658, "heures_attendues": 8760, "completude": 0.9884, "heures_manquantes_pct": 1.1644, "heures_humidex_defini": 2996, "humidex_moyen": 28.7857, "humidex_median": 28.1372, "humidex_p95": 36.4283, "humidex_max": 43.9785, "date_max": "2010-06-30 18:00", "temperature_moyenne": 16.3198, "heures_sup30": 1059, "heures_sup30_norm": 1071.5, "heures_sup35": 267, "heures_sup35_norm": 270.1, "heures_sup40": 17, "heures_sup40_norm": 17.2, "heures_sup45": 0, "heures_sup45_norm": 0.0, "heures_30_35": 792, "heures_30_35_norm": 801.3, "heures_35_40": 250, "heures_35_40_norm": 252.9, "heures_40_45": 17, "heures_40_45_norm": 17.2, "heures_45_plus": 0, "heures_45_plus_norm": 0.0, "humidex_moyen_jour": 30.3063, "humidex_max_jour": 43.483, "heures_jour_sup30": 621, "heures_jour_sup35": 187, "heures_jour_sup30_norm": 625.7, "heures_jour_sup35_norm": 188.4, "humidex_moyen_nuit": 26.3769, "humidex_max_nuit": 35.3886, "heures_nuit_sup30": 94, "heures_nuit_sup35": 2, "heures_nuit_sup30_norm": 95.5, "heures_nuit_sup35_norm": 2.0, "retenue": true}, {"annee": 2011, "heures_avec_T_et_U": 8657, "heures_attendues": 8760, "completude": 0.9882, "heures_manquantes_pct": 1.1758, "heures_humidex_defini": 2870, "humidex_moyen": 29.3034, "humidex_median": 28.7818, "humidex_p95": 37.3433, "humidex_max": 48.1018, "date_max": "2011-07-14 15:00", "temperature_moyenne": 16.3412, "heures_sup30": 1127, "heures_sup30_norm": 1140.4, "heures_sup35": 339, "heures_sup35_norm": 343.0, "heures_sup40": 46, "heures_sup40_norm": 46.5, "heures_sup45": 3, "heures_sup45_norm": 3.0, "heures_30_35": 788, "heures_30_35_norm": 797.4, "heures_35_40": 293, "heures_35_40_norm": 296.5, "heures_40_45": 43, "heures_40_45_norm": 43.5, "heures_45_plus": 3, "heures_45_plus_norm": 3.0, "humidex_moyen_jour": 30.649, "humidex_max_jour": 48.1018, "heures_jour_sup30": 626, "heures_jour_sup35": 225, "heures_jour_sup30_norm": 633.8, "heures_jour_sup35_norm": 227.8, "humidex_moyen_nuit": 26.9921, "humidex_max_nuit": 41.448, "heures_nuit_sup30": 137, "heures_nuit_sup35": 18, "heures_nuit_sup30_norm": 138.7, "heures_nuit_sup35_norm": 18.2, "retenue": true}, {"annee": 2012, "heures_avec_T_et_U": 8665, "heures_attendues": 8784, "completude": 0.9865, "heures_manquantes_pct": 1.3547, "heures_humidex_defini": 2968, "humidex_moyen": 29.1807, "humidex_median": 28.3996, "humidex_p95": 37.4336, "humidex_max": 49.1798, "date_max": "2012-07-05 16:00", "temperature_moyenne": 16.363, "heures_sup30": 1111, "heures_sup30_norm": 1126.3, "heures_sup35": 327, "heures_sup35_norm": 331.5, "heures_sup40": 63, "heures_sup40_norm": 63.9, "heures_sup45": 9, "heures_sup45_norm": 9.1, "heures_30_35": 784, "heures_30_35_norm": 794.8, "heures_35_40": 264, "heures_35_40_norm": 267.6, "heures_40_45": 54, "heures_40_45_norm": 54.7, "heures_45_plus": 9, "heures_45_plus_norm": 9.1, "humidex_moyen_jour": 30.7014, "humidex_max_jour": 49.1798, "heures_jour_sup30": 635, "heures_jour_sup35": 215, "heures_jour_sup30_norm": 645.8, "heures_jour_sup35_norm": 218.7, "humidex_moyen_nuit": 26.7928, "humidex_max_nuit": 37.9183, "heures_nuit_sup30": 116, "heures_nuit_sup35": 14, "heures_nuit_sup30_norm": 117.1, "heures_nuit_sup35_norm": 14.1, "retenue": true}, {"annee": 2013, "heures_avec_T_et_U": 8644, "heures_attendues": 8760, "completude": 0.9868, "heures_manquantes_pct": 1.3242, "heures_humidex_defini": 2924, "humidex_moyen": 29.3767, "humidex_median": 28.7005, "humidex_p95": 37.5002, "humidex_max": 46.2193, "date_max": "2013-08-12 18:00", "temperature_moyenne": 16.4481, "heures_sup30": 1156, "heures_sup30_norm": 1171.5, "heures_sup35": 357, "heures_sup35_norm": 361.8, "heures_sup40": 57, "heures_sup40_norm": 57.8, "heures_sup45": 5, "heures_sup45_norm": 5.1, "heures_30_35": 799, "heures_30_35_norm": 809.7, "heures_35_40": 300, "heures_35_40_norm": 304.0, "heures_40_45": 52, "heures_40_45_norm": 52.7, "heures_45_plus": 5, "heures_45_plus_norm": 5.1, "humidex_moyen_jour": 30.7946, "humidex_max_jour": 45.3453, "heures_jour_sup30": 637, "heures_jour_sup35": 229, "heures_jour_sup30_norm": 643.8, "heures_jour_sup35_norm": 231.5, "humidex_moyen_nuit": 27.0827, "humidex_max_nuit": 40.1111, "heures_nuit_sup30": 145, "heures_nuit_sup35": 17, "heures_nuit_sup30_norm": 147.1, "heures_nuit_sup35_norm": 17.2, "retenue": true}, {"annee": 2014, "heures_avec_T_et_U": 8668, "heures_attendues": 8760, "completude": 0.9895, "heures_manquantes_pct": 1.0502, "heures_humidex_defini": 2992, "humidex_moyen": 29.2703, "humidex_median": 28.6358, "humidex_p95": 37.7316, "humidex_max": 45.7419, "date_max": "2014-08-01 14:00", "temperature_moyenne": 16.4961, "heures_sup30": 1168, "heures_sup30_norm": 1180.4, "heures_sup35": 334, "heures_sup35_norm": 337.5, "heures_sup40": 55, "heures_sup40_norm": 55.6, "heures_sup45": 2, "heures_sup45_norm": 2.0, "heures_30_35": 834, "heures_30_35_norm": 842.9, "heures_35_40": 279, "heures_35_40_norm": 282.0, "heures_40_45": 53, "heures_40_45_norm": 53.6, "heures_45_plus": 2, "heures_45_plus_norm": 2.0, "humidex_moyen_jour": 30.73, "humidex_max_jour": 45.7419, "heures_jour_sup30": 654, "heures_jour_sup35": 213, "heures_jour_sup30_norm": 662.6, "heures_jour_sup35_norm": 215.8, "humidex_moyen_nuit": 26.9311, "humidex_max_nuit": 39.8567, "heures_nuit_sup30": 131, "heures_nuit_sup35": 14, "heures_nuit_sup30_norm": 132.3, "heures_nuit_sup35_norm": 14.1, "retenue": true}, {"annee": 2015, "heures_avec_T_et_U": 8654, "heures_attendues": 8760, "completude": 0.9879, "heures_manquantes_pct": 1.21, "heures_humidex_defini": 3037, "humidex_moyen": 29.3049, "humidex_median": 28.6058, "humidex_p95": 37.308, "humidex_max": 45.007, "date_max": "2015-06-26 16:00", "temperature_moyenne": 16.5165, "heures_sup30": 1188, "heures_sup30_norm": 1202.6, "heures_sup35": 372, "heures_sup35_norm": 376.6, "heures_sup40": 43, "heures_sup40_norm": 43.5, "heures_sup45": 1, "heures_sup45_norm": 1.0, "heures_30_35": 816, "heures_30_35_norm": 826.0, "heures_35_40": 329, "heures_35_40_norm": 333.0, "heures_40_45": 42, "heures_40_45_norm": 42.5, "heures_45_plus": 1, "heures_45_plus_norm": 1.0, "humidex_moyen_jour": 30.8767, "humidex_max_jour": 45.007, "heures_jour_sup30": 670, "heures_jour_sup35": 260, "heures_jour_sup30_norm": 677.9, "heures_jour_sup35_norm": 263.1, "humidex_moyen_nuit": 26.976, "humidex_max_nuit": 37.029, "heures_nuit_sup30": 133, "heures_nuit_sup35": 9, "heures_nuit_sup30_norm": 134.7, "heures_nuit_sup35_norm": 9.1, "retenue": true}, {"annee": 2016, "heures_avec_T_et_U": 8666, "heures_attendues": 8784, "completude": 0.9866, "heures_manquantes_pct": 1.3434, "heures_humidex_defini": 3054, "humidex_moyen": 29.3011, "humidex_median": 28.6549, "humidex_p95": 37.466, "humidex_max": 46.3166, "date_max": "2016-08-08 13:00", "temperature_moyenne": 16.5334, "heures_sup30": 1170, "heures_sup30_norm": 1185.9, "heures_sup35": 363, "heures_sup35_norm": 367.9, "heures_sup40": 46, "heures_sup40_norm": 46.6, "heures_sup45": 2, "heures_sup45_norm": 2.0, "heures_30_35": 807, "heures_30_35_norm": 818.0, "heures_35_40": 317, "heures_35_40_norm": 321.3, "heures_40_45": 44, "heures_40_45_norm": 44.6, "heures_45_plus": 2, "heures_45_plus_norm": 2.0, "humidex_moyen_jour": 30.6649, "humidex_max_jour": 46.3166, "heures_jour_sup30": 643, "heures_jour_sup35": 237, "heures_jour_sup30_norm": 653.3, "heures_jour_sup35_norm": 240.8, "humidex_moyen_nuit": 27.0301, "humidex_max_nuit": 40.2322, "heures_nuit_sup30": 135, "heures_nuit_sup35": 17, "heures_nuit_sup30_norm": 136.5, "heures_nuit_sup35_norm": 17.2, "retenue": true}, {"annee": 2017, "heures_avec_T_et_U": 8663, "heures_attendues": 8760, "completude": 0.9889, "heures_manquantes_pct": 1.1073, "heures_humidex_defini": 3014, "humidex_moyen": 29.2774, "humidex_median": 28.5975, "humidex_p95": 37.5775, "humidex_max": 46.9739, "date_max": "2017-07-12 17:00", "temperature_moyenne": 16.6201, "heures_sup30": 1187, "heures_sup30_norm": 1200.3, "heures_sup35": 371, "heures_sup35_norm": 375.2, "heures_sup40": 35, "heures_sup40_norm": 35.4, "heures_sup45": 4, "heures_sup45_norm": 4.0, "heures_30_35": 816, "heures_30_35_norm": 825.1, "heures_35_40": 336, "heures_35_40_norm": 339.8, "heures_40_45": 31, "heures_40_45_norm": 31.3, "heures_45_plus": 4, "heures_45_plus_norm": 4.0, "humidex_moyen_jour": 30.84, "humidex_max_jour": 46.9739, "heures_jour_sup30": 666, "heures_jour_sup35": 245, "heures_jour_sup30_norm": 672.4, "heures_jour_sup35_norm": 247.4, "humidex_moyen_nuit": 26.9265, "humidex_max_nuit": 39.6654, "heures_nuit_sup30": 143, "heures_nuit_sup35": 12, "heures_nuit_sup30_norm": 144.8, "heures_nuit_sup35_norm": 12.1, "retenue": true}, {"annee": 2018, "heures_avec_T_et_U": 8638, "heures_attendues": 8760, "completude": 0.9861, "heures_manquantes_pct": 1.3927, "heures_humidex_defini": 3061, "humidex_moyen": 29.3114, "humidex_median": 28.7437, "humidex_p95": 37.2625, "humidex_max": 47.2014, "date_max": "2018-07-09 17:00", "temperature_moyenne": 16.6285, "heures_sup30": 1220, "heures_sup30_norm": 1237.2, "heures_sup35": 342, "heures_sup35_norm": 346.8, "heures_sup40": 42, "heures_sup40_norm": 42.6, "heures_sup45": 3, "heures_sup45_norm": 3.0, "heures_30_35": 878, "heures_30_35_norm": 890.4, "heures_35_40": 300, "heures_35_40_norm": 304.2, "heures_40_45": 39, "heures_40_45_norm": 39.6, "heures_45_plus": 3, "heures_45_plus_norm": 3.0, "humidex_moyen_jour": 30.8776, "humidex_max_jour": 47.2014, "heures_jour_sup30": 699, "heures_jour_sup35": 235, "heures_jour_sup30_norm": 708.5, "heures_jour_sup35_norm": 238.2, "humidex_moyen_nuit": 26.8835, "humidex_max_nuit": 37.8217, "heures_nuit_sup30": 128, "heures_nuit_sup35": 11, "heures_nuit_sup30_norm": 129.8, "heures_nuit_sup35_norm": 11.2, "retenue": true}, {"annee": 2019, "heures_avec_T_et_U": 8636, "heures_attendues": 8760, "completude": 0.9858, "heures_manquantes_pct": 1.4155, "heures_humidex_defini": 3058, "humidex_moyen": 29.5483, "humidex_median": 28.8416, "humidex_p95": 37.6083, "humidex_max": 48.9718, "date_max": "2019-07-01 14:00", "temperature_moyenne": 16.6884, "heures_sup30": 1274, "heures_sup30_norm": 1292.3, "heures_sup35": 399, "heures_sup35_norm": 404.7, "heures_sup40": 55, "heures_sup40_norm": 55.8, "heures_sup45": 2, "heures_sup45_norm": 2.0, "heures_30_35": 875, "heures_30_35_norm": 887.6, "heures_35_40": 344, "heures_35_40_norm": 348.9, "heures_40_45": 53, "heures_40_45_norm": 53.8, "heures_45_plus": 2, "heures_45_plus_norm": 2.0, "humidex_moyen_jour": 31.0837, "humidex_max_jour": 48.9718, "heures_jour_sup30": 712, "heures_jour_sup35": 264, "heures_jour_sup30_norm": 723.6, "heures_jour_sup35_norm": 268.3, "humidex_moyen_nuit": 27.1617, "humidex_max_nuit": 37.9977, "heures_nuit_sup30": 139, "heures_nuit_sup35": 11, "heures_nuit_sup30_norm": 140.9, "heures_nuit_sup35_norm": 11.2, "retenue": true}, {"annee": 2020, "heures_avec_T_et_U": 8687, "heures_attendues": 8784, "completude": 0.989, "heures_manquantes_pct": 1.1043, "heures_humidex_defini": 3087, "humidex_moyen": 29.4974, "humidex_median": 28.8586, "humidex_p95": 37.1368, "humidex_max": 44.3611, "date_max": "2020-08-08 16:00", "temperature_moyenne": 16.6755, "heures_sup30": 1282, "heures_sup30_norm": 1296.3, "heures_sup35": 391, "heures_sup35_norm": 395.4, "heures_sup40": 54, "heures_sup40_norm": 54.6, "heures_sup45": 0, "heures_sup45_norm": 0.0, "heures_30_35": 891, "heures_30_35_norm": 900.9, "heures_35_40": 337, "heures_35_40_norm": 340.8, "heures_40_45": 54, "heures_40_45_norm": 54.6, "heures_45_plus": 0, "heures_45_plus_norm": 0.0, "humidex_moyen_jour": 30.9995, "humidex_max_jour": 44.3611, "heures_jour_sup30": 710, "heures_jour_sup35": 269, "heures_jour_sup30_norm": 719.1, "heures_jour_sup35_norm": 272.4, "humidex_moyen_nuit": 27.1644, "humidex_max_nuit": 36.9219, "heures_nuit_sup30": 156, "heures_nuit_sup35": 8, "heures_nuit_sup30_norm": 157.4, "heures_nuit_sup35_norm": 8.1, "retenue": true}, {"annee": 2021, "heures_avec_T_et_U": 8669, "heures_attendues": 8760, "completude": 0.9896, "heures_manquantes_pct": 1.0388, "heures_humidex_defini": 3157, "humidex_moyen": 29.5217, "humidex_median": 28.8458, "humidex_p95": 37.8607, "humidex_max": 56.4361, "date_max": "2021-07-11 15:00", "temperature_moyenne": 16.758, "heures_sup30": 1291, "heures_sup30_norm": 1304.6, "heures_sup35": 395, "heures_sup35_norm": 399.1, "heures_sup40": 75, "heures_sup40_norm": 75.8, "heures_sup45": 21, "heures_sup45_norm": 21.2, "heures_30_35": 896, "heures_30_35_norm": 905.4, "heures_35_40": 320, "heures_35_40_norm": 323.4, "heures_40_45": 54, "heures_40_45_norm": 54.6, "heures_45_plus": 21, "heures_45_plus_norm": 21.2, "humidex_moyen_jour": 30.9899, "humidex_max_jour": 56.4361, "heures_jour_sup30": 719, "heures_jour_sup35": 251, "heures_jour_sup30_norm": 726.5, "heures_jour_sup35_norm": 253.6, "humidex_moyen_nuit": 27.0328, "humidex_max_nuit": 42.1862, "heures_nuit_sup30": 141, "heures_nuit_sup35": 22, "heures_nuit_sup30_norm": 142.5, "heures_nuit_sup35_norm": 22.2, "retenue": true}, {"annee": 2022, "heures_avec_T_et_U": 8666, "heures_attendues": 8760, "completude": 0.9893, "heures_manquantes_pct": 1.0731, "heures_humidex_defini": 3106, "humidex_moyen": 29.6452, "humidex_median": 28.9069, "humidex_p95": 37.9865, "humidex_max": 48.1557, "date_max": "2022-07-12 15:00", "temperature_moyenne": 16.8409, "heures_sup30": 1305, "heures_sup30_norm": 1319.2, "heures_sup35": 418, "heures_sup35_norm": 422.5, "heures_sup40": 63, "heures_sup40_norm": 63.7, "heures_sup45": 6, "heures_sup45_norm": 6.1, "heures_30_35": 887, "heures_30_35_norm": 896.6, "heures_35_40": 355, "heures_35_40_norm": 358.9, "heures_40_45": 57, "heures_40_45_norm": 57.6, "heures_45_plus": 6, "heures_45_plus_norm": 6.1, "humidex_moyen_jour": 31.2945, "humidex_max_jour": 48.1557, "heures_jour_sup30": 723, "heures_jour_sup35": 275, "heures_jour_sup30_norm": 731.0, "heures_jour_sup35_norm": 278.0, "humidex_moyen_nuit": 27.2031, "humidex_max_nuit": 38.6908, "heures_nuit_sup30": 156, "heures_nuit_sup35": 19, "heures_nuit_sup30_norm": 157.7, "heures_nuit_sup35_norm": 19.2, "retenue": true}, {"annee": 2023, "heures_avec_T_et_U": 8649, "heures_attendues": 8760, "completude": 0.9873, "heures_manquantes_pct": 1.2671, "heures_humidex_defini": 3158, "humidex_moyen": 29.5406, "humidex_median": 28.9569, "humidex_p95": 37.7276, "humidex_max": 47.5123, "date_max": "2023-07-24 15:00", "temperature_moyenne": 16.8187, "heures_sup30": 1295, "heures_sup30_norm": 1311.6, "heures_sup35": 414, "heures_sup35_norm": 419.3, "heures_sup40": 73, "heures_sup40_norm": 73.9, "heures_sup45": 9, "heures_sup45_norm": 9.1, "heures_30_35": 881, "heures_30_35_norm": 892.3, "heures_35_40": 341, "heures_35_40_norm": 345.4, "heures_40_45": 64, "heures_40_45_norm": 64.8, "heures_45_plus": 9, "heures_45_plus_norm": 9.1, "humidex_moyen_jour": 31.1628, "humidex_max_jour": 47.5123, "heures_jour_sup30": 720, "heures_jour_sup35": 266, "heures_jour_sup30_norm": 728.2, "heures_jour_sup35_norm": 269.0, "humidex_moyen_nuit": 27.0181, "humidex_max_nuit": 39.1865, "heures_nuit_sup30": 152, "heures_nuit_sup35": 16, "heures_nuit_sup30_norm": 154.2, "heures_nuit_sup35_norm": 16.2, "retenue": true}, {"annee": 2024, "heures_avec_T_et_U": 8681, "heures_attendues": 8784, "completude": 0.9883, "heures_manquantes_pct": 1.1726, "heures_humidex_defini": 3121, "humidex_moyen": 29.8117, "humidex_median": 29.1245, "humidex_p95": 38.5688, "humidex_max": 46.5949, "date_max": "2024-08-15 15:00", "temperature_moyenne": 16.9125, "heures_sup30": 1371, "heures_sup30_norm": 1387.3, "heures_sup35": 470, "heures_sup35_norm": 475.6, "heures_sup40": 94, "heures_sup40_norm": 95.1, "heures_sup45": 6, "heures_sup45_norm": 6.1, "heures_30_35": 901, "heures_30_35_norm": 911.7, "heures_35_40": 376, "heures_35_40_norm": 380.5, "heures_40_45": 88, "heures_40_45_norm": 89.0, "heures_45_plus": 6, "heures_45_plus_norm": 6.1, "humidex_moyen_jour": 31.2319, "humidex_max_jour": 46.5949, "heures_jour_sup30": 714, "heures_jour_sup35": 303, "heures_jour_sup30_norm": 721.6, "heures_jour_sup35_norm": 306.2, "humidex_moyen_nuit": 27.6315, "humidex_max_nuit": 40.073, "heures_nuit_sup30": 196, "heures_nuit_sup35": 24, "heures_nuit_sup30_norm": 198.7, "heures_nuit_sup35_norm": 24.3, "retenue": true}, {"annee": 2025, "heures_avec_T_et_U": 8644, "heures_attendues": 8760, "completude": 0.9868, "heures_manquantes_pct": 1.3242, "heures_humidex_defini": 3212, "humidex_moyen": 29.6912, "humidex_median": 29.0589, "humidex_p95": 37.8224, "humidex_max": 50.4696, "date_max": "2025-06-21 15:00", "temperature_moyenne": 16.9342, "heures_sup30": 1384, "heures_sup30_norm": 1402.6, "heures_sup35": 435, "heures_sup35_norm": 440.8, "heures_sup40": 67, "heures_sup40_norm": 67.9, "heures_sup45": 4, "heures_sup45_norm": 4.1, "heures_30_35": 949, "heures_30_35_norm": 961.7, "heures_35_40": 368, "heures_35_40_norm": 372.9, "heures_40_45": 63, "heures_40_45_norm": 63.8, "heures_45_plus": 4, "heures_45_plus_norm": 4.1, "humidex_moyen_jour": 31.398, "humidex_max_jour": 50.4696, "heures_jour_sup30": 763, "heures_jour_sup35": 287, "heures_jour_sup30_norm": 774.7, "heures_jour_sup35_norm": 291.4, "humidex_moyen_nuit": 27.2377, "humidex_max_nuit": 38.4209, "heures_nuit_sup30": 166, "heures_nuit_sup35": 18, "heures_nuit_sup30_norm": 168.3, "heures_nuit_sup35_norm": 18.2, "retenue": true}, {"annee": 2026, "heures_avec_T_et_U": 1, "heures_attendues": 8760, "completude": 0.0001, "heures_manquantes_pct": 99.9886, "heures_humidex_defini": 0, "humidex_moyen": null, "humidex_median": null, "humidex_p95": null, "humidex_max": null, "date_max": "", "temperature_moyenne": 6.9, "heures_sup30": 0, "heures_sup30_norm": 0.0, "heures_sup35": 0, "heures_sup35_norm": 0.0, "heures_sup40": 0, "heures_sup40_norm": 0.0, "heures_sup45": 0, "heures_sup45_norm": 0.0, "heures_30_35": 0, "heures_30_35_norm": 0.0, "heures_35_40": 0, "heures_35_40_norm": 0.0, "heures_40_45": 0, "heures_40_45_norm": 0.0, "heures_45_plus": 0, "heures_45_plus_norm": 0.0, "humidex_moyen_jour": null, "humidex_max_jour": null, "heures_jour_sup30": 0, "heures_jour_sup35": 0, "heures_jour_sup30_norm": null, "heures_jour_sup35_norm": null, "humidex_moyen_nuit": null, "humidex_max_nuit": null, "heures_nuit_sup30": 0, "heures_nuit_sup35": 0, "heures_nuit_sup30_norm": 0.0, "heures_nuit_sup35_norm": 0.0, "retenue": false}], "grille_mensuelle": [{"annee": 1998, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 730}, {"annee": 1998, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 661}, {"annee": 1998, "mois": 3, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 737}, {"annee": 1998, "mois": 4, "humidex_moyen": 25.5425, "humidex_max": 30.9455, "heures_sup30": 1, "heures_definies": 53, "heures_avec_T_et_U": 712}, {"annee": 1998, "mois": 5, "humidex_moyen": 26.5706, "humidex_max": 38.5825, "heures_sup30": 33, "heures_definies": 360, "heures_avec_T_et_U": 736}, {"annee": 1998, "mois": 6, "humidex_moyen": 28.7383, "humidex_max": 39.3458, "heures_sup30": 187, "heures_definies": 554, "heures_avec_T_et_U": 707}, {"annee": 1998, "mois": 7, "humidex_moyen": 30.0558, "humidex_max": 46.2599, "heures_sup30": 292, "heures_definies": 648, "heures_avec_T_et_U": 731}, {"annee": 1998, "mois": 8, "humidex_moyen": 28.977, "humidex_max": 41.0993, "heures_sup30": 228, "heures_definies": 596, "heures_avec_T_et_U": 731}, {"annee": 1998, "mois": 9, "humidex_moyen": 27.1098, "humidex_max": 38.2035, "heures_sup30": 62, "heures_definies": 376, "heures_avec_T_et_U": 703}, {"annee": 1998, "mois": 10, "humidex_moyen": 25.2641, "humidex_max": 30.9913, "heures_sup30": 6, "heures_definies": 145, "heures_avec_T_et_U": 738}, {"annee": 1998, "mois": 11, "humidex_moyen": 24.1775, "humidex_max": 25.4478, "heures_sup30": 0, "heures_definies": 5, "heures_avec_T_et_U": 705}, {"annee": 1998, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 740}, {"annee": 1999, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 730}, {"annee": 1999, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 668}, {"annee": 1999, "mois": 3, "humidex_moyen": 22.8614, "humidex_max": 23.7342, "heures_sup30": 0, "heures_definies": 7, "heures_avec_T_et_U": 733}, {"annee": 1999, "mois": 4, "humidex_moyen": 24.8574, "humidex_max": 28.2698, "heures_sup30": 0, "heures_definies": 77, "heures_avec_T_et_U": 717}, {"annee": 1999, "mois": 5, "humidex_moyen": 26.7925, "humidex_max": 36.3325, "heures_sup30": 48, "heures_definies": 305, "heures_avec_T_et_U": 734}, {"annee": 1999, "mois": 6, "humidex_moyen": 29.0261, "humidex_max": 42.1578, "heures_sup30": 213, "heures_definies": 559, "heures_avec_T_et_U": 713}, {"annee": 1999, "mois": 7, "humidex_moyen": 30.0606, "humidex_max": 48.615, "heures_sup30": 287, "heures_definies": 631, "heures_avec_T_et_U": 737}, {"annee": 1999, "mois": 8, "humidex_moyen": 29.4224, "humidex_max": 44.1584, "heures_sup30": 253, "heures_definies": 596, "heures_avec_T_et_U": 734}, {"annee": 1999, "mois": 9, "humidex_moyen": 27.4749, "humidex_max": 40.0698, "heures_sup30": 88, "heures_definies": 422, "heures_avec_T_et_U": 712}, {"annee": 1999, "mois": 10, "humidex_moyen": 25.1742, "humidex_max": 32.7736, "heures_sup30": 2, "heures_definies": 106, "heures_avec_T_et_U": 734}, {"annee": 1999, "mois": 11, "humidex_moyen": 23.4417, "humidex_max": 24.134, "heures_sup30": 0, "heures_definies": 5, "heures_avec_T_et_U": 714}, {"annee": 1999, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 732}, {"annee": 2000, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 738}, {"annee": 2000, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 694}, {"annee": 2000, "mois": 3, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 736}, {"annee": 2000, "mois": 4, "humidex_moyen": 24.9397, "humidex_max": 30.6399, "heures_sup30": 1, "heures_definies": 63, "heures_avec_T_et_U": 710}, {"annee": 2000, "mois": 5, "humidex_moyen": 27.4125, "humidex_max": 37.1812, "heures_sup30": 86, "heures_definies": 395, "heures_avec_T_et_U": 738}, {"annee": 2000, "mois": 6, "humidex_moyen": 28.4917, "humidex_max": 38.6246, "heures_sup30": 180, "heures_definies": 525, "heures_avec_T_et_U": 712}, {"annee": 2000, "mois": 7, "humidex_moyen": 30.4491, "humidex_max": 42.3353, "heures_sup30": 336, "heures_definies": 658, "heures_avec_T_et_U": 734}, {"annee": 2000, "mois": 8, "humidex_moyen": 29.0029, "humidex_max": 41.8819, "heures_sup30": 231, "heures_definies": 601, "heures_avec_T_et_U": 736}, {"annee": 2000, "mois": 9, "humidex_moyen": 27.7388, "humidex_max": 37.2303, "heures_sup30": 91, "heures_definies": 405, "heures_avec_T_et_U": 711}, {"annee": 2000, "mois": 10, "humidex_moyen": 25.13, "humidex_max": 30.9947, "heures_sup30": 2, "heures_definies": 106, "heures_avec_T_et_U": 734}, {"annee": 2000, "mois": 11, "humidex_moyen": 23.5768, "humidex_max": 23.5768, "heures_sup30": 0, "heures_definies": 1, "heures_avec_T_et_U": 716}, {"annee": 2000, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 735}, {"annee": 2002, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 733}, {"annee": 2002, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 664}, {"annee": 2002, "mois": 3, "humidex_moyen": 23.353, "humidex_max": 25.16, "heures_sup30": 0, "heures_definies": 4, "heures_avec_T_et_U": 734}, {"annee": 2002, "mois": 4, "humidex_moyen": 25.3459, "humidex_max": 30.1385, "heures_sup30": 1, "heures_definies": 84, "heures_avec_T_et_U": 711}, {"annee": 2002, "mois": 5, "humidex_moyen": 27.1691, "humidex_max": 37.425, "heures_sup30": 59, "heures_definies": 346, "heures_avec_T_et_U": 740}, {"annee": 2002, "mois": 6, "humidex_moyen": 28.9073, "humidex_max": 42.2935, "heures_sup30": 203, "heures_definies": 526, "heures_avec_T_et_U": 715}, {"annee": 2002, "mois": 7, "humidex_moyen": 30.3273, "humidex_max": 42.8643, "heures_sup30": 310, "heures_definies": 650, "heures_avec_T_et_U": 727}, {"annee": 2002, "mois": 8, "humidex_moyen": 29.1126, "humidex_max": 41.5105, "heures_sup30": 261, "heures_definies": 630, "heures_avec_T_et_U": 736}, {"annee": 2002, "mois": 9, "humidex_moyen": 27.5813, "humidex_max": 38.1436, "heures_sup30": 101, "heures_definies": 379, "heures_avec_T_et_U": 706}, {"annee": 2002, "mois": 10, "humidex_moyen": 25.2179, "humidex_max": 33.1115, "heures_sup30": 2, "heures_definies": 146, "heures_avec_T_et_U": 741}, {"annee": 2002, "mois": 11, "humidex_moyen": 26.9941, "humidex_max": 32.959, "heures_sup30": 5, "heures_definies": 31, "heures_avec_T_et_U": 713}, {"annee": 2002, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 733}, {"annee": 2003, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 731}, {"annee": 2003, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 665}, {"annee": 2003, "mois": 3, "humidex_moyen": 24.6382, "humidex_max": 28.9564, "heures_sup30": 0, "heures_definies": 27, "heures_avec_T_et_U": 729}, {"annee": 2003, "mois": 4, "humidex_moyen": 24.7936, "humidex_max": 30.2888, "heures_sup30": 1, "heures_definies": 83, "heures_avec_T_et_U": 710}, {"annee": 2003, "mois": 5, "humidex_moyen": 27.1105, "humidex_max": 38.082, "heures_sup30": 63, "heures_definies": 357, "heures_avec_T_et_U": 736}, {"annee": 2003, "mois": 6, "humidex_moyen": 29.0193, "humidex_max": 41.1907, "heures_sup30": 222, "heures_definies": 538, "heures_avec_T_et_U": 710}, {"annee": 2003, "mois": 7, "humidex_moyen": 29.8915, "humidex_max": 42.688, "heures_sup30": 309, "heures_definies": 672, "heures_avec_T_et_U": 733}, {"annee": 2003, "mois": 8, "humidex_moyen": 29.5127, "humidex_max": 42.4462, "heures_sup30": 269, "heures_definies": 609, "heures_avec_T_et_U": 739}, {"annee": 2003, "mois": 9, "humidex_moyen": 27.0953, "humidex_max": 36.458, "heures_sup30": 76, "heures_definies": 422, "heures_avec_T_et_U": 712}, {"annee": 2003, "mois": 10, "humidex_moyen": 25.2967, "humidex_max": 30.6513, "heures_sup30": 5, "heures_definies": 128, "heures_avec_T_et_U": 735}, {"annee": 2003, "mois": 11, "humidex_moyen": 22.9158, "humidex_max": 22.9158, "heures_sup30": 0, "heures_definies": 1, "heures_avec_T_et_U": 715}, {"annee": 2003, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 731}, {"annee": 2004, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 734}, {"annee": 2004, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 687}, {"annee": 2004, "mois": 3, "humidex_moyen": 24.2314, "humidex_max": 27.5573, "heures_sup30": 0, "heures_definies": 6, "heures_avec_T_et_U": 732}, {"annee": 2004, "mois": 4, "humidex_moyen": 25.0243, "humidex_max": 29.4581, "heures_sup30": 0, "heures_definies": 90, "heures_avec_T_et_U": 708}, {"annee": 2004, "mois": 5, "humidex_moyen": 26.1021, "humidex_max": 34.0346, "heures_sup30": 22, "heures_definies": 333, "heures_avec_T_et_U": 733}, {"annee": 2004, "mois": 6, "humidex_moyen": 29.1431, "humidex_max": 44.622, "heures_sup30": 233, "heures_definies": 595, "heures_avec_T_et_U": 711}, {"annee": 2004, "mois": 7, "humidex_moyen": 30.3815, "humidex_max": 46.4484, "heures_sup30": 325, "heures_definies": 645, "heures_avec_T_et_U": 738}, {"annee": 2004, "mois": 8, "humidex_moyen": 29.3758, "humidex_max": 41.901, "heures_sup30": 266, "heures_definies": 626, "heures_avec_T_et_U": 737}, {"annee": 2004, "mois": 9, "humidex_moyen": 27.2661, "humidex_max": 36.8595, "heures_sup30": 82, "heures_definies": 394, "heures_avec_T_et_U": 714}, {"annee": 2004, "mois": 10, "humidex_moyen": 26.4155, "humidex_max": 33.9754, "heures_sup30": 15, "heures_definies": 157, "heures_avec_T_et_U": 739}, {"annee": 2004, "mois": 11, "humidex_moyen": 23.1852, "humidex_max": 25.0239, "heures_sup30": 0, "heures_definies": 2, "heures_avec_T_et_U": 709}, {"annee": 2004, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 737}, {"annee": 2005, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 732}, {"annee": 2005, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 664}, {"annee": 2005, "mois": 3, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 733}, {"annee": 2005, "mois": 4, "humidex_moyen": 24.5817, "humidex_max": 29.4472, "heures_sup30": 0, "heures_definies": 55, "heures_avec_T_et_U": 708}, {"annee": 2005, "mois": 5, "humidex_moyen": 27.276, "humidex_max": 35.9683, "heures_sup30": 74, "heures_definies": 366, "heures_avec_T_et_U": 737}, {"annee": 2005, "mois": 6, "humidex_moyen": 28.7844, "humidex_max": 43.7305, "heures_sup30": 200, "heures_definies": 566, "heures_avec_T_et_U": 708}, {"annee": 2005, "mois": 7, "humidex_moyen": 30.0205, "humidex_max": 42.7858, "heures_sup30": 331, "heures_definies": 682, "heures_avec_T_et_U": 737}, {"annee": 2005, "mois": 8, "humidex_moyen": 30.2032, "humidex_max": 43.137, "heures_sup30": 286, "heures_definies": 622, "heures_avec_T_et_U": 732}, {"annee": 2005, "mois": 9, "humidex_moyen": 27.0434, "humidex_max": 41.4626, "heures_sup30": 66, "heures_definies": 395, "heures_avec_T_et_U": 714}, {"annee": 2005, "mois": 10, "humidex_moyen": 26.324, "humidex_max": 33.2899, "heures_sup30": 13, "heures_definies": 154, "heures_avec_T_et_U": 734}, {"annee": 2005, "mois": 11, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 714}, {"annee": 2005, "mois": 12, "humidex_moyen": 23.1401, "humidex_max": 23.1401, "heures_sup30": 0, "heures_definies": 1, "heures_avec_T_et_U": 734}, {"annee": 2006, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 736}, {"annee": 2006, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 660}, {"annee": 2006, "mois": 3, "humidex_moyen": 24.624, "humidex_max": 26.7576, "heures_sup30": 0, "heures_definies": 12, "heures_avec_T_et_U": 737}, {"annee": 2006, "mois": 4, "humidex_moyen": 25.2334, "humidex_max": 30.2794, "heures_sup30": 1, "heures_definies": 119, "heures_avec_T_et_U": 712}, {"annee": 2006, "mois": 5, "humidex_moyen": 27.5658, "humidex_max": 40.701, "heures_sup30": 85, "heures_definies": 352, "heures_avec_T_et_U": 736}, {"annee": 2006, "mois": 6, "humidex_moyen": 29.8361, "humidex_max": 41.2879, "heures_sup30": 260, "heures_definies": 551, "heures_avec_T_et_U": 712}, {"annee": 2006, "mois": 7, "humidex_moyen": 29.9872, "humidex_max": 40.1745, "heures_sup30": 325, "heures_definies": 655, "heures_avec_T_et_U": 732}, {"annee": 2006, "mois": 8, "humidex_moyen": 29.6013, "humidex_max": 42.669, "heures_sup30": 264, "heures_definies": 614, "heures_avec_T_et_U": 731}, {"annee": 2006, "mois": 9, "humidex_moyen": 28.0652, "humidex_max": 41.4369, "heures_sup30": 98, "heures_definies": 376, "heures_avec_T_et_U": 710}, {"annee": 2006, "mois": 10, "humidex_moyen": 25.8403, "humidex_max": 33.8514, "heures_sup30": 12, "heures_definies": 169, "heures_avec_T_et_U": 737}, {"annee": 2006, "mois": 11, "humidex_moyen": 23.8706, "humidex_max": 26.0032, "heures_sup30": 0, "heures_definies": 18, "heures_avec_T_et_U": 705}, {"annee": 2006, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 738}, {"annee": 2007, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 735}, {"annee": 2007, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 668}, {"annee": 2007, "mois": 3, "humidex_moyen": 24.3306, "humidex_max": 25.696, "heures_sup30": 0, "heures_definies": 5, "heures_avec_T_et_U": 736}, {"annee": 2007, "mois": 4, "humidex_moyen": 25.1756, "humidex_max": 28.9503, "heures_sup30": 0, "heures_definies": 101, "heures_avec_T_et_U": 712}, {"annee": 2007, "mois": 5, "humidex_moyen": 27.4255, "humidex_max": 40.3494, "heures_sup30": 77, "heures_definies": 366, "heures_avec_T_et_U": 735}, {"annee": 2007, "mois": 6, "humidex_moyen": 29.3372, "humidex_max": 40.3115, "heures_sup30": 231, "heures_definies": 567, "heures_avec_T_et_U": 711}, {"annee": 2007, "mois": 7, "humidex_moyen": 30.7248, "humidex_max": 47.8015, "heures_sup30": 331, "heures_definies": 642, "heures_avec_T_et_U": 733}, {"annee": 2007, "mois": 8, "humidex_moyen": 29.6011, "humidex_max": 43.5536, "heures_sup30": 272, "heures_definies": 609, "heures_avec_T_et_U": 732}, {"annee": 2007, "mois": 9, "humidex_moyen": 28.1518, "humidex_max": 37.7799, "heures_sup30": 126, "heures_definies": 423, "heures_avec_T_et_U": 711}, {"annee": 2007, "mois": 10, "humidex_moyen": 25.8821, "humidex_max": 32.7523, "heures_sup30": 9, "heures_definies": 135, "heures_avec_T_et_U": 731}, {"annee": 2007, "mois": 11, "humidex_moyen": 24.2676, "humidex_max": 25.9726, "heures_sup30": 0, "heures_definies": 10, "heures_avec_T_et_U": 707}, {"annee": 2007, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 738}, {"annee": 2008, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 737}, {"annee": 2008, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 688}, {"annee": 2008, "mois": 3, "humidex_moyen": 23.1082, "humidex_max": 24.011, "heures_sup30": 0, "heures_definies": 5, "heures_avec_T_et_U": 734}, {"annee": 2008, "mois": 4, "humidex_moyen": 24.9049, "humidex_max": 30.3247, "heures_sup30": 1, "heures_definies": 77, "heures_avec_T_et_U": 714}, {"annee": 2008, "mois": 5, "humidex_moyen": 27.7406, "humidex_max": 41.2879, "heures_sup30": 87, "heures_definies": 364, "heures_avec_T_et_U": 737}, {"annee": 2008, "mois": 6, "humidex_moyen": 29.6043, "humidex_max": 42.8967, "heures_sup30": 254, "heures_definies": 577, "heures_avec_T_et_U": 711}, {"annee": 2008, "mois": 7, "humidex_moyen": 30.4, "humidex_max": 44.8429, "heures_sup30": 341, "heures_definies": 685, "heures_avec_T_et_U": 737}, {"annee": 2008, "mois": 8, "humidex_moyen": 30.141, "humidex_max": 44.2447, "heures_sup30": 274, "heures_definies": 605, "heures_avec_T_et_U": 737}, {"annee": 2008, "mois": 9, "humidex_moyen": 27.5797, "humidex_max": 37.5698, "heures_sup30": 97, "heures_definies": 403, "heures_avec_T_et_U": 712}, {"annee": 2008, "mois": 10, "humidex_moyen": 25.9752, "humidex_max": 33.4971, "heures_sup30": 8, "heures_definies": 150, "heures_avec_T_et_U": 735}, {"annee": 2008, "mois": 11, "humidex_moyen": 25.5142, "humidex_max": 29.9422, "heures_sup30": 0, "heures_definies": 49, "heures_avec_T_et_U": 718}, {"annee": 2008, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 733}, {"annee": 2009, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 736}, {"annee": 2009, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 664}, {"annee": 2009, "mois": 3, "humidex_moyen": 25.0954, "humidex_max": 27.0354, "heures_sup30": 0, "heures_definies": 8, "heures_avec_T_et_U": 737}, {"annee": 2009, "mois": 4, "humidex_moyen": 25.796, "humidex_max": 31.6526, "heures_sup30": 3, "heures_definies": 98, "heures_avec_T_et_U": 717}, {"annee": 2009, "mois": 5, "humidex_moyen": 27.2014, "humidex_max": 37.2105, "heures_sup30": 80, "heures_definies": 366, "heures_avec_T_et_U": 735}, {"annee": 2009, "mois": 6, "humidex_moyen": 29.0623, "humidex_max": 41.8789, "heures_sup30": 241, "heures_definies": 607, "heures_avec_T_et_U": 708}, {"annee": 2009, "mois": 7, "humidex_moyen": 30.3926, "humidex_max": 42.5905, "heures_sup30": 319, "heures_definies": 652, "heures_avec_T_et_U": 730}, {"annee": 2009, "mois": 8, "humidex_moyen": 30.6167, "humidex_max": 44.3285, "heures_sup30": 340, "heures_definies": 648, "heures_avec_T_et_U": 736}, {"annee": 2009, "mois": 9, "humidex_moyen": 27.5159, "humidex_max": 37.0095, "heures_sup30": 91, "heures_definies": 382, "heures_avec_T_et_U": 709}, {"annee": 2009, "mois": 10, "humidex_moyen": 26.4461, "humidex_max": 34.5552, "heures_sup30": 17, "heures_definies": 210, "heures_avec_T_et_U": 734}, {"annee": 2009, "mois": 11, "humidex_moyen": 23.9365, "humidex_max": 25.2632, "heures_sup30": 0, "heures_definies": 7, "heures_avec_T_et_U": 705}, {"annee": 2009, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 740}, {"annee": 2010, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 739}, {"annee": 2010, "mois": 2, "humidex_moyen": 23.1681, "humidex_max": 24.8012, "heures_sup30": 0, "heures_definies": 5, "heures_avec_T_et_U": 665}, {"annee": 2010, "mois": 3, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 729}, {"annee": 2010, "mois": 4, "humidex_moyen": 25.5489, "humidex_max": 32.7681, "heures_sup30": 5, "heures_definies": 120, "heures_avec_T_et_U": 712}, {"annee": 2010, "mois": 5, "humidex_moyen": 27.2976, "humidex_max": 37.8609, "heures_sup30": 66, "heures_definies": 372, "heures_avec_T_et_U": 735}, {"annee": 2010, "mois": 6, "humidex_moyen": 28.9111, "humidex_max": 43.9785, "heures_sup30": 231, "heures_definies": 593, "heures_avec_T_et_U": 711}, {"annee": 2010, "mois": 7, "humidex_moyen": 30.6689, "humidex_max": 43.483, "heures_sup30": 366, "heures_definies": 686, "heures_avec_T_et_U": 737}, {"annee": 2010, "mois": 8, "humidex_moyen": 29.6297, "humidex_max": 41.8817, "heures_sup30": 271, "heures_definies": 633, "heures_avec_T_et_U": 733}, {"annee": 2010, "mois": 9, "humidex_moyen": 27.8326, "humidex_max": 37.7511, "heures_sup30": 118, "heures_definies": 435, "heures_avec_T_et_U": 711}, {"annee": 2010, "mois": 10, "humidex_moyen": 25.4113, "humidex_max": 30.8294, "heures_sup30": 2, "heures_definies": 147, "heures_avec_T_et_U": 733}, {"annee": 2010, "mois": 11, "humidex_moyen": 24.8245, "humidex_max": 25.5687, "heures_sup30": 0, "heures_definies": 5, "heures_avec_T_et_U": 716}, {"annee": 2010, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 737}, {"annee": 2011, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 734}, {"annee": 2011, "mois": 2, "humidex_moyen": 25.0964, "humidex_max": 25.8213, "heures_sup30": 0, "heures_definies": 4, "heures_avec_T_et_U": 662}, {"annee": 2011, "mois": 3, "humidex_moyen": 23.287, "humidex_max": 25.2663, "heures_sup30": 0, "heures_definies": 4, "heures_avec_T_et_U": 736}, {"annee": 2011, "mois": 4, "humidex_moyen": 25.8059, "humidex_max": 31.8807, "heures_sup30": 3, "heures_definies": 69, "heures_avec_T_et_U": 708}, {"annee": 2011, "mois": 5, "humidex_moyen": 27.8491, "humidex_max": 41.2584, "heures_sup30": 88, "heures_definies": 373, "heures_avec_T_et_U": 736}, {"annee": 2011, "mois": 6, "humidex_moyen": 30.529, "humidex_max": 45.8175, "heures_sup30": 277, "heures_definies": 541, "heures_avec_T_et_U": 712}, {"annee": 2011, "mois": 7, "humidex_moyen": 30.3981, "humidex_max": 48.1018, "heures_sup30": 333, "heures_definies": 655, "heures_avec_T_et_U": 734}, {"annee": 2011, "mois": 8, "humidex_moyen": 30.1392, "humidex_max": 45.0158, "heures_sup30": 288, "heures_definies": 615, "heures_avec_T_et_U": 735}, {"annee": 2011, "mois": 9, "humidex_moyen": 27.9566, "humidex_max": 38.6871, "heures_sup30": 113, "heures_definies": 441, "heures_avec_T_et_U": 710}, {"annee": 2011, "mois": 10, "humidex_moyen": 26.5474, "humidex_max": 34.6718, "heures_sup30": 25, "heures_definies": 163, "heures_avec_T_et_U": 737}, {"annee": 2011, "mois": 11, "humidex_moyen": 24.0347, "humidex_max": 24.901, "heures_sup30": 0, "heures_definies": 5, "heures_avec_T_et_U": 715}, {"annee": 2011, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 738}, {"annee": 2012, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 738}, {"annee": 2012, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 684}, {"annee": 2012, "mois": 3, "humidex_moyen": 24.326, "humidex_max": 26.0032, "heures_sup30": 0, "heures_definies": 9, "heures_avec_T_et_U": 734}, {"annee": 2012, "mois": 4, "humidex_moyen": 25.8779, "humidex_max": 31.8054, "heures_sup30": 3, "heures_definies": 118, "heures_avec_T_et_U": 713}, {"annee": 2012, "mois": 5, "humidex_moyen": 27.5754, "humidex_max": 40.0558, "heures_sup30": 92, "heures_definies": 398, "heures_avec_T_et_U": 736}, {"annee": 2012, "mois": 6, "humidex_moyen": 30.007, "humidex_max": 46.0216, "heures_sup30": 231, "heures_definies": 539, "heures_avec_T_et_U": 706}, {"annee": 2012, "mois": 7, "humidex_moyen": 31.1135, "humidex_max": 49.1798, "heures_sup30": 367, "heures_definies": 678, "heures_avec_T_et_U": 740}, {"annee": 2012, "mois": 8, "humidex_moyen": 29.31, "humidex_max": 41.3293, "heures_sup30": 263, "heures_definies": 630, "heures_avec_T_et_U": 731}, {"annee": 2012, "mois": 9, "humidex_moyen": 28.7399, "humidex_max": 40.2629, "heures_sup30": 149, "heures_definies": 426, "heures_avec_T_et_U": 708}, {"annee": 2012, "mois": 10, "humidex_moyen": 25.8516, "humidex_max": 32.9276, "heures_sup30": 6, "heures_definies": 163, "heures_avec_T_et_U": 733}, {"annee": 2012, "mois": 11, "humidex_moyen": 24.2346, "humidex_max": 25.4036, "heures_sup30": 0, "heures_definies": 7, "heures_avec_T_et_U": 711}, {"annee": 2012, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 731}, {"annee": 2013, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 736}, {"annee": 2013, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 662}, {"annee": 2013, "mois": 3, "humidex_moyen": 23.3762, "humidex_max": 25.8105, "heures_sup30": 0, "heures_definies": 7, "heures_avec_T_et_U": 733}, {"annee": 2013, "mois": 4, "humidex_moyen": 25.9899, "humidex_max": 32.9162, "heures_sup30": 3, "heures_definies": 81, "heures_avec_T_et_U": 711}, {"annee": 2013, "mois": 5, "humidex_moyen": 27.7882, "humidex_max": 42.7543, "heures_sup30": 93, "heures_definies": 366, "heures_avec_T_et_U": 738}, {"annee": 2013, "mois": 6, "humidex_moyen": 29.7641, "humidex_max": 44.7298, "heures_sup30": 259, "heures_definies": 575, "heures_avec_T_et_U": 708}, {"annee": 2013, "mois": 7, "humidex_moyen": 30.7409, "humidex_max": 45.5318, "heures_sup30": 342, "heures_definies": 658, "heures_avec_T_et_U": 737}, {"annee": 2013, "mois": 8, "humidex_moyen": 30.5885, "humidex_max": 46.2193, "heures_sup30": 313, "heures_definies": 616, "heures_avec_T_et_U": 729}, {"annee": 2013, "mois": 9, "humidex_moyen": 28.3446, "humidex_max": 44.2103, "heures_sup30": 123, "heures_definies": 441, "heures_avec_T_et_U": 713}, {"annee": 2013, "mois": 10, "humidex_moyen": 26.5216, "humidex_max": 33.8132, "heures_sup30": 23, "heures_definies": 180, "heures_avec_T_et_U": 731}, {"annee": 2013, "mois": 11, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 711}, {"annee": 2013, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 735}, {"annee": 2014, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 736}, {"annee": 2014, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 664}, {"annee": 2014, "mois": 3, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 740}, {"annee": 2014, "mois": 4, "humidex_moyen": 26.0297, "humidex_max": 33.2152, "heures_sup30": 9, "heures_definies": 110, "heures_avec_T_et_U": 711}, {"annee": 2014, "mois": 5, "humidex_moyen": 27.3974, "humidex_max": 35.5541, "heures_sup30": 80, "heures_definies": 351, "heures_avec_T_et_U": 735}, {"annee": 2014, "mois": 6, "humidex_moyen": 29.8633, "humidex_max": 42.2793, "heures_sup30": 285, "heures_definies": 616, "heures_avec_T_et_U": 714}, {"annee": 2014, "mois": 7, "humidex_moyen": 31.0572, "humidex_max": 44.9723, "heures_sup30": 358, "heures_definies": 660, "heures_avec_T_et_U": 736}, {"annee": 2014, "mois": 8, "humidex_moyen": 30.3179, "humidex_max": 45.7419, "heures_sup30": 314, "heures_definies": 647, "heures_avec_T_et_U": 738}, {"annee": 2014, "mois": 9, "humidex_moyen": 27.6528, "humidex_max": 36.6229, "heures_sup30": 99, "heures_definies": 430, "heures_avec_T_et_U": 709}, {"annee": 2014, "mois": 10, "humidex_moyen": 26.5694, "humidex_max": 34.6112, "heures_sup30": 23, "heures_definies": 165, "heures_avec_T_et_U": 736}, {"annee": 2014, "mois": 11, "humidex_moyen": 24.0887, "humidex_max": 25.4478, "heures_sup30": 0, "heures_definies": 13, "heures_avec_T_et_U": 711}, {"annee": 2014, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 738}, {"annee": 2015, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 736}, {"annee": 2015, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 668}, {"annee": 2015, "mois": 3, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 731}, {"annee": 2015, "mois": 4, "humidex_moyen": 26.2233, "humidex_max": 34.1724, "heures_sup30": 10, "heures_definies": 110, "heures_avec_T_et_U": 713}, {"annee": 2015, "mois": 5, "humidex_moyen": 27.1428, "humidex_max": 38.6205, "heures_sup30": 67, "heures_definies": 371, "heures_avec_T_et_U": 730}, {"annee": 2015, "mois": 6, "humidex_moyen": 29.8325, "humidex_max": 45.007, "heures_sup30": 263, "heures_definies": 600, "heures_avec_T_et_U": 712}, {"annee": 2015, "mois": 7, "humidex_moyen": 30.9682, "humidex_max": 43.2089, "heures_sup30": 381, "heures_definies": 689, "heures_avec_T_et_U": 736}, {"annee": 2015, "mois": 8, "humidex_moyen": 30.5155, "humidex_max": 43.8478, "heures_sup30": 323, "heures_definies": 630, "heures_avec_T_et_U": 734}, {"annee": 2015, "mois": 9, "humidex_moyen": 28.0735, "humidex_max": 41.2313, "heures_sup30": 113, "heures_definies": 426, "heures_avec_T_et_U": 709}, {"annee": 2015, "mois": 10, "humidex_moyen": 26.7701, "humidex_max": 37.2303, "heures_sup30": 31, "heures_definies": 200, "heures_avec_T_et_U": 735}, {"annee": 2015, "mois": 11, "humidex_moyen": 24.533, "humidex_max": 27.6361, "heures_sup30": 0, "heures_definies": 11, "heures_avec_T_et_U": 711}, {"annee": 2015, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 739}, {"annee": 2016, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 734}, {"annee": 2016, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 684}, {"annee": 2016, "mois": 3, "humidex_moyen": 26.6957, "humidex_max": 32.577, "heures_sup30": 1, "heures_definies": 29, "heures_avec_T_et_U": 738}, {"annee": 2016, "mois": 4, "humidex_moyen": 25.2034, "humidex_max": 30.2259, "heures_sup30": 1, "heures_definies": 108, "heures_avec_T_et_U": 705}, {"annee": 2016, "mois": 5, "humidex_moyen": 27.3665, "humidex_max": 37.7037, "heures_sup30": 82, "heures_definies": 392, "heures_avec_T_et_U": 733}, {"annee": 2016, "mois": 6, "humidex_moyen": 29.8005, "humidex_max": 41.7641, "heures_sup30": 263, "heures_definies": 586, "heures_avec_T_et_U": 709}, {"annee": 2016, "mois": 7, "humidex_moyen": 31.1954, "humidex_max": 45.1331, "heures_sup30": 360, "heures_definies": 641, "heures_avec_T_et_U": 735}, {"annee": 2016, "mois": 8, "humidex_moyen": 30.6207, "humidex_max": 46.3166, "heures_sup30": 319, "heures_definies": 646, "heures_avec_T_et_U": 735}, {"annee": 2016, "mois": 9, "humidex_moyen": 28.0168, "humidex_max": 39.1159, "heures_sup30": 121, "heures_definies": 457, "heures_avec_T_et_U": 714}, {"annee": 2016, "mois": 10, "humidex_moyen": 26.9093, "humidex_max": 33.6865, "heures_sup30": 23, "heures_definies": 170, "heures_avec_T_et_U": 737}, {"annee": 2016, "mois": 11, "humidex_moyen": 25.7319, "humidex_max": 29.0098, "heures_sup30": 0, "heures_definies": 25, "heures_avec_T_et_U": 711}, {"annee": 2016, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 731}, {"annee": 2017, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 737}, {"annee": 2017, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 663}, {"annee": 2017, "mois": 3, "humidex_moyen": 23.6974, "humidex_max": 24.5628, "heures_sup30": 0, "heures_definies": 3, "heures_avec_T_et_U": 737}, {"annee": 2017, "mois": 4, "humidex_moyen": 25.6508, "humidex_max": 32.9226, "heures_sup30": 6, "heures_definies": 89, "heures_avec_T_et_U": 715}, {"annee": 2017, "mois": 5, "humidex_moyen": 27.6004, "humidex_max": 39.5497, "heures_sup30": 92, "heures_definies": 370, "heures_avec_T_et_U": 737}, {"annee": 2017, "mois": 6, "humidex_moyen": 30.3938, "humidex_max": 40.9785, "heures_sup30": 296, "heures_definies": 593, "heures_avec_T_et_U": 708}, {"annee": 2017, "mois": 7, "humidex_moyen": 31.054, "humidex_max": 46.9739, "heures_sup30": 367, "heures_definies": 657, "heures_avec_T_et_U": 732}, {"annee": 2017, "mois": 8, "humidex_moyen": 30.1529, "humidex_max": 43.6594, "heures_sup30": 311, "heures_definies": 664, "heures_avec_T_et_U": 739}, {"annee": 2017, "mois": 9, "humidex_moyen": 27.6092, "humidex_max": 36.4294, "heures_sup30": 106, "heures_definies": 450, "heures_avec_T_et_U": 712}, {"annee": 2017, "mois": 10, "humidex_moyen": 25.5545, "humidex_max": 32.9757, "heures_sup30": 9, "heures_definies": 188, "heures_avec_T_et_U": 738}, {"annee": 2017, "mois": 11, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 714}, {"annee": 2017, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 731}, {"annee": 2018, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 739}, {"annee": 2018, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 662}, {"annee": 2018, "mois": 3, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 730}, {"annee": 2018, "mois": 4, "humidex_moyen": 26.0192, "humidex_max": 33.4557, "heures_sup30": 6, "heures_definies": 89, "heures_avec_T_et_U": 713}, {"annee": 2018, "mois": 5, "humidex_moyen": 27.5039, "humidex_max": 38.2227, "heures_sup30": 91, "heures_definies": 403, "heures_avec_T_et_U": 735}, {"annee": 2018, "mois": 6, "humidex_moyen": 29.7734, "humidex_max": 40.9905, "heures_sup30": 276, "heures_definies": 609, "heures_avec_T_et_U": 706}, {"annee": 2018, "mois": 7, "humidex_moyen": 31.1174, "humidex_max": 47.2014, "heures_sup30": 383, "heures_definies": 681, "heures_avec_T_et_U": 735}, {"annee": 2018, "mois": 8, "humidex_moyen": 30.3933, "humidex_max": 46.2455, "heures_sup30": 319, "heures_definies": 638, "heures_avec_T_et_U": 732}, {"annee": 2018, "mois": 9, "humidex_moyen": 28.0869, "humidex_max": 40.0883, "heures_sup30": 134, "heures_definies": 463, "heures_avec_T_et_U": 711}, {"annee": 2018, "mois": 10, "humidex_moyen": 25.9394, "humidex_max": 36.0053, "heures_sup30": 11, "heures_definies": 169, "heures_avec_T_et_U": 736}, {"annee": 2018, "mois": 11, "humidex_moyen": 24.5043, "humidex_max": 26.6698, "heures_sup30": 0, "heures_definies": 9, "heures_avec_T_et_U": 703}, {"annee": 2018, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 736}, {"annee": 2019, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 735}, {"annee": 2019, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 664}, {"annee": 2019, "mois": 3, "humidex_moyen": 24.3059, "humidex_max": 26.4134, "heures_sup30": 0, "heures_definies": 8, "heures_avec_T_et_U": 733}, {"annee": 2019, "mois": 4, "humidex_moyen": 25.7444, "humidex_max": 33.6535, "heures_sup30": 6, "heures_definies": 110, "heures_avec_T_et_U": 709}, {"annee": 2019, "mois": 5, "humidex_moyen": 27.9461, "humidex_max": 40.8388, "heures_sup30": 101, "heures_definies": 384, "heures_avec_T_et_U": 732}, {"annee": 2019, "mois": 6, "humidex_moyen": 29.914, "humidex_max": 44.0309, "heures_sup30": 293, "heures_definies": 614, "heures_avec_T_et_U": 712}, {"annee": 2019, "mois": 7, "humidex_moyen": 31.7277, "humidex_max": 48.9718, "heures_sup30": 387, "heures_definies": 653, "heures_avec_T_et_U": 734}, {"annee": 2019, "mois": 8, "humidex_moyen": 30.6113, "humidex_max": 43.5017, "heures_sup30": 347, "heures_definies": 657, "heures_avec_T_et_U": 732}, {"annee": 2019, "mois": 9, "humidex_moyen": 28.2707, "humidex_max": 40.7781, "heures_sup30": 125, "heures_definies": 428, "heures_avec_T_et_U": 708}, {"annee": 2019, "mois": 10, "humidex_moyen": 26.239, "humidex_max": 33.0333, "heures_sup30": 15, "heures_definies": 179, "heures_avec_T_et_U": 729}, {"annee": 2019, "mois": 11, "humidex_moyen": 24.2907, "humidex_max": 27.1034, "heures_sup30": 0, "heures_definies": 25, "heures_avec_T_et_U": 715}, {"annee": 2019, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 733}, {"annee": 2020, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 737}, {"annee": 2020, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 691}, {"annee": 2020, "mois": 3, "humidex_moyen": 24.0106, "humidex_max": 25.3435, "heures_sup30": 0, "heures_definies": 8, "heures_avec_T_et_U": 735}, {"annee": 2020, "mois": 4, "humidex_moyen": 26.0742, "humidex_max": 33.4055, "heures_sup30": 9, "heures_definies": 118, "heures_avec_T_et_U": 714}, {"annee": 2020, "mois": 5, "humidex_moyen": 28.2811, "humidex_max": 44.2104, "heures_sup30": 113, "heures_definies": 382, "heures_avec_T_et_U": 735}, {"annee": 2020, "mois": 6, "humidex_moyen": 29.9389, "humidex_max": 41.3976, "heures_sup30": 292, "heures_definies": 605, "heures_avec_T_et_U": 711}, {"annee": 2020, "mois": 7, "humidex_moyen": 31.4907, "humidex_max": 44.3402, "heures_sup30": 427, "heures_definies": 698, "heures_avec_T_et_U": 730}, {"annee": 2020, "mois": 8, "humidex_moyen": 30.1498, "humidex_max": 44.3611, "heures_sup30": 294, "heures_definies": 630, "heures_avec_T_et_U": 739}, {"annee": 2020, "mois": 9, "humidex_moyen": 28.4642, "humidex_max": 39.9755, "heures_sup30": 138, "heures_definies": 460, "heures_avec_T_et_U": 711}, {"annee": 2020, "mois": 10, "humidex_moyen": 25.9674, "humidex_max": 32.4531, "heures_sup30": 9, "heures_definies": 176, "heures_avec_T_et_U": 735}, {"annee": 2020, "mois": 11, "humidex_moyen": 23.4412, "humidex_max": 25.3067, "heures_sup30": 0, "heures_definies": 10, "heures_avec_T_et_U": 711}, {"annee": 2020, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 738}, {"annee": 2021, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 737}, {"annee": 2021, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 666}, {"annee": 2021, "mois": 3, "humidex_moyen": 24.0355, "humidex_max": 25.3178, "heures_sup30": 0, "heures_definies": 11, "heures_avec_T_et_U": 736}, {"annee": 2021, "mois": 4, "humidex_moyen": 26.2227, "humidex_max": 35.4196, "heures_sup30": 14, "heures_definies": 118, "heures_avec_T_et_U": 711}, {"annee": 2021, "mois": 5, "humidex_moyen": 28.0575, "humidex_max": 40.2453, "heures_sup30": 100, "heures_definies": 389, "heures_avec_T_et_U": 738}, {"annee": 2021, "mois": 6, "humidex_moyen": 29.7852, "humidex_max": 42.3858, "heures_sup30": 272, "heures_definies": 606, "heures_avec_T_et_U": 714}, {"annee": 2021, "mois": 7, "humidex_moyen": 31.2601, "humidex_max": 56.4361, "heures_sup30": 394, "heures_definies": 703, "heures_avec_T_et_U": 735}, {"annee": 2021, "mois": 8, "humidex_moyen": 30.9252, "humidex_max": 50.1446, "heures_sup30": 346, "heures_definies": 663, "heures_avec_T_et_U": 735}, {"annee": 2021, "mois": 9, "humidex_moyen": 28.1057, "humidex_max": 39.5959, "heures_sup30": 130, "heures_definies": 440, "heures_avec_T_et_U": 713}, {"annee": 2021, "mois": 10, "humidex_moyen": 26.8373, "humidex_max": 36.1322, "heures_sup30": 35, "heures_definies": 204, "heures_avec_T_et_U": 736}, {"annee": 2021, "mois": 11, "humidex_moyen": 24.2063, "humidex_max": 26.5278, "heures_sup30": 0, "heures_definies": 23, "heures_avec_T_et_U": 712}, {"annee": 2021, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 736}, {"annee": 2022, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 739}, {"annee": 2022, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 665}, {"annee": 2022, "mois": 3, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 735}, {"annee": 2022, "mois": 4, "humidex_moyen": 26.872, "humidex_max": 39.3217, "heures_sup30": 16, "heures_definies": 117, "heures_avec_T_et_U": 714}, {"annee": 2022, "mois": 5, "humidex_moyen": 27.726, "humidex_max": 37.6862, "heures_sup30": 99, "heures_definies": 390, "heures_avec_T_et_U": 735}, {"annee": 2022, "mois": 6, "humidex_moyen": 30.178, "humidex_max": 44.0151, "heures_sup30": 301, "heures_definies": 632, "heures_avec_T_et_U": 712}, {"annee": 2022, "mois": 7, "humidex_moyen": 31.0782, "humidex_max": 48.1557, "heures_sup30": 366, "heures_definies": 669, "heures_avec_T_et_U": 737}, {"annee": 2022, "mois": 8, "humidex_moyen": 30.6018, "humidex_max": 44.8914, "heures_sup30": 342, "heures_definies": 654, "heures_avec_T_et_U": 736}, {"annee": 2022, "mois": 9, "humidex_moyen": 29.0038, "humidex_max": 41.5905, "heures_sup30": 165, "heures_definies": 470, "heures_avec_T_et_U": 705}, {"annee": 2022, "mois": 10, "humidex_moyen": 26.5683, "humidex_max": 38.1707, "heures_sup30": 16, "heures_definies": 165, "heures_avec_T_et_U": 739}, {"annee": 2022, "mois": 11, "humidex_moyen": 25.3027, "humidex_max": 29.1432, "heures_sup30": 0, "heures_definies": 9, "heures_avec_T_et_U": 714}, {"annee": 2022, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 735}, {"annee": 2023, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 737}, {"annee": 2023, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 667}, {"annee": 2023, "mois": 3, "humidex_moyen": 25.2427, "humidex_max": 27.5874, "heures_sup30": 0, "heures_definies": 9, "heures_avec_T_et_U": 729}, {"annee": 2023, "mois": 4, "humidex_moyen": 25.7516, "humidex_max": 30.9025, "heures_sup30": 5, "heures_definies": 127, "heures_avec_T_et_U": 714}, {"annee": 2023, "mois": 5, "humidex_moyen": 27.207, "humidex_max": 36.3613, "heures_sup30": 67, "heures_definies": 378, "heures_avec_T_et_U": 731}, {"annee": 2023, "mois": 6, "humidex_moyen": 30.5595, "humidex_max": 47.2396, "heures_sup30": 311, "heures_definies": 619, "heures_avec_T_et_U": 712}, {"annee": 2023, "mois": 7, "humidex_moyen": 31.1491, "humidex_max": 47.5123, "heures_sup30": 389, "heures_definies": 696, "heures_avec_T_et_U": 736}, {"annee": 2023, "mois": 8, "humidex_moyen": 30.7415, "humidex_max": 42.9533, "heures_sup30": 343, "heures_definies": 646, "heures_avec_T_et_U": 731}, {"annee": 2023, "mois": 9, "humidex_moyen": 28.4448, "humidex_max": 40.0443, "heures_sup30": 164, "heures_definies": 496, "heures_avec_T_et_U": 714}, {"annee": 2023, "mois": 10, "humidex_moyen": 26.7375, "humidex_max": 33.4563, "heures_sup30": 16, "heures_definies": 161, "heures_avec_T_et_U": 736}, {"annee": 2023, "mois": 11, "humidex_moyen": 24.8404, "humidex_max": 26.9542, "heures_sup30": 0, "heures_definies": 21, "heures_avec_T_et_U": 710}, {"annee": 2023, "mois": 12, "humidex_moyen": 23.4444, "humidex_max": 24.0074, "heures_sup30": 0, "heures_definies": 5, "heures_avec_T_et_U": 732}, {"annee": 2024, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 735}, {"annee": 2024, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 687}, {"annee": 2024, "mois": 3, "humidex_moyen": 24.3219, "humidex_max": 28.4861, "heures_sup30": 0, "heures_definies": 12, "heures_avec_T_et_U": 731}, {"annee": 2024, "mois": 4, "humidex_moyen": 25.8823, "humidex_max": 33.6786, "heures_sup30": 8, "heures_definies": 123, "heures_avec_T_et_U": 712}, {"annee": 2024, "mois": 5, "humidex_moyen": 28.1694, "humidex_max": 40.8451, "heures_sup30": 132, "heures_definies": 446, "heures_avec_T_et_U": 735}, {"annee": 2024, "mois": 6, "humidex_moyen": 30.9216, "humidex_max": 44.8426, "heures_sup30": 299, "heures_definies": 581, "heures_avec_T_et_U": 714}, {"annee": 2024, "mois": 7, "humidex_moyen": 31.9427, "humidex_max": 45.6659, "heures_sup30": 424, "heures_definies": 668, "heures_avec_T_et_U": 735}, {"annee": 2024, "mois": 8, "humidex_moyen": 30.743, "humidex_max": 46.5949, "heures_sup30": 368, "heures_definies": 656, "heures_avec_T_et_U": 734}, {"annee": 2024, "mois": 9, "humidex_moyen": 28.4591, "humidex_max": 41.7001, "heures_sup30": 139, "heures_definies": 463, "heures_avec_T_et_U": 719}, {"annee": 2024, "mois": 10, "humidex_moyen": 25.3593, "humidex_max": 30.2794, "heures_sup30": 1, "heures_definies": 168, "heures_avec_T_et_U": 737}, {"annee": 2024, "mois": 11, "humidex_moyen": 23.9621, "humidex_max": 24.7518, "heures_sup30": 0, "heures_definies": 4, "heures_avec_T_et_U": 711}, {"annee": 2024, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 731}, {"annee": 2025, "mois": 1, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 733}, {"annee": 2025, "mois": 2, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 661}, {"annee": 2025, "mois": 3, "humidex_moyen": 24.8326, "humidex_max": 26.3486, "heures_sup30": 0, "heures_definies": 13, "heures_avec_T_et_U": 733}, {"annee": 2025, "mois": 4, "humidex_moyen": 26.6408, "humidex_max": 36.0183, "heures_sup30": 14, "heures_definies": 105, "heures_avec_T_et_U": 715}, {"annee": 2025, "mois": 5, "humidex_moyen": 28.4481, "humidex_max": 40.2751, "heures_sup30": 134, "heures_definies": 433, "heures_avec_T_et_U": 736}, {"annee": 2025, "mois": 6, "humidex_moyen": 30.0055, "humidex_max": 50.4696, "heures_sup30": 283, "heures_definies": 608, "heures_avec_T_et_U": 710}, {"annee": 2025, "mois": 7, "humidex_moyen": 31.2943, "humidex_max": 45.3281, "heures_sup30": 412, "heures_definies": 707, "heures_avec_T_et_U": 735}, {"annee": 2025, "mois": 8, "humidex_moyen": 30.6208, "humidex_max": 45.8623, "heures_sup30": 343, "heures_definies": 666, "heures_avec_T_et_U": 733}, {"annee": 2025, "mois": 9, "humidex_moyen": 28.7795, "humidex_max": 42.7708, "heures_sup30": 161, "heures_definies": 459, "heures_avec_T_et_U": 708}, {"annee": 2025, "mois": 10, "humidex_moyen": 27.3497, "humidex_max": 35.1902, "heures_sup30": 37, "heures_definies": 186, "heures_avec_T_et_U": 736}, {"annee": 2025, "mois": 11, "humidex_moyen": 24.892, "humidex_max": 28.8716, "heures_sup30": 0, "heures_definies": 35, "heures_avec_T_et_U": 713}, {"annee": 2025, "mois": 12, "humidex_moyen": null, "humidex_max": null, "heures_sup30": 0, "heures_definies": 0, "heures_avec_T_et_U": 731}], "climatologie": [{"mois": 1, "humidex_moyen": null, "humidex_p95": null, "humidex_max": null, "humidex_moyen_jour": null, "humidex_moyen_nuit": null, "temperature_moyenne": 8.0656, "heures_sup30_par_an": 0.0}, {"mois": 2, "humidex_moyen": 24.0251, "humidex_p95": 25.6436, "humidex_max": 25.8213, "humidex_moyen_jour": 24.4268, "humidex_moyen_nuit": null, "temperature_moyenne": 8.836, "heures_sup30_par_an": 0.0}, {"mois": 3, "humidex_moyen": 24.6593, "humidex_p95": 28.4082, "humidex_max": 32.577, "humidex_moyen_jour": 24.9426, "humidex_moyen_nuit": 22.0322, "temperature_moyenne": 11.5795, "heures_sup30_par_an": 0.037}, {"mois": 4, "humidex_moyen": 25.6865, "humidex_p95": 29.936, "humidex_max": 39.3217, "humidex_moyen_jour": 26.1205, "humidex_moyen_nuit": 24.3853, "temperature_moyenne": 15.7639, "heures_sup30_par_an": 4.7037}, {"mois": 5, "humidex_moyen": 27.497, "humidex_p95": 33.8878, "humidex_max": 44.2104, "humidex_moyen_jour": 28.3885, "humidex_moyen_nuit": 25.291, "temperature_moyenne": 20.0803, "heures_sup30_par_an": 81.8889}, {"mois": 6, "humidex_moyen": 29.6481, "humidex_p95": 37.3443, "humidex_max": 50.4696, "humidex_moyen_jour": 31.7552, "humidex_moyen_nuit": 26.7679, "temperature_moyenne": 23.3459, "heures_sup30_par_an": 253.9259}, {"mois": 7, "humidex_moyen": 30.782, "humidex_p95": 38.9385, "humidex_max": 56.4361, "humidex_moyen_jour": 33.3778, "humidex_moyen_nuit": 27.7574, "temperature_moyenne": 24.7188, "heures_sup30_par_an": 354.1481}, {"mois": 8, "humidex_moyen": 30.0745, "humidex_p95": 37.803, "humidex_max": 50.1446, "humidex_moyen_jour": 32.3078, "humidex_moyen_nuit": 27.2074, "temperature_moyenne": 23.9266, "heures_sup30_par_an": 298.0741}, {"mois": 9, "humidex_moyen": 27.9682, "humidex_p95": 34.6471, "humidex_max": 44.2103, "humidex_moyen_jour": 29.2095, "humidex_moyen_nuit": 25.4884, "temperature_moyenne": 20.9676, "heures_sup30_par_an": 113.9259}, {"mois": 10, "humidex_moyen": 26.1404, "humidex_p95": 31.0776, "humidex_max": 38.1707, "humidex_moyen_jour": 26.6903, "humidex_moyen_nuit": 24.4586, "temperature_moyenne": 16.9554, "heures_sup30_par_an": 13.8148}, {"mois": 11, "humidex_moyen": 24.8747, "humidex_p95": 28.8233, "humidex_max": 32.959, "humidex_moyen_jour": 25.1518, "humidex_moyen_nuit": 25.079, "temperature_moyenne": 12.5213, "heures_sup30_par_an": 0.1852}, {"mois": 12, "humidex_moyen": 23.3937, "humidex_p95": 23.9367, "humidex_max": 24.0074, "humidex_moyen_jour": 23.2802, "humidex_moyen_nuit": null, "temperature_moyenne": 9.4044, "heures_sup30_par_an": 0.0}], "profil_horaire": [{"heure": 0, "humidex_moyen": 27.0323, "temperature_moyenne": 22.3499, "heures_sup30_par_an": 16.8889}, {"heure": 1, "humidex_moyen": 26.4552, "temperature_moyenne": 21.4958, "heures_sup30_par_an": 10.8889}, {"heure": 2, "humidex_moyen": 26.1792, "temperature_moyenne": 20.738, "heures_sup30_par_an": 6.8519}, {"heure": 3, "humidex_moyen": 26.0026, "temperature_moyenne": 20.1749, "heures_sup30_par_an": 5.0741}, {"heure": 4, "humidex_moyen": 26.1007, "temperature_moyenne": 19.8096, "heures_sup30_par_an": 4.8519}, {"heure": 5, "humidex_moyen": 26.199, "temperature_moyenne": 19.6782, "heures_sup30_par_an": 4.8519}, {"heure": 6, "humidex_moyen": 26.5211, "temperature_moyenne": 19.7893, "heures_sup30_par_an": 6.1852}, {"heure": 7, "humidex_moyen": 26.9419, "temperature_moyenne": 20.1468, "heures_sup30_par_an": 8.6296}, {"heure": 8, "humidex_moyen": 27.5043, "temperature_moyenne": 20.7092, "heures_sup30_par_an": 13.5556}, {"heure": 9, "humidex_moyen": 28.2003, "temperature_moyenne": 21.45, "heures_sup30_par_an": 21.8889}, {"heure": 10, "humidex_moyen": 29.0292, "temperature_moyenne": 22.2915, "heures_sup30_par_an": 33.8889}, {"heure": 11, "humidex_moyen": 29.9191, "temperature_moyenne": 23.2455, "heures_sup30_par_an": 49.1481}, {"heure": 12, "humidex_moyen": 30.9738, "temperature_moyenne": 24.1716, "heures_sup30_par_an": 63.2222}, {"heure": 13, "humidex_moyen": 31.7779, "temperature_moyenne": 25.0337, "heures_sup30_par_an": 73.6296}, {"heure": 14, "humidex_moyen": 32.502, "temperature_moyenne": 25.8006, "heures_sup30_par_an": 82.7407}, {"heure": 15, "humidex_moyen": 33.0609, "temperature_moyenne": 26.3786, "heures_sup30_par_an": 88.8148}, {"heure": 16, "humidex_moyen": 33.1862, "temperature_moyenne": 26.7125, "heures_sup30_par_an": 90.6667}, {"heure": 17, "humidex_moyen": 33.0782, "temperature_moyenne": 26.8424, "heures_sup30_par_an": 89.5926}, {"heure": 18, "humidex_moyen": 32.5558, "temperature_moyenne": 26.7205, "heures_sup30_par_an": 85.2963}, {"heure": 19, "humidex_moyen": 31.7928, "temperature_moyenne": 26.3572, "heures_sup30_par_an": 78.2963}, {"heure": 20, "humidex_moyen": 30.8475, "temperature_moyenne": 25.7865, "heures_sup30_par_an": 66.1481}, {"heure": 21, "humidex_moyen": 29.805, "temperature_moyenne": 25.0541, "heures_sup30_par_an": 53.6667}, {"heure": 22, "humidex_moyen": 28.7648, "temperature_moyenne": 24.1814, "heures_sup30_par_an": 39.1111}, {"heure": 23, "humidex_moyen": 27.8084, "temperature_moyenne": 23.2576, "heures_sup30_par_an": 26.1852}], "tendances": {"humidex_moyen": {"n": 27, "ols_slope_per_year": 0.0503, "ols_slope_per_decade": 0.5028, "ols_intercept": -72.0585, "r2": 0.9307, "mk_s": 293.0, "mk_z": 6.0873, "mk_p": 0.0, "mk_tau": 0.8348, "sen_slope_per_year": 0.0492, "sen_slope_per_decade": 0.4918, "sen_lo_per_decade": 0.4393, "sen_hi_per_decade": 0.5578, "significant_05": true}, "humidex_max": {"n": 27, "ols_slope_per_year": 0.1861, "ols_slope_per_decade": 1.8614, "ols_intercept": -328.0626, "r2": 0.2583, "mk_s": 141.0, "mk_z": 2.9186, "mk_p": 0.0035, "mk_tau": 0.4017, "sen_slope_per_year": 0.1967, "sen_slope_per_decade": 1.9671, "sen_lo_per_decade": 0.6218, "sen_hi_per_decade": 2.8732, "significant_05": true}, "humidex_p95": {"n": 27, "ols_slope_per_year": 0.079, "ols_slope_per_decade": 0.7901, "ols_intercept": -121.8826, "r2": 0.7864, "mk_s": 249.0, "mk_z": 5.17, "mk_p": 0.0, "mk_tau": 0.7094, "sen_slope_per_year": 0.079, "sen_slope_per_decade": 0.7903, "sen_lo_per_decade": 0.6051, "sen_hi_per_decade": 0.9957, "significant_05": true}, "heures_sup30_norm": {"n": 27, "ols_slope_per_year": 19.0986, "ols_slope_per_decade": 190.9864, "ols_intercept": -37289.7795, "r2": 0.9788, "mk_s": 337.0, "mk_z": 7.0046, "mk_p": 0.0, "mk_tau": 0.9601, "sen_slope_per_year": 18.8187, "sen_slope_per_decade": 188.1875, "sen_lo_per_decade": 176.6842, "sen_hi_per_decade": 202.0, "significant_05": true}, "heures_sup35_norm": {"n": 27, "ols_slope_per_year": 9.4113, "ols_slope_per_decade": 94.1133, "ols_intercept": -18609.5987, "r2": 0.9189, "mk_s": 299.0, "mk_z": 6.2124, "mk_p": 0.0, "mk_tau": 0.8519, "sen_slope_per_year": 9.5389, "sen_slope_per_decade": 95.3889, "sen_lo_per_decade": 83.7857, "sen_hi_per_decade": 106.6316, "significant_05": true}, "heures_sup40_norm": {"n": 27, "ols_slope_per_year": 2.3623, "ols_slope_per_decade": 23.6226, "ols_intercept": -4710.0856, "r2": 0.7388, "mk_s": 234.0, "mk_z": 4.8584, "mk_p": 0.0, "mk_tau": 0.6676, "sen_slope_per_year": 2.3, "sen_slope_per_decade": 23.0, "sen_lo_per_decade": 16.9048, "sen_hi_per_decade": 29.1538, "significant_05": true}, "humidex_moyen_jour": {"n": 27, "ols_slope_per_year": 0.0589, "ols_slope_per_decade": 0.5888, "ols_intercept": -87.8623, "r2": 0.9492, "mk_s": 311.0, "mk_z": 6.4625, "mk_p": 0.0, "mk_tau": 0.886, "sen_slope_per_year": 0.0581, "sen_slope_per_decade": 0.5808, "sen_lo_per_decade": 0.5249, "sen_hi_per_decade": 0.6467, "significant_05": true}, "humidex_moyen_nuit": {"n": 27, "ols_slope_per_year": 0.046, "ols_slope_per_decade": 0.4604, "ols_intercept": -65.8817, "r2": 0.8035, "mk_s": 253.0, "mk_z": 5.2534, "mk_p": 0.0, "mk_tau": 0.7208, "sen_slope_per_year": 0.0449, "sen_slope_per_decade": 0.4491, "sen_lo_per_decade": 0.3423, "sen_hi_per_decade": 0.5483, "significant_05": true}, "heures_nuit_sup30_norm": {"n": 27, "ols_slope_per_year": 3.9279, "ols_slope_per_decade": 39.279, "ols_intercept": -7782.3658, "r2": 0.8369, "mk_s": 273.0, "mk_z": 5.6704, "mk_p": 0.0, "mk_tau": 0.7778, "sen_slope_per_year": 3.9, "sen_slope_per_decade": 39.0, "sen_lo_per_decade": 32.7273, "sen_hi_per_decade": 46.9091, "significant_05": true}, "heures_jour_sup30_norm": {"n": 27, "ols_slope_per_year": 8.6443, "ols_slope_per_decade": 86.4432, "ols_intercept": -16746.7366, "r2": 0.9415, "mk_s": 315.0, "mk_z": 6.5459, "mk_p": 0.0, "mk_tau": 0.8974, "sen_slope_per_year": 8.4857, "sen_slope_per_decade": 84.8571, "sen_lo_per_decade": 74.1111, "sen_hi_per_decade": 93.5, "significant_05": true}, "temperature_moyenne": {"n": 27, "ols_slope_per_year": 0.042, "ols_slope_per_decade": 0.4201, "ols_intercept": -68.1409, "r2": 0.9954, "mk_s": 341.0, "mk_z": 7.0879, "mk_p": 0.0, "mk_tau": 0.9715, "sen_slope_per_year": 0.0421, "sen_slope_per_decade": 0.4214, "sen_lo_per_decade": 0.4095, "sen_hi_per_decade": 0.4335, "significant_05": true}}, "mois": ["janv.", "févr.", "mars", "avril", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."]}</script>
+<script>
+"use strict";
+const D = JSON.parse(document.getElementById("humidex-data").textContent);
+
+/* =================================================================== outils */
+const NBSP = " ";
+const nf = (v, d = 1) =>
+  v === null || v === undefined || Number.isNaN(v)
+    ? "—"
+    : v.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const nfi = (v) => (v === null || v === undefined || Number.isNaN(v) ? "—" : Math.round(v).toLocaleString("fr-FR"));
+const signed = (v, d = 2) => (v === null || v === undefined ? "—" : (v >= 0 ? "+" : "−") + nf(Math.abs(v), d));
+const pval = (p) => (p === null || p === undefined ? "—" : p < 0.001 ? "< 0,001" : nf(p, 3));
+/** « p < 0,001 » ou « p = 0,004 » — jamais « p = < 0,001 ». */
+const pText = (p) =>
+  p === null || p === undefined ? "p non calculé" : p < 0.001 ? "p" + NBSP + "<" + NBSP + "0,001" : "p" + NBSP + "=" + NBSP + nf(p, 3);
+const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+const SVGNS = "http://www.w3.org/2000/svg";
+function s(tag, attrs, text) {
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) if (attrs[k] !== null && attrs[k] !== undefined) n.setAttribute(k, attrs[k]);
+  if (text !== undefined) n.textContent = text;
+  return n;
+}
+function el(tag, cls, html) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (html !== undefined) n.innerHTML = html;
+  return n;
+}
+const lin = (d0, d1, r0, r1) => (v) => (d1 === d0 ? r0 : r0 + ((v - d0) / (d1 - d0)) * (r1 - r0));
+
+/** Graduations « rondes » couvrant [lo, hi]. */
+function ticks(lo, hi, count) {
+  if (!(hi > lo)) return [lo];
+  const raw = (hi - lo) / count;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((v) => v >= raw) || 10 * mag;
+  const out = [];
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(10));
+  return out;
+}
+
+/** Années « rondes » à étiqueter, premières et dernières toujours incluses.
+    Basé sur la valeur de l'année et non sur son rang, pour qu'une année exclue
+    ne décale pas toute la graduation. */
+function yearTicks(list, w, px) {
+  const a = list[0], b = list[list.length - 1];
+  const target = Math.max(3, Math.floor(w / (px || 80)));
+  const step = [1, 2, 5, 10, 20, 25, 50].find((sp) => (b - a) / sp <= target) || 50;
+  const keep = list.filter((y) => y % step === 0 && y - a > step * 0.55 && b - y > step * 0.55);
+  return [a, ...keep, b];
+}
+
+/** Infobulle partagée, positionnée dans le conteneur du graphique. */
+function tooltip(host) {
+  const tip = el("div", "tt");
+  host.appendChild(tip);
+  return {
+    show(html, x, y) {
+      tip.innerHTML = html;
+      tip.style.opacity = "1";
+      const w = tip.offsetWidth, h = tip.offsetHeight, box = host.clientWidth;
+      tip.style.left = Math.max(4, Math.min(box - w - 4, x - w / 2)) + "px";
+      tip.style.top = Math.max(2, y - h - 12) + "px";
+    },
+    hide() { tip.style.opacity = "0"; tip.style.left = "0px"; tip.style.top = "0px"; },
+  };
+}
+
+/** Redessine à chaque changement de largeur ou de thème. */
+const redraws = [];
+function chart(hostId, draw) {
+  const host = document.getElementById(hostId);
+  if (!host) return;
+  const tip = tooltip(host);
+  const render = () => {
+    const w = host.clientWidth || 640;
+    [...host.querySelectorAll("svg")].forEach((n) => n.remove());
+    tip.hide();
+    draw(host, w, tip);
+  };
+  redraws.push(render);
+  render();
+  if (window.ResizeObserver) {
+    let last = host.clientWidth;
+    new ResizeObserver(() => {
+      if (Math.abs(host.clientWidth - last) > 8) { last = host.clientWidth; render(); }
+    }).observe(host);
+  }
+}
+
+/** Axes, grille et cadre communs à tous les graphiques cartésiens. */
+function frame(svg, m, w, h, yScale, yTicks, yLabel) {
+  const g = s("g", {});
+  yTicks.forEach((t) => {
+    const y = yScale(t);
+    g.appendChild(s("line", { x1: m.l, x2: w - m.r, y1: y, y2: y, stroke: css("--grid"), "stroke-width": 1 }));
+    g.appendChild(s("text", {
+      x: m.l - 8, y: y + 4, "text-anchor": "end", class: "axis",
+      "font-size": 11, fill: css("--muted"),
+    }, nf(t, t % 1 === 0 ? 0 : 1)));
+  });
+  g.appendChild(s("line", { x1: m.l, x2: w - m.r, y1: h - m.b, y2: h - m.b, stroke: css("--axis"), "stroke-width": 1 }));
+  if (yLabel) {
+    g.appendChild(s("text", {
+      x: m.l - 8, y: m.t - 8, "text-anchor": "end", class: "axis",
+      "font-size": 10.5, fill: css("--muted"), "letter-spacing": ".04em",
+    }, yLabel));
+  }
+  svg.appendChild(g);
+  return g;
+}
+
+function legend(id, items) {
+  const host = document.getElementById(id);
+  if (!host) return;
+  host.innerHTML = "";
+  items.forEach((it) => {
+    const sp = el("span");
+    const sw = el("span", "swatch" + (it.box ? " box" : "") + (it.dash ? " dash" : ""));
+    if (!it.dash) sw.style.background = it.color;
+    sp.appendChild(sw);
+    sp.appendChild(document.createTextNode(it.label));
+    host.appendChild(sp);
+  });
+}
+
+/** Jumeau tabulaire de chaque graphique : aucune valeur n'est réservée au survol. */
+function table(hostId, cols, rows, opts) {
+  const host = document.getElementById(hostId);
+  if (!host) return;
+  const o = opts || {};
+  const t = el("table", o.sortable ? "sortable" : "");
+  const thead = el("thead");
+  const tr = el("tr");
+  cols.forEach((c, i) => {
+    const th = el("th", null, c.label);
+    if (c.title) th.title = c.title;
+    if (o.sortable) {
+      th.tabIndex = 0;
+      th.setAttribute("role", "columnheader");
+      const go = () => sortBy(i);
+      th.onclick = go;
+      th.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } };
+    }
+    tr.appendChild(th);
+  });
+  thead.appendChild(tr);
+  const tbody = el("tbody");
+  t.appendChild(thead); t.appendChild(tbody);
+  host.innerHTML = ""; host.appendChild(t);
+
+  let sortIdx = -1, dir = 1;
+  function paint(data) {
+    tbody.innerHTML = "";
+    data.forEach((r) => {
+      const line = el("tr");
+      if (o.rowClass) line.className = o.rowClass(r);
+      cols.forEach((c) => {
+        const td = el("td", c.dim ? "dim" : null);
+        td.textContent = c.fmt(r);
+        line.appendChild(td);
+      });
+      tbody.appendChild(line);
+    });
+  }
+  function sortBy(i) {
+    dir = sortIdx === i ? -dir : (cols[i].desc ? -1 : 1);
+    sortIdx = i;
+    [...thead.querySelectorAll("th")].forEach((th, j) =>
+      j === i ? th.setAttribute("aria-sort", dir === 1 ? "ascending" : "descending") : th.removeAttribute("aria-sort"));
+    const key = cols[i].sort || cols[i].value;
+    paint([...rows].sort((a, b) => {
+      const va = key(a), vb = key(b);
+      if (va === null || va === undefined) return 1;
+      if (vb === null || vb === undefined) return -1;
+      return (va > vb ? 1 : va < vb ? -1 : 0) * dir;
+    }));
+  }
+  paint(rows);
+}
+
+/* ============================================================ préliminaires */
+const kept = D.annuel.filter((r) => r.retenue);
+const years = kept.map((r) => r.annee);
+const MOIS = D.mois;
+const TR = D.tendances || {};
+
+/* ------------------------------------------------------------------ bandeau */
+if (D.meta.donnees_synthetiques) {
+  document.getElementById("synthetic-banner").innerHTML =
+    '<div class="banner"><b>⚠ Données synthétiques — démonstration</b>' +
+    "Ce rapport a été construit sur un jeu de test généré artificiellement, uniquement pour " +
+    "montrer la mise en forme et vérifier la chaîne de calcul. Aucun chiffre de cette page ne " +
+    "constitue une observation. Relancer le script sans <code>--synthetic-banner</code>, avec " +
+    "les fichiers réels de Météo-France, pour obtenir le rapport véritable.</div>";
+}
+
+/* ---------------------------------------------------------------- signature */
+{
+  const st = D.station, p = D.periode;
+  document.getElementById("byline").innerHTML =
+    `<span>Station <b>${st.nom}</b> (${st.num_poste})</span>` +
+    `<span><b>${nf(st.distance_km, 1)}${NBSP}km</b> de Sainte-Maxime</span>` +
+    `<span>Période <b>${p.debut}–${p.fin}</b></span>` +
+    `<span><b>${p.annees_retenues}</b> années retenues</span>` +
+    `<span>Généré le ${D.meta.genere_le}</span>`;
+}
+
+/* ------------------------------------------------------------- chiffres clés */
+{
+  const k = D.kpi, host = document.getElementById("kpis");
+  const card = (label, value, unit, note) => {
+    const c = el("div", "kpi");
+    c.appendChild(el("div", "kpi-label", label));
+    c.appendChild(el("div", "kpi-value", value + (unit ? `<span class="kpi-unit">${unit}</span>` : "")));
+    c.appendChild(el("div", "kpi-note", note));
+    host.appendChild(c);
+  };
+
+  const sig = k.tendance_significative;
+  const ci = k.tendance_lo !== null && k.tendance_hi !== null
+    ? ` (IC 95${NBSP}% : ${signed(k.tendance_lo)} à ${signed(k.tendance_hi)})` : "";
+  card("Tendance du humidex moyen",
+       signed(k.tendance_par_decennie),
+       `°C${NBSP}/${NBSP}décennie`,
+       `<span class="tag">${sig ? "significative" : "non significative"}</span>` +
+       `Pente de Sen${ci}. Mann-Kendall : ${pText(k.tendance_p)}.`);
+
+  card("Année record",
+       k.annee_record ?? "—", "",
+       `Humidex maximal de <b>${nf(k.humidex_record, 1)}</b> le ${k.date_record || "—"}, ` +
+       `heure locale.`);
+
+  if (k.h35_debut !== undefined && k.h35_debut !== null) {
+    const delta = k.h35_delta, ratio = k.h35_ratio;
+    card("Heures au-dessus de 35",
+         signed(delta, 0), `h${NBSP}/${NBSP}an`,
+         `De <b>${nfi(k.h35_debut)}${NBSP}h</b> (${k.h35_periode_debut}) à <b>${nfi(k.h35_fin)}${NBSP}h</b> ` +
+         `(${k.h35_periode_fin})${ratio ? `, soit ×${nf(ratio, 1)}` : ""}. Moyennes sur ` +
+         `${k.h35_fenetre_annees} ans, ramenées à l'année complète.`);
+  }
+}
+
+/* ------------------------------------------------------------------ intros */
+{
+  const t = TR.humidex_moyen || {}, p = D.periode;
+  document.getElementById("serie-intro").textContent =
+    `${p.annees_retenues} années exploitables entre ${p.debut} et ${p.fin}` +
+    (t.sen_slope_per_decade !== null && t.sen_slope_per_decade !== undefined
+      ? `, pour une dérive de ${signed(t.sen_slope_per_decade)} °C par décennie sur le humidex moyen.`
+      : ".");
+
+  const tn = TR.heures_nuit_sup30_norm || {}, tj = TR.heures_jour_sup30_norm || {};
+  document.getElementById("jn-intro").textContent =
+    "Créneau diurne " + `${D.meta.plage_jour[0]}h–${D.meta.plage_jour[1]}h` +
+    ", créneau nocturne 22h–6h, en heure locale." +
+    (tn.sen_slope_per_decade !== null && tn.sen_slope_per_decade !== undefined
+      ? ` Les heures nocturnes au-dessus de 30 évoluent de ${signed(tn.sen_slope_per_decade, 1)} h par décennie,` +
+        ` contre ${signed(tj.sen_slope_per_decade, 1)} h le jour.`
+      : "");
+
+  const t35 = TR.heures_sup35_norm || {};
+  document.getElementById("paliers-intro").textContent =
+    "Au-delà de 30 l'inconfort devient sensible, au-delà de 40 il est jugé dangereux par " +
+    "Environnement Canada." +
+    (t35.sen_slope_per_decade !== null && t35.sen_slope_per_decade !== undefined
+      ? ` Les heures au-dessus de 35 progressent de ${signed(t35.sen_slope_per_decade, 0)} h par décennie.`
+      : "");
+}
+
+/* ================================================= 01 · série annuelle */
+/* Moyenne et maximum diffèrent trop d'amplitude pour partager une échelle :
+   les superposer écraserait la moyenne sur la ligne de base. Deux panneaux
+   superposés, chacun avec sa propre échelle et le même axe des années — jamais
+   deux échelles dans un même cadre. */
+function drawAnnual(host, w, tip) {
+  const gap = 34, m = { t: 20, r: 14, b: 34, l: 46 };
+  const plot = Math.max(230, Math.min(340, w * 0.36));
+  const hA = plot * 0.58, hB = plot * 0.42;
+  const h = m.t + hA + gap + hB + m.b;
+  const svg = s("svg", { viewBox: `0 0 ${w} ${h}`, role: "img",
+    "aria-label": "Humidex moyen annuel avec droite de tendance, et humidex maximal annuel" });
+
+  const x = lin(years[0], years[years.length - 1], m.l, w - m.r);
+  const panels = [
+    { key: "humidex_moyen", color: css("--accent"), title: "humidex moyen", top: m.t, height: hA, pad: 1 },
+    { key: "humidex_max", color: css("--warm"), title: "humidex maximal", top: m.t + hA + gap, height: hB, pad: 2 },
+  ];
+
+  panels.forEach((p) => {
+    const vals = kept.map((r) => r[p.key]).filter((v) => v !== null);
+    p.lo = Math.floor(Math.min(...vals) - p.pad);
+    p.hi = Math.ceil(Math.max(...vals) + p.pad);
+    p.y = lin(p.lo, p.hi, p.top + p.height, p.top);
+
+    ticks(p.lo, p.hi, 3).forEach((t) => {
+      const yy = p.y(t);
+      if (yy < p.top - 1 || yy > p.top + p.height + 1) return;
+      svg.appendChild(s("line", { x1: m.l, x2: w - m.r, y1: yy, y2: yy, stroke: css("--grid"), "stroke-width": 1 }));
+      svg.appendChild(s("text", { x: m.l - 8, y: yy + 4, "text-anchor": "end", class: "axis",
+        "font-size": 11, fill: css("--muted") }, nf(t, 0)));
+    });
+    svg.appendChild(s("line", { x1: m.l, x2: w - m.r, y1: p.top + p.height, y2: p.top + p.height,
+      stroke: css("--axis"), "stroke-width": 1 }));
+    svg.appendChild(s("text", { x: m.l, y: p.top - 7, class: "axis", "font-size": 11,
+      fill: css("--ink-2"), "font-weight": 600, "letter-spacing": ".02em" }, p.title + " (°C)"));
+
+    const pts = kept.filter((r) => r[p.key] !== null);
+    svg.appendChild(s("path", {
+      d: pts.map((r, i) => `${i ? "L" : "M"}${x(r.annee).toFixed(1)},${p.y(r[p.key]).toFixed(1)}`).join(""),
+      fill: "none", stroke: p.color, "stroke-width": 2,
+      "stroke-linejoin": "round", "stroke-linecap": "round",
+    }));
+  });
+
+  // Droite de Sen sur la moyenne, ancrée sur la médiane (estimateur de Theil-Sen).
+  const tr = TR.humidex_moyen || {}, pA = panels[0];
+  if (tr.sen_slope_per_year !== null && tr.sen_slope_per_year !== undefined) {
+    const ys = kept.map((r) => r.humidex_moyen).filter((v) => v !== null).sort((a, b) => a - b);
+    const medY = ys[Math.floor(ys.length / 2)];
+    const medX = (years[0] + years[years.length - 1]) / 2;
+    const at = (yr) => medY + tr.sen_slope_per_year * (yr - medX);
+    svg.appendChild(s("line", {
+      x1: x(years[0]), y1: pA.y(at(years[0])),
+      x2: x(years[years.length - 1]), y2: pA.y(at(years[years.length - 1])),
+      stroke: css("--trend"), "stroke-width": 2, "stroke-dasharray": "6 4", opacity: .9,
+    }));
+  }
+
+  // Graduations d'années sous le panneau du bas.
+  yearTicks(years, w, 80).forEach((yr) => {
+    svg.appendChild(s("text", { x: x(yr), y: h - m.b + 17, "text-anchor": "middle",
+      class: "axis", "font-size": 11, fill: css("--muted") }, yr));
+  });
+
+  // Extrême du panneau du bas, seul repère étiqueté directement.
+  const pB = panels[1];
+  const rec = kept.reduce((a, b) => (b.humidex_max > (a?.humidex_max ?? -Infinity) ? b : a), null);
+  if (rec && rec.humidex_max !== null) {
+    svg.appendChild(s("circle", { cx: x(rec.annee), cy: pB.y(rec.humidex_max), r: 4.5,
+      fill: css("--warm"), stroke: css("--surface"), "stroke-width": 2 }));
+    const anchor = x(rec.annee) > w * 0.72 ? "end" : "start";
+    svg.appendChild(s("text", {
+      x: x(rec.annee) + (anchor === "end" ? -9 : 9), y: pB.y(rec.humidex_max) + 4,
+      "text-anchor": anchor, class: "axis", "font-size": 11.5, fill: css("--ink"), "font-weight": 600,
+      stroke: css("--surface"), "stroke-width": 3, "paint-order": "stroke",
+    }, `${nf(rec.humidex_max, 1)} en ${rec.annee}`));
+  }
+
+  // Curseur commun aux deux panneaux.
+  const cur = s("g", { opacity: 0 });
+  const rule = s("line", { y1: m.t, y2: h - m.b, stroke: css("--axis"), "stroke-width": 1 });
+  cur.appendChild(rule);
+  const dots = panels.map((p) => {
+    const c = s("circle", { r: 4.5, fill: p.color, stroke: css("--surface"), "stroke-width": 2 });
+    cur.appendChild(c); return c;
+  });
+  svg.appendChild(cur);
+
+  let idx = -1;
+  const move = (i) => {
+    if (i < 0 || i >= kept.length) return;
+    idx = i;
+    const r = kept[i];
+    cur.setAttribute("opacity", 1);
+    rule.setAttribute("x1", x(r.annee)); rule.setAttribute("x2", x(r.annee));
+    panels.forEach((p, k) => {
+      const v = r[p.key];
+      dots[k].setAttribute("opacity", v === null ? 0 : 1);
+      if (v !== null) { dots[k].setAttribute("cx", x(r.annee)); dots[k].setAttribute("cy", p.y(v)); }
+    });
+    tip.show(
+      `<b>${r.annee}</b>` +
+      panels.map((p) => `<div class="row"><span><i style="background:${p.color}"></i>${p.title}</span><em>${nf(r[p.key], 1)}</em></div>`).join("") +
+      `<div class="row"><span>heures &gt; 30</span><em>${nfi(r.heures_sup30)}</em></div>` +
+      `<div class="row"><span>complétude</span><em>${nf(r.completude * 100, 0)}${NBSP}%</em></div>`,
+      x(r.annee), m.t + 8
+    );
+  };
+  const nearest = (ev) => {
+    const box = svg.getBoundingClientRect();
+    const px = (ev.clientX - box.left) * (w / box.width);
+    const yr = lin(m.l, w - m.r, years[0], years[years.length - 1])(px);
+    let best = 0, bd = Infinity;
+    kept.forEach((r, i) => { const d = Math.abs(r.annee - yr); if (d < bd) { bd = d; best = i; } });
+    move(best);
+  };
+  svg.addEventListener("pointermove", nearest);
+  svg.addEventListener("pointerdown", nearest);
+  svg.addEventListener("pointerleave", () => { cur.setAttribute("opacity", 0); tip.hide(); });
+  host.tabIndex = 0;
+  host.onkeydown = (e) => {
+    if (e.key === "ArrowRight") { move(idx < 0 ? 0 : idx + 1); e.preventDefault(); }
+    if (e.key === "ArrowLeft") { move(idx < 0 ? kept.length - 1 : idx - 1); e.preventDefault(); }
+    if (e.key === "Escape") { cur.setAttribute("opacity", 0); tip.hide(); }
+  };
+  host.appendChild(svg);
+}
+chart("c-annual", drawAnnual);
+legend("l-annual", [
+  { color: css("--accent"), label: "panneau haut — humidex moyen des heures définies" },
+  { color: css("--warm"), label: "panneau bas — humidex maximal de l'année" },
+  { dash: true, label: "tendance du humidex moyen (pente de Sen)" },
+]);
+table("t-annual", [
+  { label: "Année", fmt: (r) => r.annee, value: (r) => r.annee },
+  { label: "Moyen", fmt: (r) => nf(r.humidex_moyen, 1), value: (r) => r.humidex_moyen },
+  { label: "Médian", fmt: (r) => nf(r.humidex_median, 1), value: (r) => r.humidex_median },
+  { label: "P95", fmt: (r) => nf(r.humidex_p95, 1), value: (r) => r.humidex_p95 },
+  { label: "Maximum", fmt: (r) => nf(r.humidex_max, 1), value: (r) => r.humidex_max },
+  { label: "Date du max", fmt: (r) => r.date_max || "—", value: (r) => r.date_max },
+], kept);
+
+/* ================================================= 02 · carte mois × année */
+const HM_METRICS = {
+  humidex_moyen: { label: "humidex moyen", unit: "", d: 1 },
+  humidex_max: { label: "humidex maximal", unit: "", d: 1 },
+  heures_sup30: { label: "heures > 30", unit: " h", d: 0 },
+};
+let hmMetric = "humidex_moyen";
+const HEAT = ["--h1", "--h2", "--h3", "--h4", "--h5", "--h6", "--h7"];
+
+function heatDomain() {
+  const v = D.grille_mensuelle.map((r) => r[hmMetric]).filter((x) => x !== null && x > 0);
+  return v.length ? [Math.min(...v), Math.max(...v)] : [0, 1];
+}
+function heatColor(v, dom) {
+  if (v === null || v === undefined || (hmMetric === "heures_sup30" && v === 0)) return css("--void");
+  const t = (v - dom[0]) / (dom[1] - dom[0] || 1);
+  return css(HEAT[Math.max(0, Math.min(HEAT.length - 1, Math.floor(t * HEAT.length)))]);
+}
+
+function drawHeat(host, w, tip) {
+  const dom = heatDomain();
+  const m = { t: 8, r: 8, b: 26, l: 34 };
+  const cw = Math.max(9, (w - m.l - m.r) / years.length);
+  const ch = Math.max(13, Math.min(24, cw * 1.25));
+  const h = m.t + ch * 12 + m.b;
+  const svg = s("svg", { viewBox: `0 0 ${w} ${h}`, role: "img",
+    "aria-label": `Carte de chaleur mois par année : ${HM_METRICS[hmMetric].label}` });
+
+  MOIS.forEach((name, i) => {
+    if (ch < 16 && i % 2) return;
+    svg.appendChild(s("text", { x: m.l - 7, y: m.t + i * ch + ch / 2 + 4, "text-anchor": "end",
+      class: "axis", "font-size": 10, fill: css("--muted") }, name.replace(".", "")));
+  });
+  const shown = new Set(yearTicks(years, w, 62));
+  years.forEach((yr, i) => {
+    if (!shown.has(yr)) return;
+    svg.appendChild(s("text", { x: m.l + i * cw + cw / 2, y: h - m.b + 15, "text-anchor": "middle",
+      class: "axis", "font-size": 10.5, fill: css("--muted") }, yr));
+  });
+
+  const byKey = new Map(D.grille_mensuelle.map((r) => [r.annee + "-" + r.mois, r]));
+  const cells = [];
+  years.forEach((yr, i) => {
+    for (let mo = 1; mo <= 12; mo++) {
+      const r = byKey.get(yr + "-" + mo);
+      const v = r ? r[hmMetric] : null;
+      const rect = s("rect", {
+        x: m.l + i * cw + 1, y: m.t + (mo - 1) * ch + 1,
+        width: Math.max(1, cw - 2), height: Math.max(1, ch - 2),   // 2px de respiration
+        fill: heatColor(v, dom), rx: 1.5,
+      });
+      const info = { rect, yr, mo, r, i, mo0: mo - 1 };
+      const show = () => {
+        rect.setAttribute("stroke", css("--ink"));
+        rect.setAttribute("stroke-width", 1.5);
+        tip.show(
+          `<b>${MOIS[mo - 1]} ${yr}</b>` +
+          (r && r.humidex_moyen !== null
+            ? `<div class="row"><span>humidex moyen</span><em>${nf(r.humidex_moyen, 1)}</em></div>` +
+              `<div class="row"><span>maximum</span><em>${nf(r.humidex_max, 1)}</em></div>` +
+              `<div class="row"><span>heures &gt; 30</span><em>${nfi(r.heures_sup30)}</em></div>` +
+              `<div class="row"><span>heures définies</span><em>${nfi(r.heures_definies)}</em></div>`
+            : `<div class="row"><span>humidex non défini (T &lt; 20 °C)</span></div>`),
+          m.l + i * cw + cw / 2, m.t + (mo - 1) * ch + ch / 2
+        );
+      };
+      const hide = () => { rect.removeAttribute("stroke"); tip.hide(); };
+      rect.addEventListener("pointerenter", show);
+      rect.addEventListener("pointerleave", hide);
+      info.show = show; info.hide = hide;
+      cells.push(info);
+      svg.appendChild(rect);
+    }
+  });
+
+  let ci = -1;
+  host.tabIndex = 0;
+  host.onkeydown = (e) => {
+    const d = { ArrowRight: 12, ArrowLeft: -12, ArrowDown: 1, ArrowUp: -1 }[e.key];
+    if (d === undefined) { if (e.key === "Escape" && ci >= 0) cells[ci].hide(); return; }
+    e.preventDefault();
+    if (ci >= 0) cells[ci].hide();
+    ci = Math.max(0, Math.min(cells.length - 1, (ci < 0 ? 0 : ci + d)));
+    cells[ci].show();
+  };
+  host.appendChild(svg);
+}
+function heatScale() {
+  const dom = heatDomain(), host = document.getElementById("s-heat"), mt = HM_METRICS[hmMetric];
+  host.innerHTML = "";
+  host.appendChild(el("span", null, nf(dom[0], mt.d) + mt.unit));
+  const ramp = el("span", "ramp");
+  HEAT.forEach((v) => { const i = el("i"); i.style.background = css(v); ramp.appendChild(i); });
+  host.appendChild(ramp);
+  host.appendChild(el("span", null, nf(dom[1], mt.d) + mt.unit));
+  host.appendChild(el("span", null, "· " + mt.label + " · gris : non défini"));
+}
+{
+  const bar = document.getElementById("hm-toolbar");
+  Object.entries(HM_METRICS).forEach(([key, mt]) => {
+    const b = el("button", null, mt.label);
+    b.type = "button";
+    b.setAttribute("aria-pressed", key === hmMetric);
+    b.onclick = () => {
+      hmMetric = key;
+      [...bar.children].forEach((c) => c.setAttribute("aria-pressed", c === b));
+      redrawHeat(); heatScale();
+    };
+    bar.appendChild(b);
+  });
+}
+let redrawHeat = () => {};
+chart("c-heat", (host, w, tip) => { redrawHeat = () => { [...host.querySelectorAll("svg")].forEach((n) => n.remove()); drawHeat(host, host.clientWidth || w, tip); }; drawHeat(host, w, tip); });
+heatScale();
+table("t-heat", [
+  { label: "Année", fmt: (r) => r.annee, value: (r) => r.annee },
+  { label: "Mois", fmt: (r) => MOIS[r.mois - 1], value: (r) => r.mois },
+  { label: "Humidex moyen", fmt: (r) => nf(r.humidex_moyen, 1), value: (r) => r.humidex_moyen },
+  { label: "Maximum", fmt: (r) => nf(r.humidex_max, 1), value: (r) => r.humidex_max },
+  { label: "Heures > 30", fmt: (r) => nfi(r.heures_sup30), value: (r) => r.heures_sup30 },
+  { label: "Heures définies", fmt: (r) => nfi(r.heures_definies), value: (r) => r.heures_definies, dim: true },
+], D.grille_mensuelle, { sortable: true });
+
+/* ============================================ 02b · cycle saisonnier moyen */
+function drawClim(host, w, tip) {
+  const rows = D.climatologie;
+  const h = Math.max(240, Math.min(360, w * 0.4));
+  const m = { t: 20, r: 14, b: 34, l: 44 };
+  const svg = s("svg", { viewBox: `0 0 ${w} ${h}`, role: "img",
+    "aria-label": "Humidex moyen par mois, créneau diurne et nocturne" });
+
+  const vals = rows.flatMap((r) => [r.humidex_moyen_jour, r.humidex_moyen_nuit, r.humidex_moyen]).filter((v) => v !== null);
+  const lo = Math.floor(Math.min(...vals) - 1), hi = Math.ceil(Math.max(...vals) + 1);
+  const x = lin(1, 12, m.l + 14, w - m.r - 14);
+  const y = lin(lo, hi, h - m.b, m.t);
+  frame(svg, m, w, h, y, ticks(lo, hi, 4), "°C");
+  rows.forEach((r) => {
+    if (w < 460 && r.mois % 2 === 0) return;
+    svg.appendChild(s("text", { x: x(r.mois), y: h - m.b + 17, "text-anchor": "middle",
+      class: "axis", "font-size": 10.5, fill: css("--muted") }, MOIS[r.mois - 1]));
+  });
+
+  const series = [
+    { key: "humidex_moyen_jour", color: css("--warm"), label: "jour" },
+    { key: "humidex_moyen_nuit", color: css("--accent"), label: "nuit" },
+  ];
+  series.forEach((se) => {
+    const pts = rows.filter((r) => r[se.key] !== null);
+    if (!pts.length) return;
+    svg.appendChild(s("path", {
+      d: pts.map((r, i) => `${i ? "L" : "M"}${x(r.mois).toFixed(1)},${y(r[se.key]).toFixed(1)}`).join(""),
+      fill: "none", stroke: se.color, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round",
+    }));
+    pts.forEach((r) => svg.appendChild(s("circle", { cx: x(r.mois), cy: y(r[se.key]), r: 4,
+      fill: se.color, stroke: css("--surface"), "stroke-width": 2 })));
+  });
+
+  rows.forEach((r) => {
+    const hit = s("rect", { x: x(r.mois) - 14, y: m.t, width: 28, height: h - m.t - m.b, fill: "transparent" });
+    hit.addEventListener("pointerenter", () => tip.show(
+      `<b>${MOIS[r.mois - 1]}</b>` +
+      series.map((se) => `<div class="row"><span><i style="background:${se.color}"></i>${se.label}</span><em>${nf(r[se.key], 1)}</em></div>`).join("") +
+      `<div class="row"><span>toutes heures</span><em>${nf(r.humidex_moyen, 1)}</em></div>` +
+      `<div class="row"><span>heures &gt; 30 / an</span><em>${nf(r.heures_sup30_par_an, 0)}</em></div>`,
+      x(r.mois), m.t + 10));
+    hit.addEventListener("pointerleave", tip.hide);
+    svg.appendChild(hit);
+  });
+  host.appendChild(svg);
+}
+chart("c-clim", drawClim);
+legend("l-clim", [
+  { color: css("--warm"), label: "créneau diurne (10h–18h)" },
+  { color: css("--accent"), label: "créneau nocturne (22h–6h)" },
+]);
+table("t-clim", [
+  { label: "Mois", fmt: (r) => MOIS[r.mois - 1], value: (r) => r.mois },
+  { label: "Humidex moyen", fmt: (r) => nf(r.humidex_moyen, 1), value: (r) => r.humidex_moyen },
+  { label: "Jour", fmt: (r) => nf(r.humidex_moyen_jour, 1), value: (r) => r.humidex_moyen_jour },
+  { label: "Nuit", fmt: (r) => nf(r.humidex_moyen_nuit, 1), value: (r) => r.humidex_moyen_nuit },
+  { label: "P95", fmt: (r) => nf(r.humidex_p95, 1), value: (r) => r.humidex_p95 },
+  { label: "Maximum", fmt: (r) => nf(r.humidex_max, 1), value: (r) => r.humidex_max },
+  { label: "Heures > 30 / an", fmt: (r) => nf(r.heures_sup30_par_an, 0), value: (r) => r.heures_sup30_par_an },
+], D.climatologie);
+
+/* ================================================ 03 · paliers (empilement) */
+const BANDS = [
+  { key: "heures_30_35_norm", raw: "heures_30_35", color: "--t1", label: "30 à 35" },
+  { key: "heures_35_40_norm", raw: "heures_35_40", color: "--t2", label: "35 à 40" },
+  { key: "heures_40_45_norm", raw: "heures_40_45", color: "--t3", label: "40 à 45" },
+  { key: "heures_45_plus_norm", raw: "heures_45_plus", color: "--t4", label: "plus de 45" },
+];
+function drawBands(host, w, tip) {
+  const h = Math.max(260, Math.min(400, w * 0.44));
+  const m = { t: 20, r: 14, b: 34, l: 48 };
+  const svg = s("svg", { viewBox: `0 0 ${w} ${h}`, role: "img",
+    "aria-label": "Heures par an dans chaque tranche de humidex, empilées" });
+
+  const totals = kept.map((r) => BANDS.reduce((a, b) => a + (r[b.key] || 0), 0));
+  const hi = Math.max(10, Math.ceil(Math.max(...totals) / 50) * 50);
+  const y = lin(0, hi, h - m.b, m.t);
+  frame(svg, m, w, h, y, ticks(0, hi, 4), "h / an");
+
+  const bw = Math.max(3, ((w - m.l - m.r) / kept.length) - 2);   // 2px entre barres
+  const bx = (i) => m.l + i * ((w - m.l - m.r) / kept.length) + 1;
+  const shown = new Set(yearTicks(years, w, 80));
+  kept.forEach((r, i) => {
+    if (shown.has(r.annee)) {
+      svg.appendChild(s("text", { x: bx(i) + bw / 2, y: h - m.b + 17, "text-anchor": "middle",
+        class: "axis", "font-size": 11, fill: css("--muted") }, r.annee));
+    }
+    let acc = 0;
+    BANDS.forEach((b) => {
+      const v = r[b.key] || 0;
+      if (v <= 0) return;
+      const y0 = y(acc), y1 = y(acc + v);
+      acc += v;
+      svg.appendChild(s("rect", {
+        x: bx(i), y: y1, width: bw, height: Math.max(1, y0 - y1 - 2),   // 2px de séparation
+        fill: css(b.color), rx: Math.min(2, bw / 3),
+      }));
+    });
+    const hit = s("rect", { x: bx(i) - 1, y: m.t, width: bw + 2, height: h - m.t - m.b, fill: "transparent" });
+    const show = () => tip.show(
+      `<b>${r.annee} — ${nf(totals[i], 0)} h au-dessus de 30</b>` +
+      BANDS.map((b) => `<div class="row"><span><i style="background:${css(b.color)}"></i>${b.label}</span><em>${nf(r[b.key] || 0, 0)} h</em></div>`).join("") +
+      `<div class="row"><span>complétude</span><em>${nf(r.completude * 100, 0)}${NBSP}%</em></div>`,
+      bx(i) + bw / 2, y(totals[i]));
+    hit.addEventListener("pointerenter", show);
+    hit.addEventListener("pointerleave", tip.hide);
+    svg.appendChild(hit);
+  });
+  host.appendChild(svg);
+}
+chart("c-bands", drawBands);
+legend("l-bands", BANDS.map((b) => ({ color: css(b.color), label: b.label, box: true })));
+table("t-bands", [
+  { label: "Année", fmt: (r) => r.annee, value: (r) => r.annee },
+  { label: "30–35", fmt: (r) => nf(r.heures_30_35_norm, 0), value: (r) => r.heures_30_35_norm },
+  { label: "35–40", fmt: (r) => nf(r.heures_35_40_norm, 0), value: (r) => r.heures_35_40_norm },
+  { label: "40–45", fmt: (r) => nf(r.heures_40_45_norm, 0), value: (r) => r.heures_40_45_norm },
+  { label: "> 45", fmt: (r) => nf(r.heures_45_plus_norm, 0), value: (r) => r.heures_45_plus_norm },
+  { label: "> 30 (brut)", fmt: (r) => nfi(r.heures_sup30), value: (r) => r.heures_sup30, dim: true },
+  { label: "> 35 (brut)", fmt: (r) => nfi(r.heures_sup35), value: (r) => r.heures_sup35, dim: true },
+], kept);
+
+/* ==================================================== 04 · jour contre nuit */
+function drawDayNight(host, w, tip) {
+  const h = Math.max(260, Math.min(380, w * 0.42));
+  const m = { t: 20, r: 14, b: 34, l: 44 };
+  const svg = s("svg", { viewBox: `0 0 ${w} ${h}`, role: "img",
+    "aria-label": "Humidex moyen par année, créneau diurne et nocturne" });
+
+  const series = [
+    { key: "humidex_moyen_jour", color: css("--warm"), label: "jour (10h–18h)" },
+    { key: "humidex_moyen_nuit", color: css("--accent"), label: "nuit (22h–6h)" },
+  ];
+  const vals = kept.flatMap((r) => series.map((se) => r[se.key])).filter((v) => v !== null);
+  const lo = Math.floor(Math.min(...vals) - 1), hi = Math.ceil(Math.max(...vals) + 1);
+  const x = lin(years[0], years[years.length - 1], m.l, w - m.r);
+  const y = lin(lo, hi, h - m.b, m.t);
+  frame(svg, m, w, h, y, ticks(lo, hi, 4), "°C");
+  yearTicks(years, w, 80).forEach((yr) => {
+    svg.appendChild(s("text", { x: x(yr), y: h - m.b + 17, "text-anchor": "middle",
+      class: "axis", "font-size": 11, fill: css("--muted") }, yr));
+  });
+
+  series.forEach((se) => {
+    const pts = kept.filter((r) => r[se.key] !== null);
+    svg.appendChild(s("path", {
+      d: pts.map((r, i) => `${i ? "L" : "M"}${x(r.annee).toFixed(1)},${y(r[se.key]).toFixed(1)}`).join(""),
+      fill: "none", stroke: se.color, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round",
+    }));
+    // Étiquette directe en bout de série, cerclée de la couleur du fond pour
+    // rester lisible si elle croise la courbe.
+    const last = pts[pts.length - 1];
+    if (last) svg.appendChild(s("text", {
+      x: x(last.annee) - 6, y: y(last[se.key]) - 11, "text-anchor": "end",
+      class: "axis", "font-size": 11.5, fill: se.color, "font-weight": 600,
+      stroke: css("--surface"), "stroke-width": 3, "paint-order": "stroke",
+    }, se.label.split(" ")[0]));
+  });
+
+  kept.forEach((r, i) => {
+    const band = (w - m.l - m.r) / kept.length;
+    const hit = s("rect", { x: x(r.annee) - band / 2, y: m.t, width: band, height: h - m.t - m.b, fill: "transparent" });
+    hit.addEventListener("pointerenter", () => tip.show(
+      `<b>${r.annee}</b>` +
+      series.map((se) => `<div class="row"><span><i style="background:${se.color}"></i>${se.label}</span><em>${nf(r[se.key], 1)}</em></div>`).join("") +
+      `<div class="row"><span>heures nuit &gt; 30</span><em>${nfi(r.heures_nuit_sup30)}</em></div>` +
+      `<div class="row"><span>heures jour &gt; 30</span><em>${nfi(r.heures_jour_sup30)}</em></div>`,
+      x(r.annee), m.t + 10));
+    hit.addEventListener("pointerleave", tip.hide);
+    svg.appendChild(hit);
+  });
+  host.appendChild(svg);
+}
+chart("c-daynight", drawDayNight);
+legend("l-daynight", [
+  { color: css("--warm"), label: "créneau diurne (10h–18h locale)" },
+  { color: css("--accent"), label: "créneau nocturne (22h–6h locale)" },
+]);
+table("t-daynight", [
+  { label: "Année", fmt: (r) => r.annee, value: (r) => r.annee },
+  { label: "Jour", fmt: (r) => nf(r.humidex_moyen_jour, 1), value: (r) => r.humidex_moyen_jour },
+  { label: "Nuit", fmt: (r) => nf(r.humidex_moyen_nuit, 1), value: (r) => r.humidex_moyen_nuit },
+  { label: "Max jour", fmt: (r) => nf(r.humidex_max_jour, 1), value: (r) => r.humidex_max_jour },
+  { label: "Max nuit", fmt: (r) => nf(r.humidex_max_nuit, 1), value: (r) => r.humidex_max_nuit },
+  { label: "Nuit > 30", fmt: (r) => nfi(r.heures_nuit_sup30), value: (r) => r.heures_nuit_sup30 },
+  { label: "Nuit > 35", fmt: (r) => nfi(r.heures_nuit_sup35), value: (r) => r.heures_nuit_sup35 },
+], kept);
+
+/* ------------------------------------------------- 04b · profil journalier */
+function drawHours(host, w, tip) {
+  const rows = D.profil_horaire;
+  const h = Math.max(220, Math.min(320, w * 0.36));
+  const m = { t: 20, r: 14, b: 34, l: 44 };
+  const svg = s("svg", { viewBox: `0 0 ${w} ${h}`, role: "img",
+    "aria-label": "Humidex moyen heure par heure en été" });
+
+  const vals = rows.map((r) => r.humidex_moyen).filter((v) => v !== null);
+  if (!vals.length) { host.appendChild(svg); return; }
+  const lo = Math.floor(Math.min(...vals) - 1), hi = Math.ceil(Math.max(...vals) + 1);
+  const x = lin(0, 23, m.l + 10, w - m.r - 10);
+  const y = lin(lo, hi, h - m.b, m.t);
+
+  // Bandes des créneaux, sous la grille.
+  const shade = css("--grid");
+  [[10, 17], [22, 23], [0, 5]].forEach(([a, b]) => {
+    svg.appendChild(s("rect", { x: x(a) - 5, y: m.t, width: x(b) - x(a) + 10, height: h - m.t - m.b,
+      fill: shade, opacity: .55 }));
+  });
+  frame(svg, m, w, h, y, ticks(lo, hi, 4), "°C");
+  rows.forEach((r) => {
+    if (r.heure % (w < 520 ? 6 : 3)) return;
+    svg.appendChild(s("text", { x: x(r.heure), y: h - m.b + 17, "text-anchor": "middle",
+      class: "axis", "font-size": 10.5, fill: css("--muted") }, r.heure + "h"));
+  });
+
+  const pts = rows.filter((r) => r.humidex_moyen !== null);
+  svg.appendChild(s("path", {
+    d: pts.map((r, i) => `${i ? "L" : "M"}${x(r.heure).toFixed(1)},${y(r.humidex_moyen).toFixed(1)}`).join(""),
+    fill: "none", stroke: css("--warm"), "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round",
+  }));
+  pts.forEach((r) => {
+    svg.appendChild(s("circle", { cx: x(r.heure), cy: y(r.humidex_moyen), r: 3.5,
+      fill: css("--warm"), stroke: css("--surface"), "stroke-width": 1.5 }));
+    const band = (w - m.l - m.r) / 24;
+    const hit = s("rect", { x: x(r.heure) - band / 2, y: m.t, width: band, height: h - m.t - m.b, fill: "transparent" });
+    hit.addEventListener("pointerenter", () => tip.show(
+      `<b>${r.heure}h — ${r.heure + 1}h locale</b>` +
+      `<div class="row"><span>humidex moyen</span><em>${nf(r.humidex_moyen, 1)}</em></div>` +
+      `<div class="row"><span>température moyenne</span><em>${nf(r.temperature_moyenne, 1)} °C</em></div>` +
+      `<div class="row"><span>heures &gt; 30 / an</span><em>${nf(r.heures_sup30_par_an, 0)}</em></div>`,
+      x(r.heure), y(r.humidex_moyen)));
+    hit.addEventListener("pointerleave", tip.hide);
+    svg.appendChild(hit);
+  });
+  host.appendChild(svg);
+}
+chart("c-hours", drawHours);
+legend("l-hours", [
+  { color: css("--warm"), label: "humidex moyen, juin à septembre" },
+  { color: css("--grid"), label: "créneaux jour et nuit retenus", box: true },
+]);
+table("t-hours", [
+  { label: "Heure locale", fmt: (r) => r.heure + "h", value: (r) => r.heure },
+  { label: "Humidex moyen", fmt: (r) => nf(r.humidex_moyen, 1), value: (r) => r.humidex_moyen },
+  { label: "Température moyenne", fmt: (r) => nf(r.temperature_moyenne, 1), value: (r) => r.temperature_moyenne },
+  { label: "Heures > 30 / an", fmt: (r) => nf(r.heures_sup30_par_an, 0), value: (r) => r.heures_sup30_par_an },
+], D.profil_horaire);
+
+/* ================================================ 05 · tableau des tendances */
+{
+  const LABELS = {
+    humidex_moyen: ["Humidex moyen", "°C"],
+    humidex_max: ["Humidex maximal annuel", "°C"],
+    humidex_p95: ["Humidex, 95ᵉ centile", "°C"],
+    humidex_moyen_jour: ["Humidex moyen — jour", "°C"],
+    humidex_moyen_nuit: ["Humidex moyen — nuit", "°C"],
+    heures_sup30_norm: ["Heures > 30", "h"],
+    heures_sup35_norm: ["Heures > 35", "h"],
+    heures_sup40_norm: ["Heures > 40", "h"],
+    heures_nuit_sup30_norm: ["Heures nocturnes > 30", "h"],
+    heures_jour_sup30_norm: ["Heures diurnes > 30", "h"],
+    temperature_moyenne: ["Température moyenne annuelle", "°C"],
+  };
+  const rows = Object.keys(LABELS).filter((k) => TR[k]).map((k) => ({ key: k, ...TR[k] }));
+  table("t-trends", [
+    { label: "Indicateur", fmt: (r) => LABELS[r.key][0], value: (r) => LABELS[r.key][0] },
+    { label: "Unité / décennie", fmt: (r) => LABELS[r.key][1], value: (r) => LABELS[r.key][1] },
+    { label: "Pente de Sen", fmt: (r) => signed(r.sen_slope_per_decade, 2), value: (r) => r.sen_slope_per_decade },
+    { label: "IC 95 %", fmt: (r) =>
+        r.sen_lo_per_decade === null ? "—" : `${signed(r.sen_lo_per_decade, 2)} … ${signed(r.sen_hi_per_decade, 2)}`,
+      value: (r) => r.sen_lo_per_decade },
+    { label: "Moindres carrés", fmt: (r) => signed(r.ols_slope_per_decade, 2), value: (r) => r.ols_slope_per_decade },
+    { label: "R²", fmt: (r) => nf(r.r2, 2), value: (r) => r.r2, dim: true },
+    { label: "τ de Kendall", fmt: (r) => signed(r.mk_tau, 2), value: (r) => r.mk_tau, dim: true },
+    { label: "p (Mann-Kendall)", fmt: (r) => pval(r.mk_p), value: (r) => r.mk_p },
+    { label: "Significatif", fmt: (r) => (r.significant_05 ? "oui" : "non"), value: (r) => r.significant_05 },
+  ], rows, { sortable: true });
+}
+
+/* ============================================== 06 · synthèse annuelle */
+table("t-synth", [
+  { label: "Année", fmt: (r) => r.annee, value: (r) => r.annee },
+  { label: "Complétude", fmt: (r) => nf(r.completude * 100, 1) + NBSP + "%", value: (r) => r.completude },
+  { label: "Humidex moyen", fmt: (r) => nf(r.humidex_moyen, 1), value: (r) => r.humidex_moyen, desc: true },
+  { label: "Maximum", fmt: (r) => nf(r.humidex_max, 1), value: (r) => r.humidex_max, desc: true },
+  { label: "Date du max", fmt: (r) => r.date_max || "—", value: (r) => r.date_max },
+  { label: "> 30", fmt: (r) => nfi(r.heures_sup30), value: (r) => r.heures_sup30, desc: true },
+  { label: "> 35", fmt: (r) => nfi(r.heures_sup35), value: (r) => r.heures_sup35, desc: true },
+  { label: "> 40", fmt: (r) => nfi(r.heures_sup40), value: (r) => r.heures_sup40, desc: true },
+  { label: "> 45", fmt: (r) => nfi(r.heures_sup45), value: (r) => r.heures_sup45, desc: true },
+  { label: "Moyen jour", fmt: (r) => nf(r.humidex_moyen_jour, 1), value: (r) => r.humidex_moyen_jour },
+  { label: "Moyen nuit", fmt: (r) => nf(r.humidex_moyen_nuit, 1), value: (r) => r.humidex_moyen_nuit },
+  { label: "Nuit > 30", fmt: (r) => nfi(r.heures_nuit_sup30), value: (r) => r.heures_nuit_sup30, desc: true },
+  { label: "T moyenne", fmt: (r) => nf(r.temperature_moyenne, 1), value: (r) => r.temperature_moyenne, dim: true },
+], D.annuel, { sortable: true, rowClass: (r) => (r.retenue ? "" : "excluded") });
+
+/* ==================================================== 07 · méthode */
+{
+  const st = D.station, p = D.periode, pr = D.provenance, mt = D.meta;
+  document.getElementById("station-facts").innerHTML =
+    `<dt>Nom</dt><dd>${st.nom}</dd>` +
+    `<dt>Numéro de poste</dt><dd class="num">${st.num_poste}</dd>` +
+    `<dt>Coordonnées</dt><dd class="num">${nf(st.lat, 4)}° N, ${nf(st.lon, 4)}° E` +
+      (st.alti !== null ? ` — ${nfi(st.alti)}${NBSP}m` : "") + `</dd>` +
+    `<dt>Distance à Sainte-Maxime</dt><dd class="num">${nf(st.distance_km, 1)}${NBSP}km ` +
+      `<span class="muted">(orthodromie depuis ${nf(mt.cible.lat, 3)}° N, ${nf(mt.cible.lon, 3)}° E)</span></dd>` +
+    `<dt>Historique disponible</dt><dd class="num">${st.premiere_annee}–${st.derniere_annee}</dd>` +
+    `<dt>Période analysée</dt><dd class="num">${p.debut}–${p.fin} — ${p.annees_retenues} années retenues</dd>` +
+    `<dt>Heures exploitées</dt><dd class="num">${nfi(pr.n_hours_tu)} heures avec T et U ` +
+      `<span class="muted">(sur ${nfi(pr.n_hours)} enregistrées)</span></dd>` +
+    `<dt>Humidex défini</dt><dd class="num">${nfi(pr.n_humidex)} heures ` +
+      `<span class="muted">(${nf((100 * pr.n_humidex) / pr.n_hours_tu, 1)}${NBSP}% des heures exploitables)</span></dd>`;
+
+  document.getElementById("station-why").innerHTML =
+    `Motif de sélection : <b>${st.motif}</b>. Le critère est la distance à Sainte-Maxime, ` +
+    `parmi les stations disposant d'au moins vingt années dont ${nf(mt.seuil_completude * 100, 0)}${NBSP}% ` +
+    `des heures portent simultanément une température et une humidité relative. ` +
+    `Les stations plus proches mais dépourvues d'hygrométrie sont écartées : ` +
+    `sans humidité, pas de point de rosée, donc pas de humidex.`;
+
+  document.getElementById("tz-name").textContent = mt.fuseau;
+  document.getElementById("slot-day").textContent = `${mt.plage_jour[0]}h–${mt.plage_jour[1]}h`;
+  document.getElementById("slot-night").textContent = `${mt.plage_nuit[0]}h–${mt.plage_nuit[1]}h`;
+  document.getElementById("thr-completeness").textContent = nf(mt.seuil_completude * 100, 0) + NBSP + "%";
+
+  document.getElementById("td-prov").innerHTML =
+    `Sur cette station, <b>${nf(pr.part_td_publie * 100, 1)}${NBSP}%</b> des heures exploitables ` +
+    `disposent d'un point de rosée publié par Météo-France (${nfi(pr.td_publie)} heures) ; ` +
+    `les <b>${nfi(pr.td_magnus)}</b> heures restantes sont reconstituées par Magnus-Tetens. ` +
+    `Un point de rosée publié dépassant la température de plus de 0,5 °C est écarté au profit du calcul.`;
+
+  const gaps = p.annees_exclues;
+  document.getElementById("lim-gaps").innerHTML = gaps.length
+    ? `Années écartées pour complétude insuffisante : ` +
+      gaps.map((g) => `<b>${g.annee}</b> (${nf(g.completude, 1)}${NBSP}%)`).join(", ") +
+      `. Elles restent visibles dans le tableau de synthèse.`
+    : `Aucune année n'a été écartée : toutes atteignent le seuil de complétude.`;
+
+  document.getElementById("src-files").innerHTML =
+    mt.fichiers_sources.map((f) => `<li><code>${f}</code></li>`).join("");
+
+  table("t-cands", [
+    { label: "Station", fmt: (r) => r.nom + (r.retenue ? " ✓" : ""), value: (r) => r.nom },
+    { label: "Poste", fmt: (r) => r.num_poste, value: (r) => r.num_poste, dim: true },
+    { label: "Distance", fmt: (r) => nf(r.distance_km, 1) + NBSP + "km", value: (r) => r.distance_km },
+    { label: "Historique", fmt: (r) => `${r.premiere_annee}–${r.derniere_annee}`, value: (r) => r.premiere_annee },
+    { label: "Années exploitables", fmt: (r) => nfi(r.annees_exploitables), value: (r) => r.annees_exploitables },
+    { label: "T et U remplis", fmt: (r) => nf(r.couverture_tu * 100, 1) + NBSP + "%", value: (r) => r.couverture_tu },
+    { label: "Statut", fmt: (r) => (r.retenue ? "retenue" : r.eligible ? "éligible" : r.motif), value: (r) => r.motif },
+  ], D.candidats, { sortable: true, rowClass: (r) => (r.eligible ? "" : "excluded") });
+
+  document.getElementById("footer-text").innerHTML =
+    `Données © Météo-France, diffusées sous Licence Ouverte via meteo.data.gouv.fr. ` +
+    `Calculs et mise en page produits localement ; ce fichier est autonome et ne charge ` +
+    `aucune ressource extérieure. Généré le ${mt.genere_le}.`;
+}
+
+/* ------------------------------------------------------------------ thème */
+{
+  const btn = document.getElementById("themetoggle");
+  btn.onclick = () => {
+    const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+    const cur = document.documentElement.getAttribute("data-theme") || (dark ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+    redraws.forEach((f) => f());
+    heatScale();
+    legend("l-annual", [
+      { color: css("--accent"), label: "panneau haut — humidex moyen des heures définies" },
+      { color: css("--warm"), label: "panneau bas — humidex maximal de l'année" },
+      { dash: true, label: "tendance du humidex moyen (pente de Sen)" },
+    ]);
+    legend("l-bands", BANDS.map((b) => ({ color: css(b.color), label: b.label, box: true })));
+    legend("l-clim", [
+      { color: css("--warm"), label: "créneau diurne (10h–18h)" },
+      { color: css("--accent"), label: "créneau nocturne (22h–6h)" },
+    ]);
+    legend("l-daynight", [
+      { color: css("--warm"), label: "créneau diurne (10h–18h locale)" },
+      { color: css("--accent"), label: "créneau nocturne (22h–6h locale)" },
+    ]);
+    legend("l-hours", [
+      { color: css("--warm"), label: "humidex moyen, juin à septembre" },
+      { color: css("--grid"), label: "créneaux jour et nuit retenus", box: true },
+    ]);
+  };
+}
+</script>
+</body>
+</html>

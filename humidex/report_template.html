@@ -1,0 +1,1429 @@
+<!doctype html>
+<html lang="fr" prefix="og: https://ogp.me/ns#">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Humidex — Sainte-Maxime (Var)</title>
+<meta name="description" content="Série historique du humidex reconstituée à partir des données horaires Météo-France, pour la région de Sainte-Maxime (Var).">
+<style>
+/* ------------------------------------------------------------------ thème */
+:root{
+  color-scheme: light;
+  --paper:#f4f1ea;      /* fond de page */
+  --surface:#faf8f3;    /* surface des blocs et des graphiques */
+  --ink:#191712;
+  --ink-2:#4b463c;
+  --muted:#857e70;
+  --rule:#ded8ca;
+  --grid:#e7e1d4;
+  --axis:#c9c2b1;
+  --accent:#2a78d6;     /* série 1 */
+  --warm:#eb6834;       /* série 2 */
+  --trend:#4b463c;
+  --ring:rgba(25,23,18,.10);
+  /* paliers (rampe ordinale ambre, validée) */
+  --t1:#e5a05a; --t2:#d97b2c; --t3:#b55916; --t4:#82380c;
+  /* rampe séquentielle de la carte de chaleur */
+  --h1:#fdf1e2; --h2:#f8d9b4; --h3:#f2be86; --h4:#e8a25a;
+  --h5:#d97b2c; --h6:#b05615; --h7:#7a340b;
+  --void:#d9d5c8;       /* cellule sans donnée — gris franc, hors rampe ambre */
+  --shadow:0 1px 2px rgba(25,23,18,.04);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --paper:#101013; --surface:#17171b; --ink:#f4f2ec; --ink-2:#c3bfb4;
+    --muted:#8e8779; --rule:#2c2c31; --grid:#26262b; --axis:#3a3a40;
+    --accent:#3987e5; --warm:#d95926; --trend:#c3bfb4;
+    --ring:rgba(255,255,255,.10);
+    --t1:#f7d0a0; --t2:#eda65c; --t3:#dd7f2f; --t4:#bc5f1b;
+    --h1:#2a2118; --h2:#4a3316; --h3:#6f4715; --h4:#9a5e18;
+    --h5:#c47a25; --h6:#e29a44; --h7:#f4bd78;
+    --void:#33333a;
+    --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#101013; --surface:#17171b; --ink:#f4f2ec; --ink-2:#c3bfb4;
+  --muted:#8e8779; --rule:#2c2c31; --grid:#26262b; --axis:#3a3a40;
+  --accent:#3987e5; --warm:#d95926; --trend:#c3bfb4;
+  --ring:rgba(255,255,255,.10);
+  --t1:#f7d0a0; --t2:#eda65c; --t3:#dd7f2f; --t4:#bc5f1b;
+  --h1:#2a2118; --h2:#4a3316; --h3:#6f4715; --h4:#9a5e18;
+  --h5:#c47a25; --h6:#e29a44; --h7:#f4bd78;
+  --void:#1e1e22;
+  --shadow:none;
+}
+
+/* --------------------------------------------------------------- typo/base */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
+  font-size:17px; line-height:1.62; text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+}
+/* Les chiffres, l'appareil de lecture et les graphiques restent en linéale :
+   la sérif porte le texte courant, jamais les données. */
+.ui,.num,table,figcaption,.legend,.tt,.tag,.kpi-value,.kpi-unit,button,select,th,td,
+.axis,.scale,.note-inline{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+.num,th,td,.axis{font-variant-numeric:tabular-nums}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+.prose{max-width:64ch}
+h1,h2,h3{line-height:1.18;letter-spacing:-.012em;font-weight:600;margin:0}
+h1{font-size:clamp(2.1rem,1.3rem + 3.4vw,3.6rem);letter-spacing:-.022em}
+h2{font-size:clamp(1.45rem,1.1rem + 1.4vw,2rem);margin-bottom:.35em}
+h3{font-size:1.12rem;font-weight:600}
+p{margin:0 0 1.05em}
+a{color:inherit;text-underline-offset:.18em;text-decoration-thickness:.06em}
+strong{font-weight:600}
+.lede{font-size:1.14rem;color:var(--ink-2)}
+.small{font-size:.9rem}
+.muted{color:var(--muted)}
+
+/* ------------------------------------------------------------------ entête */
+header.masthead{border-bottom:1px solid var(--rule);padding:clamp(40px,7vw,86px) 0 clamp(26px,4vw,42px)}
+.eyebrow{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  margin:0 0 1.1em;font-weight:600;
+}
+.masthead .lede{margin-top:1.1em;max-width:60ch}
+.byline{
+  display:flex;flex-wrap:wrap;gap:.5em 1.4em;align-items:baseline;
+  margin-top:1.6em;font-size:.86rem;color:var(--muted);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.byline b{color:var(--ink-2);font-weight:600}
+
+.banner{
+  margin:0 0 1.8em;padding:.85em 1.1em;border-left:3px solid var(--warm);
+  background:color-mix(in srgb,var(--warm) 8%,var(--surface));
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.9rem;line-height:1.5;
+}
+.banner b{display:block;margin-bottom:.2em}
+
+/* --------------------------------------------------------------- indicateurs */
+.kpis{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);
+  margin:clamp(34px,5vw,54px) 0;box-shadow:var(--shadow);
+}
+.kpi{background:var(--surface);padding:1.5em 1.4em 1.4em}
+.kpi-label{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.74rem;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600;
+  margin-bottom:.7em;
+}
+.kpi-value{font-size:2.5rem;line-height:1;font-weight:600;letter-spacing:-.02em}
+.kpi-unit{font-size:.95rem;color:var(--ink-2);font-weight:500;margin-left:.22em}
+.kpi-note{font-size:.86rem;color:var(--ink-2);margin-top:.75em;line-height:1.45}
+.kpi-note .tag{
+  display:inline-block;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid var(--ring);border-radius:2px;padding:.12em .45em;margin-right:.4em;
+  color:var(--muted);font-weight:600;
+}
+
+/* ------------------------------------------------------------------ sections */
+section{padding:clamp(32px,5vw,58px) 0;border-top:1px solid var(--rule)}
+.sec-head{display:flex;gap:1.1em;align-items:baseline;margin-bottom:1.4em}
+.sec-num{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.78rem;font-weight:700;
+  color:var(--warm);letter-spacing:.08em;padding-top:.45em;flex:none;
+}
+
+/* ------------------------------------------------------------------ figures */
+figure{margin:1.9em 0 0;background:var(--surface);border:1px solid var(--rule);box-shadow:var(--shadow)}
+.fig-head{padding:1.15em 1.25em .2em}
+.fig-head h3{margin-bottom:.3em}
+.fig-head p{font-size:.92rem;color:var(--ink-2);margin:0 0 .2em;max-width:70ch}
+.chart{position:relative;padding:.6em 1.25em 1.15em}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.legend{
+  display:flex;flex-wrap:wrap;gap:.45em 1.25em;align-items:center;
+  padding:0 1.25em 1.1em;font-size:.84rem;color:var(--ink-2);
+}
+.legend span{display:inline-flex;align-items:center;gap:.45em}
+.swatch{width:22px;height:3px;border-radius:2px;flex:none}
+.swatch.box{width:12px;height:12px;border-radius:2px}
+.swatch.dash{background:none;border-top:2px dashed var(--trend);height:0}
+
+.toolbar{
+  display:flex;flex-wrap:wrap;gap:.5em;padding:0 1.25em 1em;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.toolbar button{
+  font:inherit;font-size:.82rem;padding:.34em .8em;cursor:pointer;
+  background:transparent;color:var(--ink-2);
+  border:1px solid var(--rule);border-radius:2px;
+}
+.toolbar button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.toolbar button:hover:not([aria-pressed="true"]){border-color:var(--muted)}
+
+/* L'infobulle est en position absolue : sans plafond de largeur ni remise à zéro
+   de sa position quand elle est masquée, elle élargirait le document et
+   provoquerait un défilement horizontal de la page sur petit écran. */
+.tt{
+  position:absolute;left:0;top:0;pointer-events:none;opacity:0;transition:opacity .1s;
+  background:var(--ink);color:var(--paper);padding:.5em .65em;border-radius:3px;
+  font-size:.8rem;line-height:1.45;z-index:5;
+  max-width:min(300px,calc(100% - 8px));
+  box-shadow:0 2px 10px rgba(0,0,0,.18);
+}
+.tt .row em{white-space:nowrap}
+.tt b{display:block;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;opacity:.72;margin-bottom:.25em;font-weight:600}
+.tt i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:.45em;vertical-align:baseline}
+.tt .row{display:flex;justify-content:space-between;gap:1.2em}
+.tt .row em{font-style:normal;font-variant-numeric:tabular-nums}
+
+details.data{border-top:1px solid var(--rule)}
+details.data > summary{
+  cursor:pointer;padding:.7em 1.25em;font-size:.84rem;color:var(--ink-2);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;list-style:none;
+}
+details.data > summary::-webkit-details-marker{display:none}
+details.data > summary::before{content:"▸ ";color:var(--muted)}
+details.data[open] > summary::before{content:"▾ "}
+details.data > summary:hover{color:var(--ink)}
+.tablewrap{overflow-x:auto;max-height:460px;overflow-y:auto;border-top:1px solid var(--rule)}
+
+/* ------------------------------------------------------------------ tableaux */
+table{border-collapse:collapse;width:100%;font-size:.84rem}
+th,td{padding:.5em .7em;text-align:right;white-space:nowrap;border-bottom:1px solid var(--grid)}
+th:first-child,td:first-child{text-align:left}
+thead th{
+  position:sticky;top:0;background:var(--surface);z-index:2;
+  font-weight:600;color:var(--ink-2);border-bottom:1px solid var(--axis);
+  font-size:.76rem;letter-spacing:.03em;
+}
+table.sortable thead th{cursor:pointer;user-select:none}
+table.sortable thead th::after{content:"";opacity:.3;margin-left:.35em}
+table.sortable thead th[aria-sort="ascending"]::after{content:"▲";opacity:.75}
+table.sortable thead th[aria-sort="descending"]::after{content:"▼";opacity:.75}
+tbody tr:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
+tr.excluded td{color:var(--muted);font-style:italic}
+td.dim{color:var(--muted)}
+
+/* ------------------------------------------------------------------ méthode */
+/* Le texte de la méthode garde une longueur de ligne lisible, mais les tableaux
+   qu'elle contient occupent toute la largeur disponible. */
+.method{max-width:none}
+.method h3,.method p,.method ul,.method dl,.method .formula{max-width:70ch}
+.method h3{margin:1.8em 0 .5em}
+.method ul{padding-left:1.15em;margin:0 0 1.05em}
+.method li{margin-bottom:.4em}
+.formula{
+  background:var(--surface);border:1px solid var(--rule);padding:.9em 1.1em;margin:.9em 0 1.3em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82rem;
+  line-height:1.75;overflow-x:auto;white-space:pre;
+}
+dl.facts{display:grid;grid-template-columns:minmax(140px,auto) 1fr;gap:.45em 1.4em;margin:0 0 1.4em;font-size:.94rem}
+dl.facts dt{color:var(--muted);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.84rem;padding-top:.15em}
+dl.facts dd{margin:0}
+
+.scale{display:flex;flex-wrap:wrap;align-items:center;gap:.5em .6em;padding:0 1.25em 1.1em;font-size:.78rem;color:var(--muted)}
+.scale .ramp{display:flex;height:10px;border-radius:2px;overflow:hidden;min-width:120px;max-width:190px;flex:1 1 120px}
+.scale .ramp i{height:100%;flex:1 1 0}
+
+footer{border-top:1px solid var(--rule);padding:2.4em 0 3.4em;font-size:.86rem;color:var(--muted)}
+.themetoggle{
+  position:fixed;top:14px;right:14px;z-index:10;font:inherit;font-size:.78rem;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:var(--surface);color:var(--ink-2);border:1px solid var(--rule);
+  border-radius:2px;padding:.35em .7em;cursor:pointer;box-shadow:var(--shadow);
+}
+.note-inline{font-size:.82rem;color:var(--muted);padding:0 1.25em 1.1em;margin:0}
+
+@media (max-width:640px){
+  body{font-size:16px}
+  .kpi-value{font-size:2.1rem}
+  dl.facts{grid-template-columns:1fr;gap:.1em .8em}
+  dl.facts dt{padding-top:.6em}
+  .sec-head{flex-direction:column;gap:.2em}
+  .sec-num{padding-top:0}
+}
+@media print{
+  .themetoggle,.toolbar,details.data{display:none}
+  body{background:#fff;font-size:11pt}
+  section{break-inside:avoid;border-top:1px solid #ccc}
+  figure{break-inside:avoid;box-shadow:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<button class="themetoggle ui" id="themetoggle" type="button" aria-label="Basculer le thème clair/sombre">◐ thème</button>
+
+<header class="masthead">
+  <div class="wrap">
+    <div id="synthetic-banner"></div>
+    <p class="eyebrow">Sainte-Maxime · Var · Données Météo-France</p>
+    <h1>La chaleur ressentie,<br>heure par heure</h1>
+    <p class="lede prose">
+      Météo-France ne publie pas de humidex. Cette série le reconstitue à partir des
+      températures et humidités relatives horaires de la station publique la plus proche
+      de Sainte-Maxime, puis en suit la dérive sur l'ensemble de l'historique exploitable.
+    </p>
+    <div class="byline" id="byline"></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="kpis" id="kpis"></div>
+
+  <section id="serie">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="prose">
+        <h2>La série annuelle</h2>
+        <p class="small muted" id="serie-intro"></p>
+      </div>
+    </div>
+    <figure>
+      <div class="fig-head">
+        <h3>Humidex moyen et maximum, par année</h3>
+        <p>La moyenne ne porte que sur les heures où le humidex est défini (T ≥ 20 °C) :
+           elle décrit l'intensité de la chaleur humide quand elle est là, pas sa fréquence.
+           Les deux grandeurs n'ont pas la même amplitude et occupent donc deux panneaux
+           d'échelles distinctes, sur un axe des années commun. La droite est la pente de
+           Sen, robuste aux valeurs extrêmes.</p>
+      </div>
+      <div class="chart" id="c-annual"></div>
+      <div class="legend" id="l-annual"></div>
+      <details class="data"><summary>Voir les valeurs</summary><div class="tablewrap" id="t-annual"></div></details>
+    </figure>
+  </section>
+
+  <section id="saison">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="prose">
+        <h2>Le rythme saisonnier</h2>
+        <p class="small muted">Où se loge la chaleur humide dans l'année, et comment cette
+           saison se déforme d'une décennie à l'autre.</p>
+      </div>
+    </div>
+    <figure>
+      <div class="fig-head">
+        <h3>Carte mois × année</h3>
+        <p>Chaque cellule est un mois. Les cases vides sont les mois où aucune heure
+           n'atteint 20 °C : le humidex n'y est pas défini.</p>
+      </div>
+      <div class="toolbar" id="hm-toolbar"></div>
+      <div class="chart" id="c-heat"></div>
+      <div class="scale" id="s-heat"></div>
+      <details class="data"><summary>Voir les valeurs</summary><div class="tablewrap" id="t-heat"></div></details>
+    </figure>
+    <figure>
+      <div class="fig-head">
+        <h3>Cycle moyen par mois</h3>
+        <p>Moyenne sur toutes les années retenues, séparée entre créneau diurne et nocturne.</p>
+      </div>
+      <div class="chart" id="c-clim"></div>
+      <div class="legend" id="l-clim"></div>
+      <details class="data"><summary>Voir les valeurs</summary><div class="tablewrap" id="t-clim"></div></details>
+    </figure>
+  </section>
+
+  <section id="paliers">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="prose">
+        <h2>Les paliers d'inconfort</h2>
+        <p class="small muted" id="paliers-intro"></p>
+      </div>
+    </div>
+    <figure>
+      <div class="fig-head">
+        <h3>Heures par an dans chaque tranche de humidex</h3>
+        <p>Tranches disjointes, afin que l'empilement se lise comme un total.
+           Les comptages sont ramenés à une année complète pour neutraliser les lacunes
+           résiduelles des années retenues.</p>
+      </div>
+      <div class="chart" id="c-bands"></div>
+      <div class="legend" id="l-bands"></div>
+      <details class="data"><summary>Voir les valeurs</summary><div class="tablewrap" id="t-bands"></div></details>
+    </figure>
+  </section>
+
+  <section id="journuit">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="prose">
+        <h2>Jour contre nuit</h2>
+        <p class="small muted" id="jn-intro"></p>
+      </div>
+    </div>
+    <figure>
+      <div class="fig-head">
+        <h3>Humidex moyen selon le créneau, par année</h3>
+        <p>Le créneau nocturne est celui qui détermine si la nuit permet de récupérer
+           de la chaleur du jour.</p>
+      </div>
+      <div class="chart" id="c-daynight"></div>
+      <div class="legend" id="l-daynight"></div>
+      <details class="data"><summary>Voir les valeurs</summary><div class="tablewrap" id="t-daynight"></div></details>
+    </figure>
+    <figure>
+      <div class="fig-head">
+        <h3>Profil d'une journée d'été</h3>
+        <p>Humidex moyen heure par heure (heure locale), de juin à septembre, toutes
+           années retenues confondues. Les bandes grisées marquent les deux créneaux.</p>
+      </div>
+      <div class="chart" id="c-hours"></div>
+      <div class="legend" id="l-hours"></div>
+      <details class="data"><summary>Voir les valeurs</summary><div class="tablewrap" id="t-hours"></div></details>
+    </figure>
+  </section>
+
+  <section id="tendances">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="prose">
+        <h2>Tendances</h2>
+        <p class="small muted">Pour chaque indicateur : pente des moindres carrés, test de
+          Mann-Kendall (non paramétrique, sans hypothèse de normalité) et pente de Sen
+          avec son intervalle de confiance à 95 %.</p>
+      </div>
+    </div>
+    <figure>
+      <div class="tablewrap" id="t-trends"></div>
+      <p class="note-inline">Une tendance est déclarée significative lorsque p &lt; 0,05 au test de Mann-Kendall.</p>
+    </figure>
+  </section>
+
+  <section id="synthese">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="prose">
+        <h2>Synthèse annuelle</h2>
+        <p class="small muted">Cliquer sur un en-tête pour trier. Les années grisées sont
+          exclues des analyses faute de complétude suffisante ; elles restent affichées
+          pour que la lacune soit visible.</p>
+      </div>
+    </div>
+    <figure>
+      <div class="tablewrap" id="t-synth"></div>
+    </figure>
+  </section>
+
+  <section id="methode">
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="prose"><h2>Méthode, sources et limites</h2></div>
+    </div>
+    <div class="method">
+      <h3>Station retenue</h3>
+      <dl class="facts" id="station-facts"></dl>
+      <p id="station-why"></p>
+
+      <h3>Stations examinées</h3>
+      <p class="small muted">Toutes les stations du département apparaissant dans les fichiers,
+        classées par distance à Sainte-Maxime.</p>
+      <div class="tablewrap" id="t-cands" style="max-height:none"></div>
+
+      <h3>Du couple (T, U) au humidex</h3>
+      <p>Le point de rosée est repris des données quand Météo-France le publie ; sinon il est
+        calculé à partir de la température et de l'humidité relative par la formulation de
+        Magnus-Tetens. Le humidex suit ensuite la définition d'Environnement Canada.</p>
+      <div class="formula">α  = 17,27 · T / (237,7 + T) + ln(U / 100)
+Td = 237,7 · α / (17,27 − α)
+
+e       = 6,11 · exp[ 5417,7530 · (1/273,16 − 1/(273,15 + Td)) ]
+humidex = T + (5/9) · (e − 10)          calculé si T ≥ 20 °C, sinon non défini</div>
+      <p id="td-prov" class="small"></p>
+
+      <h3>Conventions retenues</h3>
+      <ul>
+        <li><b>Fuseau horaire.</b> Les fichiers Météo-France horodatent en UTC
+          (colonne <code>AAAAMMJJHH</code>). Tout est reconverti en heure locale
+          <span id="tz-name">Europe/Paris</span> avant découpage en années, mois et créneaux,
+          de sorte que les heures d'été et d'hiver sont traitées correctement.</li>
+        <li><b>Créneaux.</b> Jour = <span id="slot-day"></span> ; nuit = <span id="slot-night"></span>,
+          en heure locale, le créneau nocturne enjambant minuit.</li>
+        <li><b>Complétude.</b> Une heure est comptée disponible si <em>T et U</em> le sont
+          simultanément. Une année est retenue si elle atteint
+          <span id="thr-completeness"></span> des heures de l'année civile (8 760 h, 8 784 h
+          les années bissextiles).</li>
+        <li><b>Normalisation.</b> Les comptages d'heures par palier sont fournis bruts et
+          ramenés à une année complète (facteur = heures attendues / heures disponibles),
+          afin qu'une année à 85 % de complétude ne paraisse pas plus fraîche qu'une année pleine.</li>
+        <li><b>Doublons.</b> En cas d'horodatages répétés pour une même station, la dernière
+          valeur publiée est conservée — les fichiers <em>latest</em> corrigent les fichiers
+          d'archive.</li>
+      </ul>
+
+      <h3>Limites</h3>
+      <ul>
+        <li>Le humidex n'est <b>pas défini sous 20 °C</b>. La « moyenne annuelle » est donc une
+          moyenne conditionnelle : elle mesure l'intensité de la chaleur humide lorsqu'elle
+          survient, et non la chaleur moyenne de l'année. Une année qui compte davantage
+          d'heures au-dessus de 20 °C peut afficher une moyenne <em>plus basse</em> si ces
+          heures supplémentaires sont juste au-dessus du seuil. Les comptages par palier et
+          les maxima sont, sur ce point, plus directement interprétables.</li>
+        <li>La station retenue n'est pas à Sainte-Maxime : distance et exposition
+          (littoral, altitude, effet de site) introduisent un écart avec les conditions
+          ressenties en ville. Les stations littorales, ventilées, sous-estiment généralement
+          l'inconfort mesuré en fond de vallée ou en tissu urbain.</li>
+        <li>Les séries anciennes proviennent d'instruments et de protocoles qui ont changé
+          (passage au capteur automatique, déplacements de site). Les ruptures d'homogénéité
+          qui en découlent ne sont pas corrigées ici : la tendance mesurée mêle signal
+          climatique et historique instrumental.</li>
+        <li>Les codes qualité Météo-France (colonnes <code>Q…</code>) ne sont pas utilisés
+          pour filtrer par défaut ; toute valeur présente est retenue.</li>
+        <li>Le humidex n'est pas une température : c'est un indice de confort sans unité
+          physique, conventionnellement exprimé en degrés. Il ignore le vent et
+          le rayonnement solaire, deux facteurs déterminants sur le littoral varois.</li>
+        <li id="lim-gaps"></li>
+      </ul>
+
+      <h3>Reproduire</h3>
+      <p class="small">Source : <span class="ui">meteo.data.gouv.fr</span>, jeu « Données
+        climatologiques de base — horaires », fichiers CSV.gz par département.
+        Fichiers effectivement lus pour ce rapport :</p>
+      <ul class="small" id="src-files"></ul>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p id="footer-text"></p>
+</footer>
+
+<script id="humidex-data" type="application/json">__HUMIDEX_DATA__</script>
+<script>
+"use strict";
+const D = JSON.parse(document.getElementById("humidex-data").textContent);
+
+/* =================================================================== outils */
+const NBSP = " ";
+const nf = (v, d = 1) =>
+  v === null || v === undefined || Number.isNaN(v)
+    ? "—"
+    : v.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const nfi = (v) => (v === null || v === undefined || Number.isNaN(v) ? "—" : Math.round(v).toLocaleString("fr-FR"));
+const signed = (v, d = 2) => (v === null || v === undefined ? "—" : (v >= 0 ? "+" : "−") + nf(Math.abs(v), d));
+const pval = (p) => (p === null || p === undefined ? "—" : p < 0.001 ? "< 0,001" : nf(p, 3));
+/** « p < 0,001 » ou « p = 0,004 » — jamais « p = < 0,001 ». */
+const pText = (p) =>
+  p === null || p === undefined ? "p non calculé" : p < 0.001 ? "p" + NBSP + "<" + NBSP + "0,001" : "p" + NBSP + "=" + NBSP + nf(p, 3);
+const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+const SVGNS = "http://www.w3.org/2000/svg";
+function s(tag, attrs, text) {
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) if (attrs[k] !== null && attrs[k] !== undefined) n.setAttribute(k, attrs[k]);
+  if (text !== undefined) n.textContent = text;
+  return n;
+}
+function el(tag, cls, html) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (html !== undefined) n.innerHTML = html;
+  return n;
+}
+const lin = (d0, d1, r0, r1) => (v) => (d1 === d0 ? r0 : r0 + ((v - d0) / (d1 - d0)) * (r1 - r0));
+
+/** Graduations « rondes » couvrant [lo, hi]. */
+function ticks(lo, hi, count) {
+  if (!(hi > lo)) return [lo];
+  const raw = (hi - lo) / count;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((v) => v >= raw) || 10 * mag;
+  const out = [];
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(10));
+  return out;
+}
+
+/** Années « rondes » à étiqueter, premières et dernières toujours incluses.
+    Basé sur la valeur de l'année et non sur son rang, pour qu'une année exclue
+    ne décale pas toute la graduation. */
+function yearTicks(list, w, px) {
+  const a = list[0], b = list[list.length - 1];
+  const target = Math.max(3, Math.floor(w / (px || 80)));
+  const step = [1, 2, 5, 10, 20, 25, 50].find((sp) => (b - a) / sp <= target) || 50;
+  const keep = list.filter((y) => y % step === 0 && y - a > step * 0.55 && b - y > step * 0.55);
+  return [a, ...keep, b];
+}
+
+/** Infobulle partagée, positionnée dans le conteneur du graphique. */
+function tooltip(host) {
+  const tip = el("div", "tt");
+  host.appendChild(tip);
+  return {
+    show(html, x, y) {
+      tip.innerHTML = html;
+      tip.style.opacity = "1";
+      const w = tip.offsetWidth, h = tip.offsetHeight, box = host.clientWidth;
+      tip.style.left = Math.max(4, Math.min(box - w - 4, x - w / 2)) + "px";
+      tip.style.top = Math.max(2, y - h - 12) + "px";
+    },
+    hide() { tip.style.opacity = "0"; tip.style.left = "0px"; tip.style.top = "0px"; },
+  };
+}
+
+/** Redessine à chaque changement de largeur ou de thème. */
+const redraws = [];
+function chart(hostId, draw) {
+  const host = document.getElementById(hostId);
+  if (!host) return;
+  const tip = tooltip(host);
+  const render = () => {
+    const w = host.clientWidth || 640;
+    [...host.querySelectorAll("svg")].forEach((n) => n.remove());
+    tip.hide();
+    draw(host, w, tip);
+  };
+  redraws.push(render);
+  render();
+  if (window.ResizeObserver) {
+    let last = host.clientWidth;
+    new ResizeObserver(() => {
+      if (Math.abs(host.clientWidth - last) > 8) { last = host.clientWidth; render(); }
+    }).observe(host);
+  }
+}
+
+/** Axes, grille et cadre communs à tous les graphiques cartésiens. */
+function frame(svg, m, w, h, yScale, yTicks, yLabel) {
+  const g = s("g", {});
+  yTicks.forEach((t) => {
+    const y = yScale(t);
+    g.appendChild(s("line", { x1: m.l, x2: w - m.r, y1: y, y2: y, stroke: css("--grid"), "stroke-width": 1 }));
+    g.appendChild(s("text", {
+      x: m.l - 8, y: y + 4, "text-anchor": "end", class: "axis",
+      "font-size": 11, fill: css("--muted"),
+    }, nf(t, t % 1 === 0 ? 0 : 1)));
+  });
+  g.appendChild(s("line", { x1: m.l, x2: w - m.r, y1: h - m.b, y2: h - m.b, stroke: css("--axis"), "stroke-width": 1 }));
+  if (yLabel) {
+    g.appendChild(s("text", {
+      x: m.l - 8, y: m.t - 8, "text-anchor": "end", class: "axis",
+      "font-size": 10.5, fill: css("--muted"), "letter-spacing": ".04em",
+    }, yLabel));
+  }
+  svg.appendChild(g);
+  return g;
+}
+
+function legend(id, items) {
+  const host = document.getElementById(id);
+  if (!host) return;
+  host.innerHTML = "";
+  items.forEach((it) => {
+    const sp = el("span");
+    const sw = el("span", "swatch" + (it.box ? " box" : "") + (it.dash ? " dash" : ""));
+    if (!it.dash) sw.style.background = it.color;
+    sp.appendChild(sw);
+    sp.appendChild(document.createTextNode(it.label));
+    host.appendChild(sp);
+  });
+}
+
+/** Jumeau tabulaire de chaque graphique : aucune valeur n'est réservée au survol. */
+function table(hostId, cols, rows, opts) {
+  const host = document.getElementById(hostId);
+  if (!host) return;
+  const o = opts || {};
+  const t = el("table", o.sortable ? "sortable" : "");
+  const thead = el("thead");
+  const tr = el("tr");
+  cols.forEach((c, i) => {
+    const th = el("th", null, c.label);
+    if (c.title) th.title = c.title;
+    if (o.sortable) {
+      th.tabIndex = 0;
+      th.setAttribute("role", "columnheader");
+      const go = () => sortBy(i);
+      th.onclick = go;
+      th.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } };
+    }
+    tr.appendChild(th);
+  });
+  thead.appendChild(tr);
+  const tbody = el("tbody");
+  t.appendChild(thead); t.appendChild(tbody);
+  host.innerHTML = ""; host.appendChild(t);
+
+  let sortIdx = -1, dir = 1;
+  function paint(data) {
+    tbody.innerHTML = "";
+    data.forEach((r) => {
+      const line = el("tr");
+      if (o.rowClass) line.className = o.rowClass(r);
+      cols.forEach((c) => {
+        const td = el("td", c.dim ? "dim" : null);
+        td.textContent = c.fmt(r);
+        line.appendChild(td);
+      });
+      tbody.appendChild(line);
+    });
+  }
+  function sortBy(i) {
+    dir = sortIdx === i ? -dir : (cols[i].desc ? -1 : 1);
+    sortIdx = i;
+    [...thead.querySelectorAll("th")].forEach((th, j) =>
+      j === i ? th.setAttribute("aria-sort", dir === 1 ? "ascending" : "descending") : th.removeAttribute("aria-sort"));
+    const key = cols[i].sort || cols[i].value;
+    paint([...rows].sort((a, b) => {
+      const va = key(a), vb = key(b);
+      if (va === null || va === undefined) return 1;
+      if (vb === null || vb === undefined) return -1;
+      return (va > vb ? 1 : va < vb ? -1 : 0) * dir;
+    }));
+  }
+  paint(rows);
+}
+
+/* ============================================================ préliminaires */
+const kept = D.annuel.filter((r) => r.retenue);
+const years = kept.map((r) => r.annee);
+const MOIS = D.mois;
+const TR = D.tendances || {};
+
+/* ------------------------------------------------------------------ bandeau */
+if (D.meta.donnees_synthetiques) {
+  document.getElementById("synthetic-banner").innerHTML =
+    '<div class="banner"><b>⚠ Données synthétiques — démonstration</b>' +
+    "Ce rapport a été construit sur un jeu de test généré artificiellement, uniquement pour " +
+    "montrer la mise en forme et vérifier la chaîne de calcul. Aucun chiffre de cette page ne " +
+    "constitue une observation. Relancer le script sans <code>--synthetic-banner</code>, avec " +
+    "les fichiers réels de Météo-France, pour obtenir le rapport véritable.</div>";
+}
+
+/* ---------------------------------------------------------------- signature */
+{
+  const st = D.station, p = D.periode;
+  document.getElementById("byline").innerHTML =
+    `<span>Station <b>${st.nom}</b> (${st.num_poste})</span>` +
+    `<span><b>${nf(st.distance_km, 1)}${NBSP}km</b> de Sainte-Maxime</span>` +
+    `<span>Période <b>${p.debut}–${p.fin}</b></span>` +
+    `<span><b>${p.annees_retenues}</b> années retenues</span>` +
+    `<span>Généré le ${D.meta.genere_le}</span>`;
+}
+
+/* ------------------------------------------------------------- chiffres clés */
+{
+  const k = D.kpi, host = document.getElementById("kpis");
+  const card = (label, value, unit, note) => {
+    const c = el("div", "kpi");
+    c.appendChild(el("div", "kpi-label", label));
+    c.appendChild(el("div", "kpi-value", value + (unit ? `<span class="kpi-unit">${unit}</span>` : "")));
+    c.appendChild(el("div", "kpi-note", note));
+    host.appendChild(c);
+  };
+
+  const sig = k.tendance_significative;
+  const ci = k.tendance_lo !== null && k.tendance_hi !== null
+    ? ` (IC 95${NBSP}% : ${signed(k.tendance_lo)} à ${signed(k.tendance_hi)})` : "";
+  card("Tendance du humidex moyen",
+       signed(k.tendance_par_decennie),
+       `°C${NBSP}/${NBSP}décennie`,
+       `<span class="tag">${sig ? "significative" : "non significative"}</span>` +
+       `Pente de Sen${ci}. Mann-Kendall : ${pText(k.tendance_p)}.`);
+
+  card("Année record",
+       k.annee_record ?? "—", "",
+       `Humidex maximal de <b>${nf(k.humidex_record, 1)}</b> le ${k.date_record || "—"}, ` +
+       `heure locale.`);
+
+  if (k.h35_debut !== undefined && k.h35_debut !== null) {
+    const delta = k.h35_delta, ratio = k.h35_ratio;
+    card("Heures au-dessus de 35",
+         signed(delta, 0), `h${NBSP}/${NBSP}an`,
+         `De <b>${nfi(k.h35_debut)}${NBSP}h</b> (${k.h35_periode_debut}) à <b>${nfi(k.h35_fin)}${NBSP}h</b> ` +
+         `(${k.h35_periode_fin})${ratio ? `, soit ×${nf(ratio, 1)}` : ""}. Moyennes sur ` +
+         `${k.h35_fenetre_annees} ans, ramenées à l'année complète.`);
+  }
+}
+
+/* ------------------------------------------------------------------ intros */
+{
+  const t = TR.humidex_moyen || {}, p = D.periode;
+  document.getElementById("serie-intro").textContent =
+    `${p.annees_retenues} années exploitables entre ${p.debut} et ${p.fin}` +
+    (t.sen_slope_per_decade !== null && t.sen_slope_per_decade !== undefined
+      ? `, pour une dérive de ${signed(t.sen_slope_per_decade)} °C par décennie sur le humidex moyen.`
+      : ".");
+
+  const tn = TR.heures_nuit_sup30_norm || {}, tj = TR.heures_jour_sup30_norm || {};
+  document.getElementById("jn-intro").textContent =
+    "Créneau diurne " + `${D.meta.plage_jour[0]}h–${D.meta.plage_jour[1]}h` +
+    ", créneau nocturne 22h–6h, en heure locale." +
+    (tn.sen_slope_per_decade !== null && tn.sen_slope_per_decade !== undefined
+      ? ` Les heures nocturnes au-dessus de 30 évoluent de ${signed(tn.sen_slope_per_decade, 1)} h par décennie,` +
+        ` contre ${signed(tj.sen_slope_per_decade, 1)} h le jour.`
+      : "");
+
+  const t35 = TR.heures_sup35_norm || {};
+  document.getElementById("paliers-intro").textContent =
+    "Au-delà de 30 l'inconfort devient sensible, au-delà de 40 il est jugé dangereux par " +
+    "Environnement Canada." +
+    (t35.sen_slope_per_decade !== null && t35.sen_slope_per_decade !== undefined
+      ? ` Les heures au-dessus de 35 progressent de ${signed(t35.sen_slope_per_decade, 0)} h par décennie.`
+      : "");
+}
+
+/* ================================================= 01 · série annuelle */
+/* Moyenne et maximum diffèrent trop d'amplitude pour partager une échelle :
+   les superposer écraserait la moyenne sur la ligne de base. Deux panneaux
+   superposés, chacun avec sa propre échelle et le même axe des années — jamais
+   deux échelles dans un même cadre. */
+function drawAnnual(host, w, tip) {
+  const gap = 34, m = { t: 20, r: 14, b: 34, l: 46 };
+  const plot = Math.max(230, Math.min(340, w * 0.36));
+  const hA = plot * 0.58, hB = plot * 0.42;
+  const h = m.t + hA + gap + hB + m.b;
+  const svg = s("svg", { viewBox: `0 0 ${w} ${h}`, role: "img",
+    "aria-label": "Humidex moyen annuel avec droite de tendance, et humidex maximal annuel" });
+
+  const x = lin(years[0], years[years.length - 1], m.l, w - m.r);
+  const panels = [
+    { key: "humidex_moyen", color: css("--accent"), title: "humidex moyen", top: m.t, height: hA, pad: 1 },
+    { key: "humidex_max", color: css("--warm"), title: "humidex maximal", top: m.t + hA + gap, height: hB, pad: 2 },
+  ];
+
+  panels.forEach((p) => {
+    const vals = kept.map((r) => r[p.key]).filter((v) => v !== null);
+    p.lo = Math.floor(Math.min(...vals) - p.pad);
+    p.hi = Math.ceil(Math.max(...vals) + p.pad);
+    p.y = lin(p.lo, p.hi, p.top + p.height, p.top);
+
+    ticks(p.lo, p.hi, 3).forEach((t) => {
+      const yy = p.y(t);
+      if (yy < p.top - 1 || yy > p.top + p.height + 1) return;
+      svg.appendChild(s("line", { x1: m.l, x2: w - m.r, y1: yy, y2: yy, stroke: css("--grid"), "stroke-width": 1 }));
+      svg.appendChild(s("text", { x: m.l - 8, y: yy + 4, "text-anchor": "end", class: "axis",
+        "font-size": 11, fill: css("--muted") }, nf(t, 0)));
+    });
+    svg.appendChild(s("line", { x1: m.l, x2: w - m.r, y1: p.top + p.height, y2: p.top + p.height,
+      stroke: css("--axis"), "stroke-width": 1 }));
+    svg.appendChild(s("text", { x: m.l, y: p.top - 7, class: "axis", "font-size": 11,
+      fill: css("--ink-2"), "font-weight": 600, "letter-spacing": ".02em" }, p.title + " (°C)"));
+
+    const pts = kept.filter((r) => r[p.key] !== null);
+    svg.appendChild(s("path", {
+      d: pts.map((r, i) => `${i ? "L" : "M"}${x(r.annee).toFixed(1)},${p.y(r[p.key]).toFixed(1)}`).join(""),
+      fill: "none", stroke: p.color, "stroke-width": 2,
+      "stroke-linejoin": "round", "stroke-linecap": "round",
+    }));
+  });
+
+  // Droite de Sen sur la moyenne, ancrée sur la médiane (estimateur de Theil-Sen).
+  const tr = TR.humidex_moyen || {}, pA = panels[0];
+  if (tr.sen_slope_per_year !== null && tr.sen_slope_per_year !== undefined) {
+    const ys = kept.map((r) => r.humidex_moyen).filter((v) => v !== null).sort((a, b) => a - b);
+    const medY = ys[Math.floor(ys.length / 2)];
+    const medX = (years[0] + years[years.length - 1]) / 2;
+    const at = (yr) => medY + tr.sen_slope_per_year * (yr - medX);
+    svg.appendChild(s("line", {
+      x1: x(years[0]), y1: pA.y(at(years[0])),
+      x2: x(years[years.length - 1]), y2: pA.y(at(years[years.length - 1])),
+      stroke: css("--trend"), "stroke-width": 2, "stroke-dasharray": "6 4", opacity: .9,
+    }));
+  }
+
+  // Graduations d'années sous le panneau du bas.
+  yearTicks(years, w, 80).forEach((yr) => {
+    svg.appendChild(s("text", { x: x(yr), y: h - m.b + 17, "text-anchor": "middle",
+      class: "axis", "font-size": 11, fill: css("--muted") }, yr));
+  });
+
+  // Extrême du panneau du bas, seul repère étiqueté directement.
+  const pB = panels[1];
+  const rec = kept.reduce((a, b) => (b.humidex_max > (a?.humidex_max ?? -Infinity) ? b : a), null);
+  if (rec && rec.humidex_max !== null) {
+    svg.appendChild(s("circle", { cx: x(rec.annee), cy: pB.y(rec.humidex_max), r: 4.5,
+      fill: css("--warm"), stroke: css("--surface"), "stroke-width": 2 }));
+    const anchor = x(rec.annee) > w * 0.72 ? "end" : "start";
+    svg.appendChild(s("text", {
+      x: x(rec.annee) + (anchor === "end" ? -9 : 9), y: pB.y(rec.humidex_max) + 4,
+      "text-anchor": anchor, class: "axis", "font-size": 11.5, fill: css("--ink"), "font-weight": 600,
+      stroke: css("--surface"), "stroke-width": 3, "paint-order": "stroke",
+    }, `${nf(rec.humidex_max, 1)} en ${rec.annee}`));
+  }
+
+  // Curseur commun aux deux panneaux.
+  const cur = s("g", { opacity: 0 });
+  const rule = s("line", { y1: m.t, y2: h - m.b, stroke: css("--axis"), "stroke-width": 1 });
+  cur.appendChild(rule);
+  const dots = panels.map((p) => {
+    const c = s("circle", { r: 4.5, fill: p.color, stroke: css("--surface"), "stroke-width": 2 });
+    cur.appendChild(c); return c;
+  });
+  svg.appendChild(cur);
+
+  let idx = -1;
+  const move = (i) => {
+    if (i < 0 || i >= kept.length) return;
+    idx = i;
+    const r = kept[i];
+    cur.setAttribute("opacity", 1);
+    rule.setAttribute("x1", x(r.annee)); rule.setAttribute("x2", x(r.annee));
+    panels.forEach((p, k) => {
+      const v = r[p.key];
+      dots[k].setAttribute("opacity", v === null ? 0 : 1);
+      if (v !== null) { dots[k].setAttribute("cx", x(r.annee)); dots[k].setAttribute("cy", p.y(v)); }
+    });
+    tip.show(
+      `<b>${r.annee}</b>` +
+      panels.map((p) => `<div class="row"><span><i style="background:${p.color}"></i>${p.title}</span><em>${nf(r[p.key], 1)}</em></div>`).join("") +
+      `<div class="row"><span>heures &gt; 30</span><em>${nfi(r.heures_sup30)}</em></div>` +
+      `<div class="row"><span>complétude</span><em>${nf(r.completude * 100, 0)}${NBSP}%</em></div>`,
+      x(r.annee), m.t + 8
+    );
+  };
+  const nearest = (ev) => {
+    const box = svg.getBoundingClientRect();
+    const px = (ev.clientX - box.left) * (w / box.width);
+    const yr = lin(m.l, w - m.r, years[0], years[years.length - 1])(px);
+    let best = 0, bd = Infinity;
+    kept.forEach((r, i) => { const d = Math.abs(r.annee - yr); if (d < bd) { bd = d; best = i; } });
+    move(best);
+  };
+  svg.addEventListener("pointermove", nearest);
+  svg.addEventListener("pointerdown", nearest);
+  svg.addEventListener("pointerleave", () => { cur.setAttribute("opacity", 0); tip.hide(); });
+  host.tabIndex = 0;
+  host.onkeydown = (e) => {
+    if (e.key === "ArrowRight") { move(idx < 0 ? 0 : idx + 1); e.preventDefault(); }
+    if (e.key === "ArrowLeft") { move(idx < 0 ? kept.length - 1 : idx - 1); e.preventDefault(); }
+    if (e.key === "Escape") { cur.setAttribute("opacity", 0); tip.hide(); }
+  };
+  host.appendChild(svg);
+}
+chart("c-annual", drawAnnual);
+legend("l-annual", [
+  { color: css("--accent"), label: "panneau haut — humidex moyen des heures définies" },
+  { color: css("--warm"), label: "panneau bas — humidex maximal de l'année" },
+  { dash: true, label: "tendance du humidex moyen (pente de Sen)" },
+]);
+table("t-annual", [
+  { label: "Année", fmt: (r) => r.annee, value: (r) => r.annee },
+  { label: "Moyen", fmt: (r) => nf(r.humidex_moyen, 1), value: (r) => r.humidex_moyen },
+  { label: "Médian", fmt: (r) => nf(r.humidex_median, 1), value: (r) => r.humidex_median },
+  { label: "P95", fmt: (r) => nf(r.humidex_p95, 1), value: (r) => r.humidex_p95 },
+  { label: "Maximum", fmt: (r) => nf(r.humidex_max, 1), value: (r) => r.humidex_max },
+  { label: "Date du max", fmt: (r) => r.date_max || "—", value: (r) => r.date_max },
+], kept);
+
+/* ================================================= 02 · carte mois × année */
+const HM_METRICS = {
+  humidex_moyen: { label: "humidex moyen", unit: "", d: 1 },
+  humidex_max: { label: "humidex maximal", unit: "", d: 1 },
+  heures_sup30: { label: "heures > 30", unit: " h", d: 0 },
+};
+let hmMetric = "humidex_moyen";
+const HEAT = ["--h1", "--h2", "--h3", "--h4", "--h5", "--h6", "--h7"];
+
+function heatDomain() {
+  const v = D.grille_mensuelle.map((r) => r[hmMetric]).filter((x) => x !== null && x > 0);
+  return v.length ? [Math.min(...v), Math.max(...v)] : [0, 1];
+}
+function heatColor(v, dom) {
+  if (v === null || v === undefined || (hmMetric === "heures_sup30" && v === 0)) return css("--void");
+  const t = (v - dom[0]) / (dom[1] - dom[0] || 1);
+  return css(HEAT[Math.max(0, Math.min(HEAT.length - 1, Math.floor(t * HEAT.length)))]);
+}
+
+function drawHeat(host, w, tip) {
+  const dom = heatDomain();
+  const m = { t: 8, r: 8, b: 26, l: 34 };
+  const cw = Math.max(9, (w - m.l - m.r) / years.length);
+  const ch = Math.max(13, Math.min(24, cw * 1.25));
+  const h = m.t + ch * 12 + m.b;
+  const svg = s("svg", { viewBox: `0 0 ${w} ${h}`, role: "img",
+    "aria-label": `Carte de chaleur mois par année : ${HM_METRICS[hmMetric].label}` });
+
+  MOIS.forEach((name, i) => {
+    if (ch < 16 && i % 2) return;
+    svg.appendChild(s("text", { x: m.l - 7, y: m.t + i * ch + ch / 2 + 4, "text-anchor": "end",
+      class: "axis", "font-size": 10, fill: css("--muted") }, name.replace(".", "")));
+  });
+  const shown = new Set(yearTicks(years, w, 62));
+  years.forEach((yr, i) => {
+    if (!shown.has(yr)) return;
+    svg.appendChild(s("text", { x: m.l + i * cw + cw / 2, y: h - m.b + 15, "text-anchor": "middle",
+      class: "axis", "font-size": 10.5, fill: css("--muted") }, yr));
+  });
+
+  const byKey = new Map(D.grille_mensuelle.map((r) => [r.annee + "-" + r.mois, r]));
+  const cells = [];
+  years.forEach((yr, i) => {
+    for (let mo = 1; mo <= 12; mo++) {
+      const r = byKey.get(yr + "-" + mo);
+      const v = r ? r[hmMetric] : null;
+      const rect = s("rect", {
+        x: m.l + i * cw + 1, y: m.t + (mo - 1) * ch + 1,
+        width: Math.max(1, cw - 2), height: Math.max(1, ch - 2),   // 2px de respiration
+        fill: heatColor(v, dom), rx: 1.5,
+      });
+      const info = { rect, yr, mo, r, i, mo0: mo - 1 };
+      const show = () => {
+        rect.setAttribute("stroke", css("--ink"));
+        rect.setAttribute("stroke-width", 1.5);
+        tip.show(
+          `<b>${MOIS[mo - 1]} ${yr}</b>` +
+          (r && r.humidex_moyen !== null
+            ? `<div class="row"><span>humidex moyen</span><em>${nf(r.humidex_moyen, 1)}</em></div>` +
+              `<div class="row"><span>maximum</span><em>${nf(r.humidex_max, 1)}</em></div>` +
+              `<div class="row"><span>heures &gt; 30</span><em>${nfi(r.heures_sup30)}</em></div>` +
+              `<div class="row"><span>heures définies</span><em>${nfi(r.heures_definies)}</em></div>`
+            : `<div class="row"><span>humidex non défini (T &lt; 20 °C)</span></div>`),
+          m.l + i * cw + cw / 2, m.t + (mo - 1) * ch + ch / 2
+        );
+      };
+      const hide = () => { rect.removeAttribute("stroke"); tip.hide(); };
+      rect.addEventListener("pointerenter", show);
+      rect.addEventListener("pointerleave", hide);
+      info.show = show; info.hide = hide;
+      cells.push(info);
+      svg.appendChild(rect);
+    }
+  });
+
+  let ci = -1;
+  host.tabIndex = 0;
+  host.onkeydown = (e) => {
+    const d = { ArrowRight: 12, ArrowLeft: -12, ArrowDown: 1, ArrowUp: -1 }[e.key];
+    if (d === undefined) { if (e.key === "Escape" && ci >= 0) cells[ci].hide(); return; }
+    e.preventDefault();
+    if (ci >= 0) cells[ci].hide();
+    ci = Math.max(0, Math.min(cells.length - 1, (ci < 0 ? 0 : ci + d)));
+    cells[ci].show();
+  };
+  host.appendChild(svg);
+}
+function heatScale() {
+  const dom = heatDomain(), host = document.getElementById("s-heat"), mt = HM_METRICS[hmMetric];
+  host.innerHTML = "";
+  host.appendChild(el("span", null, nf(dom[0], mt.d) + mt.unit));
+  const ramp = el("span", "ramp");
+  HEAT.forEach((v) => { const i = el("i"); i.style.background = css(v); ramp.appendChild(i); });
+  host.appendChild(ramp);
+  host.appendChild(el("span", null, nf(dom[1], mt.d) + mt.unit));
+  host.appendChild(el("span", null, "· " + mt.label + " · gris : non défini"));
+}
+{
+  const bar = document.getElementById("hm-toolbar");
+  Object.entries(HM_METRICS).forEach(([key, mt]) => {
+    const b = el("button", null, mt.label);
+    b.type = "button";
+    b.setAttribute("aria-pressed", key === hmMetric);
+    b.onclick = () => {
+      hmMetric = key;
+      [...bar.children].forEach((c) => c.setAttribute("aria-pressed", c === b));
+      redrawHeat(); heatScale();
+    };
+    bar.appendChild(b);
+  });
+}
+let redrawHeat = () => {};
+chart("c-heat", (host, w, tip) => { redrawHeat = () => { [...host.querySelectorAll("svg")].forEach((n) => n.remove()); drawHeat(host, host.clientWidth || w, tip); }; drawHeat(host, w, tip); });
+heatScale();
+table("t-heat", [
+  { label: "Année", fmt: (r) => r.annee, value: (r) => r.annee },
+  { label: "Mois", fmt: (r) => MOIS[r.mois - 1], value: (r) => r.mois },
+  { label: "Humidex moyen", fmt: (r) => nf(r.humidex_moyen, 1), value: (r) => r.humidex_moyen },
+  { label: "Maximum", fmt: (r) => nf(r.humidex_max, 1), value: (r) => r.humidex_max },
+  { label: "Heures > 30", fmt: (r) => nfi(r.heures_sup30), value: (r) => r.heures_sup30 },
+  { label: "Heures définies", fmt: (r) => nfi(r.heures_definies), value: (r) => r.heures_definies, dim: true },
+], D.grille_mensuelle, { sortable: true });
+
+/* ============================================ 02b · cycle saisonnier moyen */
+function drawClim(host, w, tip) {
+  const rows = D.climatologie;
+  const h = Math.max(240, Math.min(360, w * 0.4));
+  const m = { t: 20, r: 14, b: 34, l: 44 };
+  const svg = s("svg", { viewBox: `0 0 ${w} ${h}`, role: "img",
+    "aria-label": "Humidex moyen par mois, créneau diurne et nocturne" });
+
+  const vals = rows.flatMap((r) => [r.humidex_moyen_jour, r.humidex_moyen_nuit, r.humidex_moyen]).filter((v) => v !== null);
+  const lo = Math.floor(Math.min(...vals) - 1), hi = Math.ceil(Math.max(...vals) + 1);
+  const x = lin(1, 12, m.l + 14, w - m.r - 14);
+  const y = lin(lo, hi, h - m.b, m.t);
+  frame(svg, m, w, h, y, ticks(lo, hi, 4), "°C");
+  rows.forEach((r) => {
+    if (w < 460 && r.mois % 2 === 0) return;
+    svg.appendChild(s("text", { x: x(r.mois), y: h - m.b + 17, "text-anchor": "middle",
+      class: "axis", "font-size": 10.5, fill: css("--muted") }, MOIS[r.mois - 1]));
+  });
+
+  const series = [
+    { key: "humidex_moyen_jour", color: css("--warm"), label: "jour" },
+    { key: "humidex_moyen_nuit", color: css("--accent"), label: "nuit" },
+  ];
+  series.forEach((se) => {
+    const pts = rows.filter((r) => r[se.key] !== null);
+    if (!pts.length) return;
+    svg.appendChild(s("path", {
+      d: pts.map((r, i) => `${i ? "L" : "M"}${x(r.mois).toFixed(1)},${y(r[se.key]).toFixed(1)}`).join(""),
+      fill: "none", stroke: se.color, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round",
+    }));
+    pts.forEach((r) => svg.appendChild(s("circle", { cx: x(r.mois), cy: y(r[se.key]), r: 4,
+      fill: se.color, stroke: css("--surface"), "stroke-width": 2 })));
+  });
+
+  rows.forEach((r) => {
+    const hit = s("rect", { x: x(r.mois) - 14, y: m.t, width: 28, height: h - m.t - m.b, fill: "transparent" });
+    hit.addEventListener("pointerenter", () => tip.show(
+      `<b>${MOIS[r.mois - 1]}</b>` +
+      series.map((se) => `<div class="row"><span><i style="background:${se.color}"></i>${se.label}</span><em>${nf(r[se.key], 1)}</em></div>`).join("") +
+      `<div class="row"><span>toutes heures</span><em>${nf(r.humidex_moyen, 1)}</em></div>` +
+      `<div class="row"><span>heures &gt; 30 / an</span><em>${nf(r.heures_sup30_par_an, 0)}</em></div>`,
+      x(r.mois), m.t + 10));
+    hit.addEventListener("pointerleave", tip.hide);
+    svg.appendChild(hit);
+  });
+  host.appendChild(svg);
+}
+chart("c-clim", drawClim);
+legend("l-clim", [
+  { color: css("--warm"), label: "créneau diurne (10h–18h)" },
+  { color: css("--accent"), label: "créneau nocturne (22h–6h)" },
+]);
+table("t-clim", [
+  { label: "Mois", fmt: (r) => MOIS[r.mois - 1], value: (r) => r.mois },
+  { label: "Humidex moyen", fmt: (r) => nf(r.humidex_moyen, 1), value: (r) => r.humidex_moyen },
+  { label: "Jour", fmt: (r) => nf(r.humidex_moyen_jour, 1), value: (r) => r.humidex_moyen_jour },
+  { label: "Nuit", fmt: (r) => nf(r.humidex_moyen_nuit, 1), value: (r) => r.humidex_moyen_nuit },
+  { label: "P95", fmt: (r) => nf(r.humidex_p95, 1), value: (r) => r.humidex_p95 },
+  { label: "Maximum", fmt: (r) => nf(r.humidex_max, 1), value: (r) => r.humidex_max },
+  { label: "Heures > 30 / an", fmt: (r) => nf(r.heures_sup30_par_an, 0), value: (r) => r.heures_sup30_par_an },
+], D.climatologie);
+
+/* ================================================ 03 · paliers (empilement) */
+const BANDS = [
+  { key: "heures_30_35_norm", raw: "heures_30_35", color: "--t1", label: "30 à 35" },
+  { key: "heures_35_40_norm", raw: "heures_35_40", color: "--t2", label: "35 à 40" },
+  { key: "heures_40_45_norm", raw: "heures_40_45", color: "--t3", label: "40 à 45" },
+  { key: "heures_45_plus_norm", raw: "heures_45_plus", color: "--t4", label: "plus de 45" },
+];
+function drawBands(host, w, tip) {
+  const h = Math.max(260, Math.min(400, w * 0.44));
+  const m = { t: 20, r: 14, b: 34, l: 48 };
+  const svg = s("svg", { viewBox: `0 0 ${w} ${h}`, role: "img",
+    "aria-label": "Heures par an dans chaque tranche de humidex, empilées" });
+
+  const totals = kept.map((r) => BANDS.reduce((a, b) => a + (r[b.key] || 0), 0));
+  const hi = Math.max(10, Math.ceil(Math.max(...totals) / 50) * 50);
+  const y = lin(0, hi, h - m.b, m.t);
+  frame(svg, m, w, h, y, ticks(0, hi, 4), "h / an");
+
+  const bw = Math.max(3, ((w - m.l - m.r) / kept.length) - 2);   // 2px entre barres
+  const bx = (i) => m.l + i * ((w - m.l - m.r) / kept.length) + 1;
+  const shown = new Set(yearTicks(years, w, 80));
+  kept.forEach((r, i) => {
+    if (shown.has(r.annee)) {
+      svg.appendChild(s("text", { x: bx(i) + bw / 2, y: h - m.b + 17, "text-anchor": "middle",
+        class: "axis", "font-size": 11, fill: css("--muted") }, r.annee));
+    }
+    let acc = 0;
+    BANDS.forEach((b) => {
+      const v = r[b.key] || 0;
+      if (v <= 0) return;
+      const y0 = y(acc), y1 = y(acc + v);
+      acc += v;
+      svg.appendChild(s("rect", {
+        x: bx(i), y: y1, width: bw, height: Math.max(1, y0 - y1 - 2),   // 2px de séparation
+        fill: css(b.color), rx: Math.min(2, bw / 3),
+      }));
+    });
+    const hit = s("rect", { x: bx(i) - 1, y: m.t, width: bw + 2, height: h - m.t - m.b, fill: "transparent" });
+    const show = () => tip.show(
+      `<b>${r.annee} — ${nf(totals[i], 0)} h au-dessus de 30</b>` +
+      BANDS.map((b) => `<div class="row"><span><i style="background:${css(b.color)}"></i>${b.label}</span><em>${nf(r[b.key] || 0, 0)} h</em></div>`).join("") +
+      `<div class="row"><span>complétude</span><em>${nf(r.completude * 100, 0)}${NBSP}%</em></div>`,
+      bx(i) + bw / 2, y(totals[i]));
+    hit.addEventListener("pointerenter", show);
+    hit.addEventListener("pointerleave", tip.hide);
+    svg.appendChild(hit);
+  });
+  host.appendChild(svg);
+}
+chart("c-bands", drawBands);
+legend("l-bands", BANDS.map((b) => ({ color: css(b.color), label: b.label, box: true })));
+table("t-bands", [
+  { label: "Année", fmt: (r) => r.annee, value: (r) => r.annee },
+  { label: "30–35", fmt: (r) => nf(r.heures_30_35_norm, 0), value: (r) => r.heures_30_35_norm },
+  { label: "35–40", fmt: (r) => nf(r.heures_35_40_norm, 0), value: (r) => r.heures_35_40_norm },
+  { label: "40–45", fmt: (r) => nf(r.heures_40_45_norm, 0), value: (r) => r.heures_40_45_norm },
+  { label: "> 45", fmt: (r) => nf(r.heures_45_plus_norm, 0), value: (r) => r.heures_45_plus_norm },
+  { label: "> 30 (brut)", fmt: (r) => nfi(r.heures_sup30), value: (r) => r.heures_sup30, dim: true },
+  { label: "> 35 (brut)", fmt: (r) => nfi(r.heures_sup35), value: (r) => r.heures_sup35, dim: true },
+], kept);
+
+/* ==================================================== 04 · jour contre nuit */
+function drawDayNight(host, w, tip) {
+  const h = Math.max(260, Math.min(380, w * 0.42));
+  const m = { t: 20, r: 14, b: 34, l: 44 };
+  const svg = s("svg", { viewBox: `0 0 ${w} ${h}`, role: "img",
+    "aria-label": "Humidex moyen par année, créneau diurne et nocturne" });
+
+  const series = [
+    { key: "humidex_moyen_jour", color: css("--warm"), label: "jour (10h–18h)" },
+    { key: "humidex_moyen_nuit", color: css("--accent"), label: "nuit (22h–6h)" },
+  ];
+  const vals = kept.flatMap((r) => series.map((se) => r[se.key])).filter((v) => v !== null);
+  const lo = Math.floor(Math.min(...vals) - 1), hi = Math.ceil(Math.max(...vals) + 1);
+  const x = lin(years[0], years[years.length - 1], m.l, w - m.r);
+  const y = lin(lo, hi, h - m.b, m.t);
+  frame(svg, m, w, h, y, ticks(lo, hi, 4), "°C");
+  yearTicks(years, w, 80).forEach((yr) => {
+    svg.appendChild(s("text", { x: x(yr), y: h - m.b + 17, "text-anchor": "middle",
+      class: "axis", "font-size": 11, fill: css("--muted") }, yr));
+  });
+
+  series.forEach((se) => {
+    const pts = kept.filter((r) => r[se.key] !== null);
+    svg.appendChild(s("path", {
+      d: pts.map((r, i) => `${i ? "L" : "M"}${x(r.annee).toFixed(1)},${y(r[se.key]).toFixed(1)}`).join(""),
+      fill: "none", stroke: se.color, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round",
+    }));
+    // Étiquette directe en bout de série, cerclée de la couleur du fond pour
+    // rester lisible si elle croise la courbe.
+    const last = pts[pts.length - 1];
+    if (last) svg.appendChild(s("text", {
+      x: x(last.annee) - 6, y: y(last[se.key]) - 11, "text-anchor": "end",
+      class: "axis", "font-size": 11.5, fill: se.color, "font-weight": 600,
+      stroke: css("--surface"), "stroke-width": 3, "paint-order": "stroke",
+    }, se.label.split(" ")[0]));
+  });
+
+  kept.forEach((r, i) => {
+    const band = (w - m.l - m.r) / kept.length;
+    const hit = s("rect", { x: x(r.annee) - band / 2, y: m.t, width: band, height: h - m.t - m.b, fill: "transparent" });
+    hit.addEventListener("pointerenter", () => tip.show(
+      `<b>${r.annee}</b>` +
+      series.map((se) => `<div class="row"><span><i style="background:${se.color}"></i>${se.label}</span><em>${nf(r[se.key], 1)}</em></div>`).join("") +
+      `<div class="row"><span>heures nuit &gt; 30</span><em>${nfi(r.heures_nuit_sup30)}</em></div>` +
+      `<div class="row"><span>heures jour &gt; 30</span><em>${nfi(r.heures_jour_sup30)}</em></div>`,
+      x(r.annee), m.t + 10));
+    hit.addEventListener("pointerleave", tip.hide);
+    svg.appendChild(hit);
+  });
+  host.appendChild(svg);
+}
+chart("c-daynight", drawDayNight);
+legend("l-daynight", [
+  { color: css("--warm"), label: "créneau diurne (10h–18h locale)" },
+  { color: css("--accent"), label: "créneau nocturne (22h–6h locale)" },
+]);
+table("t-daynight", [
+  { label: "Année", fmt: (r) => r.annee, value: (r) => r.annee },
+  { label: "Jour", fmt: (r) => nf(r.humidex_moyen_jour, 1), value: (r) => r.humidex_moyen_jour },
+  { label: "Nuit", fmt: (r) => nf(r.humidex_moyen_nuit, 1), value: (r) => r.humidex_moyen_nuit },
+  { label: "Max jour", fmt: (r) => nf(r.humidex_max_jour, 1), value: (r) => r.humidex_max_jour },
+  { label: "Max nuit", fmt: (r) => nf(r.humidex_max_nuit, 1), value: (r) => r.humidex_max_nuit },
+  { label: "Nuit > 30", fmt: (r) => nfi(r.heures_nuit_sup30), value: (r) => r.heures_nuit_sup30 },
+  { label: "Nuit > 35", fmt: (r) => nfi(r.heures_nuit_sup35), value: (r) => r.heures_nuit_sup35 },
+], kept);
+
+/* ------------------------------------------------- 04b · profil journalier */
+function drawHours(host, w, tip) {
+  const rows = D.profil_horaire;
+  const h = Math.max(220, Math.min(320, w * 0.36));
+  const m = { t: 20, r: 14, b: 34, l: 44 };
+  const svg = s("svg", { viewBox: `0 0 ${w} ${h}`, role: "img",
+    "aria-label": "Humidex moyen heure par heure en été" });
+
+  const vals = rows.map((r) => r.humidex_moyen).filter((v) => v !== null);
+  if (!vals.length) { host.appendChild(svg); return; }
+  const lo = Math.floor(Math.min(...vals) - 1), hi = Math.ceil(Math.max(...vals) + 1);
+  const x = lin(0, 23, m.l + 10, w - m.r - 10);
+  const y = lin(lo, hi, h - m.b, m.t);
+
+  // Bandes des créneaux, sous la grille.
+  const shade = css("--grid");
+  [[10, 17], [22, 23], [0, 5]].forEach(([a, b]) => {
+    svg.appendChild(s("rect", { x: x(a) - 5, y: m.t, width: x(b) - x(a) + 10, height: h - m.t - m.b,
+      fill: shade, opacity: .55 }));
+  });
+  frame(svg, m, w, h, y, ticks(lo, hi, 4), "°C");
+  rows.forEach((r) => {
+    if (r.heure % (w < 520 ? 6 : 3)) return;
+    svg.appendChild(s("text", { x: x(r.heure), y: h - m.b + 17, "text-anchor": "middle",
+      class: "axis", "font-size": 10.5, fill: css("--muted") }, r.heure + "h"));
+  });
+
+  const pts = rows.filter((r) => r.humidex_moyen !== null);
+  svg.appendChild(s("path", {
+    d: pts.map((r, i) => `${i ? "L" : "M"}${x(r.heure).toFixed(1)},${y(r.humidex_moyen).toFixed(1)}`).join(""),
+    fill: "none", stroke: css("--warm"), "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round",
+  }));
+  pts.forEach((r) => {
+    svg.appendChild(s("circle", { cx: x(r.heure), cy: y(r.humidex_moyen), r: 3.5,
+      fill: css("--warm"), stroke: css("--surface"), "stroke-width": 1.5 }));
+    const band = (w - m.l - m.r) / 24;
+    const hit = s("rect", { x: x(r.heure) - band / 2, y: m.t, width: band, height: h - m.t - m.b, fill: "transparent" });
+    hit.addEventListener("pointerenter", () => tip.show(
+      `<b>${r.heure}h — ${r.heure + 1}h locale</b>` +
+      `<div class="row"><span>humidex moyen</span><em>${nf(r.humidex_moyen, 1)}</em></div>` +
+      `<div class="row"><span>température moyenne</span><em>${nf(r.temperature_moyenne, 1)} °C</em></div>` +
+      `<div class="row"><span>heures &gt; 30 / an</span><em>${nf(r.heures_sup30_par_an, 0)}</em></div>`,
+      x(r.heure), y(r.humidex_moyen)));
+    hit.addEventListener("pointerleave", tip.hide);
+    svg.appendChild(hit);
+  });
+  host.appendChild(svg);
+}
+chart("c-hours", drawHours);
+legend("l-hours", [
+  { color: css("--warm"), label: "humidex moyen, juin à septembre" },
+  { color: css("--grid"), label: "créneaux jour et nuit retenus", box: true },
+]);
+table("t-hours", [
+  { label: "Heure locale", fmt: (r) => r.heure + "h", value: (r) => r.heure },
+  { label: "Humidex moyen", fmt: (r) => nf(r.humidex_moyen, 1), value: (r) => r.humidex_moyen },
+  { label: "Température moyenne", fmt: (r) => nf(r.temperature_moyenne, 1), value: (r) => r.temperature_moyenne },
+  { label: "Heures > 30 / an", fmt: (r) => nf(r.heures_sup30_par_an, 0), value: (r) => r.heures_sup30_par_an },
+], D.profil_horaire);
+
+/* ================================================ 05 · tableau des tendances */
+{
+  const LABELS = {
+    humidex_moyen: ["Humidex moyen", "°C"],
+    humidex_max: ["Humidex maximal annuel", "°C"],
+    humidex_p95: ["Humidex, 95ᵉ centile", "°C"],
+    humidex_moyen_jour: ["Humidex moyen — jour", "°C"],
+    humidex_moyen_nuit: ["Humidex moyen — nuit", "°C"],
+    heures_sup30_norm: ["Heures > 30", "h"],
+    heures_sup35_norm: ["Heures > 35", "h"],
+    heures_sup40_norm: ["Heures > 40", "h"],
+    heures_nuit_sup30_norm: ["Heures nocturnes > 30", "h"],
+    heures_jour_sup30_norm: ["Heures diurnes > 30", "h"],
+    temperature_moyenne: ["Température moyenne annuelle", "°C"],
+  };
+  const rows = Object.keys(LABELS).filter((k) => TR[k]).map((k) => ({ key: k, ...TR[k] }));
+  table("t-trends", [
+    { label: "Indicateur", fmt: (r) => LABELS[r.key][0], value: (r) => LABELS[r.key][0] },
+    { label: "Unité / décennie", fmt: (r) => LABELS[r.key][1], value: (r) => LABELS[r.key][1] },
+    { label: "Pente de Sen", fmt: (r) => signed(r.sen_slope_per_decade, 2), value: (r) => r.sen_slope_per_decade },
+    { label: "IC 95 %", fmt: (r) =>
+        r.sen_lo_per_decade === null ? "—" : `${signed(r.sen_lo_per_decade, 2)} … ${signed(r.sen_hi_per_decade, 2)}`,
+      value: (r) => r.sen_lo_per_decade },
+    { label: "Moindres carrés", fmt: (r) => signed(r.ols_slope_per_decade, 2), value: (r) => r.ols_slope_per_decade },
+    { label: "R²", fmt: (r) => nf(r.r2, 2), value: (r) => r.r2, dim: true },
+    { label: "τ de Kendall", fmt: (r) => signed(r.mk_tau, 2), value: (r) => r.mk_tau, dim: true },
+    { label: "p (Mann-Kendall)", fmt: (r) => pval(r.mk_p), value: (r) => r.mk_p },
+    { label: "Significatif", fmt: (r) => (r.significant_05 ? "oui" : "non"), value: (r) => r.significant_05 },
+  ], rows, { sortable: true });
+}
+
+/* ============================================== 06 · synthèse annuelle */
+table("t-synth", [
+  { label: "Année", fmt: (r) => r.annee, value: (r) => r.annee },
+  { label: "Complétude", fmt: (r) => nf(r.completude * 100, 1) + NBSP + "%", value: (r) => r.completude },
+  { label: "Humidex moyen", fmt: (r) => nf(r.humidex_moyen, 1), value: (r) => r.humidex_moyen, desc: true },
+  { label: "Maximum", fmt: (r) => nf(r.humidex_max, 1), value: (r) => r.humidex_max, desc: true },
+  { label: "Date du max", fmt: (r) => r.date_max || "—", value: (r) => r.date_max },
+  { label: "> 30", fmt: (r) => nfi(r.heures_sup30), value: (r) => r.heures_sup30, desc: true },
+  { label: "> 35", fmt: (r) => nfi(r.heures_sup35), value: (r) => r.heures_sup35, desc: true },
+  { label: "> 40", fmt: (r) => nfi(r.heures_sup40), value: (r) => r.heures_sup40, desc: true },
+  { label: "> 45", fmt: (r) => nfi(r.heures_sup45), value: (r) => r.heures_sup45, desc: true },
+  { label: "Moyen jour", fmt: (r) => nf(r.humidex_moyen_jour, 1), value: (r) => r.humidex_moyen_jour },
+  { label: "Moyen nuit", fmt: (r) => nf(r.humidex_moyen_nuit, 1), value: (r) => r.humidex_moyen_nuit },
+  { label: "Nuit > 30", fmt: (r) => nfi(r.heures_nuit_sup30), value: (r) => r.heures_nuit_sup30, desc: true },
+  { label: "T moyenne", fmt: (r) => nf(r.temperature_moyenne, 1), value: (r) => r.temperature_moyenne, dim: true },
+], D.annuel, { sortable: true, rowClass: (r) => (r.retenue ? "" : "excluded") });
+
+/* ==================================================== 07 · méthode */
+{
+  const st = D.station, p = D.periode, pr = D.provenance, mt = D.meta;
+  document.getElementById("station-facts").innerHTML =
+    `<dt>Nom</dt><dd>${st.nom}</dd>` +
+    `<dt>Numéro de poste</dt><dd class="num">${st.num_poste}</dd>` +
+    `<dt>Coordonnées</dt><dd class="num">${nf(st.lat, 4)}° N, ${nf(st.lon, 4)}° E` +
+      (st.alti !== null ? ` — ${nfi(st.alti)}${NBSP}m` : "") + `</dd>` +
+    `<dt>Distance à Sainte-Maxime</dt><dd class="num">${nf(st.distance_km, 1)}${NBSP}km ` +
+      `<span class="muted">(orthodromie depuis ${nf(mt.cible.lat, 3)}° N, ${nf(mt.cible.lon, 3)}° E)</span></dd>` +
+    `<dt>Historique disponible</dt><dd class="num">${st.premiere_annee}–${st.derniere_annee}</dd>` +
+    `<dt>Période analysée</dt><dd class="num">${p.debut}–${p.fin} — ${p.annees_retenues} années retenues</dd>` +
+    `<dt>Heures exploitées</dt><dd class="num">${nfi(pr.n_hours_tu)} heures avec T et U ` +
+      `<span class="muted">(sur ${nfi(pr.n_hours)} enregistrées)</span></dd>` +
+    `<dt>Humidex défini</dt><dd class="num">${nfi(pr.n_humidex)} heures ` +
+      `<span class="muted">(${nf((100 * pr.n_humidex) / pr.n_hours_tu, 1)}${NBSP}% des heures exploitables)</span></dd>`;
+
+  document.getElementById("station-why").innerHTML =
+    `Motif de sélection : <b>${st.motif}</b>. Le critère est la distance à Sainte-Maxime, ` +
+    `parmi les stations disposant d'au moins vingt années dont ${nf(mt.seuil_completude * 100, 0)}${NBSP}% ` +
+    `des heures portent simultanément une température et une humidité relative. ` +
+    `Les stations plus proches mais dépourvues d'hygrométrie sont écartées : ` +
+    `sans humidité, pas de point de rosée, donc pas de humidex.`;
+
+  document.getElementById("tz-name").textContent = mt.fuseau;
+  document.getElementById("slot-day").textContent = `${mt.plage_jour[0]}h–${mt.plage_jour[1]}h`;
+  document.getElementById("slot-night").textContent = `${mt.plage_nuit[0]}h–${mt.plage_nuit[1]}h`;
+  document.getElementById("thr-completeness").textContent = nf(mt.seuil_completude * 100, 0) + NBSP + "%";
+
+  document.getElementById("td-prov").innerHTML =
+    `Sur cette station, <b>${nf(pr.part_td_publie * 100, 1)}${NBSP}%</b> des heures exploitables ` +
+    `disposent d'un point de rosée publié par Météo-France (${nfi(pr.td_publie)} heures) ; ` +
+    `les <b>${nfi(pr.td_magnus)}</b> heures restantes sont reconstituées par Magnus-Tetens. ` +
+    `Un point de rosée publié dépassant la température de plus de 0,5 °C est écarté au profit du calcul.`;
+
+  const gaps = p.annees_exclues;
+  document.getElementById("lim-gaps").innerHTML = gaps.length
+    ? `Années écartées pour complétude insuffisante : ` +
+      gaps.map((g) => `<b>${g.annee}</b> (${nf(g.completude, 1)}${NBSP}%)`).join(", ") +
+      `. Elles restent visibles dans le tableau de synthèse.`
+    : `Aucune année n'a été écartée : toutes atteignent le seuil de complétude.`;
+
+  document.getElementById("src-files").innerHTML =
+    mt.fichiers_sources.map((f) => `<li><code>${f}</code></li>`).join("");
+
+  table("t-cands", [
+    { label: "Station", fmt: (r) => r.nom + (r.retenue ? " ✓" : ""), value: (r) => r.nom },
+    { label: "Poste", fmt: (r) => r.num_poste, value: (r) => r.num_poste, dim: true },
+    { label: "Distance", fmt: (r) => nf(r.distance_km, 1) + NBSP + "km", value: (r) => r.distance_km },
+    { label: "Historique", fmt: (r) => `${r.premiere_annee}–${r.derniere_annee}`, value: (r) => r.premiere_annee },
+    { label: "Années exploitables", fmt: (r) => nfi(r.annees_exploitables), value: (r) => r.annees_exploitables },
+    { label: "T et U remplis", fmt: (r) => nf(r.couverture_tu * 100, 1) + NBSP + "%", value: (r) => r.couverture_tu },
+    { label: "Statut", fmt: (r) => (r.retenue ? "retenue" : r.eligible ? "éligible" : r.motif), value: (r) => r.motif },
+  ], D.candidats, { sortable: true, rowClass: (r) => (r.eligible ? "" : "excluded") });
+
+  document.getElementById("footer-text").innerHTML =
+    `Données © Météo-France, diffusées sous Licence Ouverte via meteo.data.gouv.fr. ` +
+    `Calculs et mise en page produits localement ; ce fichier est autonome et ne charge ` +
+    `aucune ressource extérieure. Généré le ${mt.genere_le}.`;
+}
+
+/* ------------------------------------------------------------------ thème */
+{
+  const btn = document.getElementById("themetoggle");
+  btn.onclick = () => {
+    const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+    const cur = document.documentElement.getAttribute("data-theme") || (dark ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+    redraws.forEach((f) => f());
+    heatScale();
+    legend("l-annual", [
+      { color: css("--accent"), label: "panneau haut — humidex moyen des heures définies" },
+      { color: css("--warm"), label: "panneau bas — humidex maximal de l'année" },
+      { dash: true, label: "tendance du humidex moyen (pente de Sen)" },
+    ]);
+    legend("l-bands", BANDS.map((b) => ({ color: css(b.color), label: b.label, box: true })));
+    legend("l-clim", [
+      { color: css("--warm"), label: "créneau diurne (10h–18h)" },
+      { color: css("--accent"), label: "créneau nocturne (22h–6h)" },
+    ]);
+    legend("l-daynight", [
+      { color: css("--warm"), label: "créneau diurne (10h–18h locale)" },
+      { color: css("--accent"), label: "créneau nocturne (22h–6h locale)" },
+    ]);
+    legend("l-hours", [
+      { color: css("--warm"), label: "humidex moyen, juin à septembre" },
+      { color: css("--grid"), label: "créneaux jour et nuit retenus", box: true },
+    ]);
+  };
+}
+</script>
+</body>
+</html>

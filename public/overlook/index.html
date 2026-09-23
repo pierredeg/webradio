@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="fr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Overlook Gold Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Limelight&family=Josefin+Sans:wght@300;400;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --ink: #0b0806;
+    --panel: rgba(20, 13, 8, 0.82);
+    --line: rgba(201, 162, 74, 0.35);
+    --gold: #c9a24a;
+    --gold-hi: #f0cf7e;
+    --cream: #efe3c6;
+    --muted: #b5a384;
+    --grady: #c4161c;
+    --display: "Limelight", "Didot", Georgia, serif;
+    --body: "Josefin Sans", "Futura", "Century Gothic", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; background: var(--ink); color: var(--cream); }
+  body { font-family: var(--body); overflow: hidden; }
+  #app { position: fixed; inset: 0; }
+  #c { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+  #c:active { cursor: grabbing; }
+
+  .brand {
+    position: absolute; top: calc(16px + env(safe-area-inset-top, 0px)); left: 16px;
+    pointer-events: none; max-width: min(420px, calc(100% - 32px));
+    text-shadow: 0 2px 12px rgba(0,0,0,.8);
+  }
+  .eyebrow {
+    margin: 0; font: 400 11px/1.4 var(--mono); letter-spacing: .14em;
+    text-transform: uppercase; color: var(--gold);
+  }
+  h1 {
+    margin: 2px 0 0; font: 400 clamp(30px, 5vw, 48px)/1 var(--display);
+    color: var(--gold-hi); letter-spacing: .02em; text-wrap: balance;
+  }
+  .sub { margin: 6px 0 0; font-size: 14px; font-weight: 300; color: var(--muted); }
+  .sub em { color: var(--cream); font-style: italic; }
+
+  #legend {
+    position: absolute; top: calc(16px + env(safe-area-inset-top, 0px)); right: 16px;
+    width: 230px; background: var(--panel); border: 1px solid var(--line);
+    padding: 14px 14px 10px; backdrop-filter: blur(6px);
+  }
+  #legend h2, #info .kicker {
+    margin: 0 0 8px; font: 400 11px/1.3 var(--mono); letter-spacing: .14em;
+    text-transform: uppercase; color: var(--gold);
+  }
+  #legend ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+  .spot-btn {
+    width: 100%; text-align: left; background: none; border: 0; color: var(--cream);
+    font: 400 14px/1.3 var(--body); padding: 6px 6px 5px; cursor: pointer;
+    display: flex; align-items: center; gap: 8px; border-left: 2px solid transparent;
+  }
+  .spot-btn::before {
+    content: ""; width: 7px; height: 7px; flex: none; transform: rotate(45deg);
+    border: 1px solid var(--gold);
+  }
+  .spot-btn:hover, .spot-btn:focus-visible { background: rgba(201,162,74,.12); outline: none; }
+  .spot-btn[aria-current="true"] { border-left-color: var(--gold-hi); background: rgba(201,162,74,.16); }
+  .spot-btn[aria-current="true"]::before { background: var(--gold-hi); }
+  .spot-btn[data-id="toilettes"]::before { border-color: var(--grady); }
+
+  #info {
+    position: absolute; left: 16px; bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    width: min(400px, calc(100% - 32px)); background: var(--panel);
+    border: 1px solid var(--line); padding: 16px 18px; backdrop-filter: blur(6px);
+  }
+  #info h3 { margin: 0 0 8px; font: 400 24px/1.1 var(--display); color: var(--gold-hi); text-wrap: balance; }
+  #info p { margin: 0 0 8px; font-size: 15px; line-height: 1.5; font-weight: 300; }
+  #info blockquote {
+    margin: 10px 0 4px; padding-left: 12px; border-left: 2px solid var(--gold);
+    font: italic 400 14px/1.45 Georgia, "Times New Roman", serif; color: var(--cream);
+  }
+  #info .note { font: 400 11px/1.5 var(--mono); color: var(--muted); margin: 8px 0 0; }
+  #info-close {
+    position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; background: none;
+    border: 0; color: var(--muted); font-size: 18px; cursor: pointer;
+  }
+  #info-close:hover, #info-close:focus-visible { color: var(--gold-hi); outline: 1px solid var(--line); }
+
+  #controls {
+    position: absolute; left: 16px; right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  }
+  .seg { display: inline-flex; border: 1px solid var(--line); background: var(--panel); backdrop-filter: blur(6px); }
+  .seg span {
+    font: 400 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase;
+    color: var(--gold); padding: 0 8px 0 10px; align-self: center;
+  }
+  .seg button {
+    background: none; border: 0; border-left: 1px solid var(--line); color: var(--cream);
+    font: 400 14px/1 var(--body); padding: 11px 14px 9px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--gold); color: #1a1208; font-weight: 600; }
+  .seg button:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: -2px; }
+  #hint { margin: 0; font: 400 11px/1.4 var(--mono); color: var(--muted); flex: 1 1 220px; text-shadow: 0 1px 6px #000; }
+
+  #labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .lbl {
+    position: absolute; left: 0; top: 0; pointer-events: auto; cursor: pointer;
+    font: 400 12px/1 var(--body); letter-spacing: .04em; color: var(--cream);
+    background: rgba(11,8,6,.72); border: 1px solid var(--line); padding: 5px 8px 3px;
+    white-space: nowrap; transform-origin: 0 0;
+  }
+  .lbl::before { content: "◆ "; color: var(--gold); font-size: 9px; }
+  .lbl:hover { border-color: var(--gold-hi); color: var(--gold-hi); }
+
+  #walkpad {
+    position: absolute; right: 16px; bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    display: grid; gap: 6px;
+  }
+  #walkpad button {
+    width: 52px; height: 52px; background: var(--panel); border: 1px solid var(--line);
+    color: var(--gold-hi); font-size: 18px; cursor: pointer; touch-action: none; user-select: none;
+  }
+  #walkpad button:active { background: var(--gold); color: #1a1208; }
+
+  #loading {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    font: 400 12px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--gold);
+  }
+
+  @media (max-width: 760px) {
+    h1 { font-size: 30px; }
+    .sub { font-size: 12px; }
+    #legend {
+      top: auto; right: 16px; left: 16px; width: auto; padding: 8px;
+      bottom: calc(66px + env(safe-area-inset-bottom, 0px));
+    }
+    #legend h2 { display: none; }
+    #legend ul { display: flex; overflow-x: auto; gap: 4px; scrollbar-width: none; }
+    .spot-btn { white-space: nowrap; font-size: 13px; }
+    #info {
+      bottom: auto; top: calc(96px + env(safe-area-inset-top, 0px));
+      padding: 12px 14px; max-height: 38vh; overflow-y: auto;
+    }
+    #info h3 { font-size: 20px; }
+    #info p { font-size: 14px; }
+    #walkpad { bottom: calc(124px + env(safe-area-inset-bottom, 0px)); }
+    #hint { display: none; }
+    .seg button { padding: 10px 11px 8px; font-size: 13px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div id="app">
+  <canvas id="c" aria-label="Maquette 3D du Gold Room de l'hôtel Overlook"></canvas>
+  <div id="labels"></div>
+  <div id="loading">Chargement de l'Overlook…</div>
+
+  <header class="brand">
+    <p class="eyebrow">Overlook Hotel · Colorado</p>
+    <h1>The Gold Room</h1>
+    <p class="sub">Maquette 3D de la salle de bal de <em>Shining</em> (Kubrick, 1980)</p>
+  </header>
+
+  <aside id="legend" aria-label="Lieux">
+    <h2>Lieux</h2>
+    <ul id="spot-list"></ul>
+  </aside>
+
+  <section id="info" aria-live="polite">
+    <button id="info-close" type="button" aria-label="Fermer la fiche">×</button>
+    <p class="kicker" id="info-kicker">La salle</p>
+    <h3 id="info-title"></h3>
+    <div id="info-body"></div>
+  </section>
+
+  <div id="walkpad" hidden>
+    <button id="wp-fwd" type="button" aria-label="Avancer">▲</button>
+    <button id="wp-back" type="button" aria-label="Reculer">▼</button>
+  </div>
+
+  <nav id="controls" aria-label="Réglages">
+    <div class="seg" role="group" aria-label="Vue">
+      <span>Vue</span>
+      <button id="v-plan" type="button" aria-pressed="true">Maquette</button>
+      <button id="v-walk" type="button" aria-pressed="false">Visite</button>
+    </div>
+    <div class="seg" role="group" aria-label="Époque">
+      <span>Époque</span>
+      <button id="e-1921" type="button" aria-pressed="true">Bal 1921</button>
+      <button id="e-1980" type="button" aria-pressed="false">Hiver 1980</button>
+    </div>
+    <p id="hint"></p>
+  </nav>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  if (!window.THREE) { $('#loading').textContent = "Impossible de charger three.js"; return; }
+
+  // ---------- Dimensions (mètres, estimées d'après le film) ----------
+  const W = 22, D = 34, H = 6.5;         // salle : x ∈ [-11, 11], z ∈ [-17, 17]
+  const HX = W / 2, HZ = D / 2;
+
+  // ---------- Moteur ----------
+  const canvas = $('#c');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0b0806);
+  scene.fog = new THREE.Fog(0x0b0806, 45, 120);
+
+  const camera = new THREE.PerspectiveCamera(50, 1, 0.05, 300);
+  const OVERVIEW = { pos: [24, 30, 38], target: [0, 0, 2] };
+  camera.position.set(...OVERVIEW.pos);
+  const controls = new THREE.OrbitControls(camera, canvas);
+  controls.target.set(...OVERVIEW.target);
+  controls.enableDamping = true;
+  controls.maxPolarAngle = 1.5;
+  controls.minDistance = 3;
+  controls.maxDistance = 90;
+
+  const ANISO = renderer.capabilities.getMaxAnisotropy();
+
+  // ---------- Textures procédurales ----------
+  function canvasTex(w, h, draw, repeat = true) {
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    draw(c.getContext('2d'), w, h);
+    const t = new THREE.CanvasTexture(c);
+    t.encoding = THREE.sRGBEncoding;
+    t.anisotropy = ANISO;
+    if (repeat) t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    return t;
+  }
+
+  // Bloc géométrique doré en relief (esprit Art déco / « Biltmore block »)
+  function drawBlock(g, x, y, s) {
+    const grad = g.createLinearGradient(x, y, x + s, y + s);
+    grad.addColorStop(0, '#dcbb6a'); grad.addColorStop(1, '#a17830');
+    g.fillStyle = grad; g.fillRect(x, y, s, s);
+    g.strokeStyle = '#4e3713'; g.lineWidth = 4; g.strokeRect(x + 2, y + 2, s - 4, s - 4);
+    const m = s * 0.14, cx = x + s / 2;
+    g.fillStyle = 'rgba(255,236,170,.18)'; g.fillRect(x + m, y + m, s - 2 * m, s - 2 * m);
+    g.strokeStyle = 'rgba(70,45,10,.75)'; g.lineWidth = 2; g.strokeRect(x + m, y + m, s - 2 * m, s - 2 * m);
+    g.fillStyle = 'rgba(80,52,14,.6)'; g.fillRect(cx - 3, y + m, 6, s - 2 * m);
+    for (let i = 0; i < 4; i++) {
+      const yy = y + m + 8 + i * ((s - 2 * m - 18) / 3.4);
+      g.lineWidth = 2.5;
+      g.strokeStyle = 'rgba(60,38,8,.8)';
+      g.beginPath(); g.moveTo(x + m + 6, yy + 16); g.lineTo(cx, yy); g.lineTo(x + s - m - 6, yy + 16); g.stroke();
+      g.strokeStyle = 'rgba(255,238,185,.45)';
+      g.beginPath(); g.moveTo(x + m + 6, yy + 18.5); g.lineTo(cx, yy + 2.5); g.lineTo(x + s - m - 6, yy + 18.5); g.stroke();
+    }
+    g.fillStyle = 'rgba(70,45,10,.65)';
+    const q = 9;
+    [[x + m - q / 2, y + m - q / 2], [x + s - m - q / 2, y + m - q / 2], [x + m - q / 2, y + s - m - q / 2], [x + s - m - q / 2, y + s - m - q / 2]]
+      .forEach(([a, b]) => g.fillRect(a, b, q, q));
+  }
+  const blockTex = canvasTex(256, 256, (g) => {
+    for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) drawBlock(g, i * 128, j * 128, 128);
+  });
+
+  const carpetTex = canvasTex(256, 256, (g, w) => {
+    g.fillStyle = '#4d1611'; g.fillRect(0, 0, w, w);
+    g.strokeStyle = 'rgba(214,168,78,.55)'; g.lineWidth = 3;
+    for (let k = -w; k <= w * 2; k += 64) {
+      g.beginPath(); g.moveTo(k, 0); g.lineTo(k + w, w); g.stroke();
+      g.beginPath(); g.moveTo(k, w); g.lineTo(k + w, 0); g.stroke();
+    }
+    g.fillStyle = 'rgba(214,168,78,.7)';
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) {
+      const cx = i * 64 + 32, cy = j * 64;
+      g.beginPath(); g.moveTo(cx, cy - 7); g.lineTo(cx + 7, cy); g.lineTo(cx, cy + 7); g.lineTo(cx - 7, cy); g.fill();
+    }
+  });
+
+  const parquetTex = canvasTex(256, 256, (g) => {
+    const n = 4, s = 64;
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+      const dark = (i + j) % 2;
+      g.fillStyle = dark ? '#6a3f1d' : '#9a6a36'; g.fillRect(i * s, j * s, s, s);
+      g.strokeStyle = dark ? 'rgba(30,15,5,.35)' : 'rgba(60,35,12,.3)'; g.lineWidth = 1;
+      for (let k = 6; k < s; k += 8) {
+        g.beginPath();
+        if (dark) { g.moveTo(i * s + k, j * s); g.lineTo(i * s + k, j * s + s); }
+        else { g.moveTo(i * s, j * s + k); g.lineTo(i * s + s, j * s + k); }
+        g.stroke();
+      }
+      g.strokeStyle = 'rgba(20,10,4,.6)'; g.strokeRect(i * s + .5, j * s + .5, s - 1, s - 1);
+    }
+  });
+
+  const corridorTex = canvasTex(128, 128, (g, w) => {
+    g.fillStyle = '#6e1a16'; g.fillRect(0, 0, w, w);
+    g.fillStyle = 'rgba(0,0,0,.18)';
+    for (let i = 0; i < 400; i++) g.fillRect(Math.random() * w, Math.random() * w, 2, 2);
+    g.strokeStyle = 'rgba(214,168,78,.45)'; g.lineWidth = 2; g.strokeRect(8, 8, w - 16, w - 16);
+  });
+
+  const tileTex = canvasTex(128, 128, (g, w) => {
+    const s = 16;
+    for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) {
+      g.fillStyle = (i + j) % 2 ? '#f2eee6' : '#dcd6ca'; g.fillRect(i * s, j * s, s, s);
+    }
+  });
+
+  // Photographies sépia du couloir
+  function sepiaCrowd(g, x0, y0, w, h, rows, perRow, seed) {
+    let r = seed;
+    const rnd = () => ((r = (r * 9301 + 49297) % 233280) / 233280);
+    const bg = g.createLinearGradient(0, y0, 0, y0 + h);
+    bg.addColorStop(0, '#5e4631'); bg.addColorStop(1, '#2e2217');
+    g.fillStyle = bg; g.fillRect(x0, y0, w, h);
+    g.fillStyle = 'rgba(255,238,200,.35)';
+    for (let i = 0; i < 9; i++) g.fillRect(x0 + (i + .5) * w / 9 - 4, y0 + 6, 8, 4);
+    for (let rI = 0; rI < rows; rI++) {
+      const sc = 0.55 + rI * (0.45 / Math.max(rows - 1, 1));
+      const by = y0 + h * (0.34 + rI * (0.5 / rows));
+      const n = Math.round(perRow * (1.15 - rI * 0.1));
+      for (let k = 0; k < n; k++) {
+        const fx = x0 + (k + .5 + (rnd() - .5) * .4) * w / n;
+        const dress = rnd() < .45;
+        g.fillStyle = dress ? `rgba(${200 + rnd() * 30},${180 + rnd() * 20},${140 + rnd() * 20},.9)` : 'rgba(28,20,13,.95)';
+        g.fillRect(fx - 7 * sc, by, 14 * sc, h);
+        if (!dress) { g.fillStyle = 'rgba(225,210,180,.9)'; g.fillRect(fx - 2 * sc, by + 1, 4 * sc, 9 * sc); }
+        g.fillStyle = '#cdb28a';
+        g.beginPath(); g.arc(fx, by - 6 * sc, 5.5 * sc, 0, Math.PI * 2); g.fill();
+        g.fillStyle = 'rgba(40,28,18,.9)';
+        g.beginPath(); g.arc(fx, by - 8 * sc, 5.5 * sc, Math.PI, 0); g.fill();
+      }
+    }
+  }
+  function grain(g, w, h) {
+    for (let i = 0; i < w * h * 0.06; i++) {
+      g.fillStyle = Math.random() < .5 ? 'rgba(255,240,210,.08)' : 'rgba(0,0,0,.12)';
+      g.fillRect(Math.random() * w, Math.random() * h, 1.5, 1.5);
+    }
+  }
+  const ballPhotoTex = canvasTex(512, 420, (g, w, h) => {
+    g.fillStyle = '#e8dcc0'; g.fillRect(0, 0, w, h);
+    sepiaCrowd(g, 22, 22, w - 44, 300, 5, 22, 7);
+    // Jack, au centre du premier rang
+    const jx = w / 2, jy = 262;
+    g.fillStyle = 'rgba(20,14,9,1)'; g.fillRect(jx - 13, jy, 26, 60);
+    g.fillStyle = '#efe0c2'; g.fillRect(jx - 4, jy + 2, 8, 16);
+    g.fillStyle = '#e2c9a0'; g.beginPath(); g.arc(jx, jy - 11, 10, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#2a1d12'; g.beginPath(); g.arc(jx, jy - 15, 10, Math.PI, 0); g.fill();
+    g.strokeStyle = '#3a2718'; g.lineWidth = 1.5; g.beginPath(); g.arc(jx, jy - 10, 5, .2, Math.PI - .2); g.stroke();
+    g.fillStyle = 'rgba(232,220,192,1)'; g.fillRect(22, 322, w - 44, 4);
+    g.fillStyle = '#3b2a1a'; g.textAlign = 'center';
+    g.font = 'italic 24px Georgia, serif'; g.fillText('Overlook Hotel', w / 2, 352);
+    g.fillText('July 4th Ball', w / 2, 380);
+    g.font = 'italic 22px Georgia, serif'; g.fillText('1921', w / 2, 406);
+    grain(g, w, h);
+  }, false);
+  const smallPhotos = [11, 23, 37, 41, 53, 67].map((seed) => canvasTex(160, 128, (g, w, h) => {
+    g.fillStyle = '#e8dcc0'; g.fillRect(0, 0, w, h);
+    sepiaCrowd(g, 10, 10, w - 20, h - 20, 2, 7, seed);
+    grain(g, w, h);
+  }, false));
+
+  // ---------- Matériaux ----------
+  const M = {
+    wall: new THREE.MeshStandardMaterial({ map: blockTex, roughness: .5, metalness: .35 }),
+    wainscot: new THREE.MeshStandardMaterial({ color: 0x2a170c, roughness: .35, metalness: .1 }),
+    gold: new THREE.MeshStandardMaterial({ color: 0xc89c45, roughness: .3, metalness: .75 }),
+    darkGold: new THREE.MeshStandardMaterial({ color: 0x7a5a24, roughness: .4, metalness: .6 }),
+    carpet: new THREE.MeshStandardMaterial({ map: carpetTex, roughness: .95 }),
+    parquet: new THREE.MeshStandardMaterial({ map: parquetTex, roughness: .28, metalness: .05 }),
+    ceiling: new THREE.MeshStandardMaterial({ color: 0x8e6c2c, roughness: .5, metalness: .5 }),
+    panel: new THREE.MeshBasicMaterial({ color: 0xffe2a8 }),
+    lacquer: new THREE.MeshStandardMaterial({ color: 0x160d08, roughness: .15, metalness: .3 }),
+    barGlow: new THREE.MeshBasicMaterial({ color: 0xffa04a }),
+    barBack: new THREE.MeshBasicMaterial({ color: 0x8a3c10 }),
+    shelfGlow: new THREE.MeshBasicMaterial({ color: 0xffd08a }),
+    chrome: new THREE.MeshStandardMaterial({ color: 0xd8d8d8, roughness: .2, metalness: 1 }),
+    leather: new THREE.MeshStandardMaterial({ color: 0x8a1a18, roughness: .45 }),
+    cloth: new THREE.MeshStandardMaterial({ color: 0xf4efe4, roughness: .9 }),
+    chair: new THREE.MeshStandardMaterial({ color: 0xb8913e, roughness: .35, metalness: .6 }),
+    chairSeat: new THREE.MeshStandardMaterial({ color: 0x6e1c16, roughness: .7 }),
+    lampShade: new THREE.MeshBasicMaterial({ color: 0xffc88a }),
+    wood: new THREE.MeshStandardMaterial({ color: 0x3a2212, roughness: .4 }),
+    cream: new THREE.MeshStandardMaterial({ color: 0xe7dcc2, roughness: .8 }),
+    corridorCarpet: new THREE.MeshStandardMaterial({ map: corridorTex, roughness: .95 }),
+    red: new THREE.MeshStandardMaterial({ color: 0xc4161c, roughness: .22, metalness: .05 }),
+    white: new THREE.MeshStandardMaterial({ color: 0xf4f2ee, roughness: .2 }),
+    tile: new THREE.MeshStandardMaterial({ map: tileTex, roughness: .25 }),
+    mirror: new THREE.MeshStandardMaterial({ color: 0x9aa0a4, roughness: .05, metalness: 1, emissive: 0x2a2c2e }),
+    bulb: new THREE.MeshBasicMaterial({ color: 0xfff6e4 }),
+    outline: new THREE.LineBasicMaterial({ color: 0xc9a24a, transparent: true, opacity: .8 }),
+  };
+
+  // ---------- Aides géométriques ----------
+  function box(w, h, d, mat, x, y, z, parent = scene) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+    m.position.set(x, y, z); parent.add(m); return m;
+  }
+  function floor(x0, x1, z0, z1, y, mat, tile, parent = scene) {
+    const geo = new THREE.PlaneGeometry(x1 - x0, z1 - z0);
+    const uv = geo.attributes.uv;
+    for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * (x1 - x0) / tile, uv.getY(i) * (z1 - z0) / tile);
+    const m = new THREE.Mesh(geo, mat);
+    m.rotation.x = -Math.PI / 2; m.position.set((x0 + x1) / 2, y, (z0 + z1) / 2); parent.add(m); return m;
+  }
+  function ceilingPlane(x0, x1, z0, z1, y, mat, parent) {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0), mat);
+    m.rotation.x = Math.PI / 2; m.position.set((x0 + x1) / 2, y, (z0 + z1) / 2); parent.add(m); return m;
+  }
+  // Mur simple face (normale vers l'intérieur) : les murs côté caméra disparaissent en vue maquette.
+  function wallRun(p1, p2, { h, y0 = 0, openings = [], mat, inset = 0, tile = 2.4, parent = scene }) {
+    const dx = p2[0] - p1[0], dz = p2[1] - p1[1], L = Math.hypot(dx, dz);
+    const ux = dx / L, uz = dz / L, nx = -uz, nz = ux, rotY = Math.atan2(-dz, dx);
+    const piece = (t0, t1, b0, b1) => {
+      if (t1 - t0 < 1e-3 || b1 - b0 < 1e-3) return;
+      const w = t1 - t0, hh = b1 - b0;
+      const geo = new THREE.PlaneGeometry(w, hh);
+      const uv = geo.attributes.uv;
+      for (let i = 0; i < uv.count; i++) uv.setXY(i, (t0 + uv.getX(i) * w) / tile, (b0 + uv.getY(i) * hh) / tile);
+      const m = new THREE.Mesh(geo, mat);
+      const tc = (t0 + t1) / 2;
+      m.position.set(p1[0] + ux * tc + nx * inset, (b0 + b1) / 2, p1[1] + uz * tc + nz * inset);
+      m.rotation.y = rotY; parent.add(m);
+    };
+    let t = 0;
+    [...openings].sort((a, b) => a.a - b.a).forEach((o) => {
+      piece(t, o.a, y0, y0 + h); piece(o.a, o.b, Math.max(o.h, y0), y0 + h); t = o.b;
+    });
+    piece(t, L, y0, y0 + h);
+  }
+  function roomWalls(walls, { h, wainscot = 1.1, cornice = .45, mat = M.wall, low = M.wainscot, top = M.gold, parent }) {
+    walls.forEach(([p1, p2, openings = []]) => {
+      wallRun(p1, p2, { h, openings, mat, parent });
+      if (wainscot) wallRun(p1, p2, { h: wainscot, openings, mat: low, inset: .02, parent });
+      if (cornice) wallRun(p1, p2, { h: cornice, y0: h - cornice, openings, mat: top, inset: .02, parent });
+    });
+  }
+  function instanced(geo, mat, list) {
+    const im = new THREE.InstancedMesh(geo, mat, list.length);
+    const d = new THREE.Object3D();
+    list.forEach((o, i) => {
+      d.position.set(o.x, o.y, o.z); d.rotation.set(o.rx || 0, o.ry || 0, 0); d.scale.set(o.sx || 1, o.sy || 1, o.sz || 1);
+      d.updateMatrix(); im.setMatrixAt(i, d.matrix);
+      if (o.color !== undefined) im.setColorAt(i, new THREE.Color(o.color));
+    });
+    return im;
+  }
+
+  const ceilingGroup = new THREE.Group(); scene.add(ceilingGroup);
+  const outlines = new THREE.Group(); scene.add(outlines);
+  function outlineRect(x0, x1, z0, z1, y) {
+    const pts = [[x0, z0], [x1, z0], [x1, z1], [x0, z1], [x0, z0]].map(([x, z]) => new THREE.Vector3(x, y, z));
+    outlines.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), M.outline));
+  }
+
+  // ---------- LA SALLE ----------
+  // Portes : grande porte double au sud (x ∈ [-1.6, 1.6]), porte des toilettes à l'est (z ∈ [-13.6, -12.2])
+  roomWalls([
+    [[-HX, -HZ], [HX, -HZ]],
+    [[HX, -HZ], [HX, HZ], [{ a: 3.4, b: 4.8, h: 2.6 }]],
+    [[HX, HZ], [-HX, HZ], [{ a: 9.4, b: 12.6, h: 3.4 }]],
+    [[-HX, HZ], [-HX, -HZ]],
+  ], { h: H });
+  outlineRect(-HX, HX, -HZ, HZ, H);
+
+  floor(-HX, HX, -HZ, HZ, 0, M.carpet, 2);
+  floor(-6, 6, -6, 8, .015, M.parquet, 1.6);
+  // Bordure dorée de la piste
+  [[12.2, .03, .12, 0, -6.05], [12.2, .03, .12, 0, 8.05], [.12, .03, 14.2, -6.05, 1], [.12, .03, 14.2, 6.05, 1]]
+    .forEach(([w, h, d, x, z]) => box(w, h, d, M.gold, x, .03, z));
+
+  // Colonnes : deux rangées délimitant la nef centrale et les bas-côtés
+  const colZ = [-10, -4, 2, 8, 14];
+  const colGeo = new THREE.BoxGeometry(.8, H, .8);
+  { const uv = colGeo.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * .33, uv.getY(i) * H / 2.4); }
+  const columns = [];
+  [-7, 7].forEach((x) => colZ.forEach((z) => {
+    const c = new THREE.Mesh(colGeo, M.wall); c.position.set(x, H / 2, z); scene.add(c);
+    box(1.02, .45, 1.02, M.wainscot, x, .225, z);
+    box(1.1, .35, 1.1, M.gold, x, H - .5, z);
+    columns.push([x, z]);
+  }));
+
+  // Plafond à caissons : poutres dorées + panneau lumineux dans chaque caisson
+  ceilingPlane(-HX, HX, -HZ, HZ, H, M.ceiling, ceilingGroup);
+  for (let x = -10; x <= 10; x += 2) box(.22, .4, D, M.gold, x, H - .2, 0, ceilingGroup);
+  for (let z = -16; z <= 16; z += 2) box(W, .4, .22, M.gold, 0, H - .2, z, ceilingGroup);
+  const panels = [];
+  for (let x = -9; x <= 9; x += 2) for (let z = -15; z <= 15; z += 2) panels.push({ x, y: H - .03, z, rx: Math.PI / 2 });
+  ceilingGroup.add(instanced(new THREE.PlaneGeometry(1.25, 1.25), M.panel, panels));
+
+  // Double porte d'entrée, ouverte vers la salle
+  box(.3, 3.6, .55, M.gold, -1.75, 1.8, 17.15);
+  box(.3, 3.6, .55, M.gold, 1.75, 1.8, 17.15);
+  box(3.8, .3, .55, M.gold, 0, 3.55, 17.15);
+  [[-1.6, 1.72, 1], [1.6, -1.72, -1]].forEach(([hx, ang, side]) => {
+    const pivot = new THREE.Group(); pivot.position.set(hx, 0, 17); pivot.rotation.y = ang; scene.add(pivot);
+    box(1.55, 3.3, .08, M.wood, side * .78, 1.65, 0, pivot);
+    box(1.1, 2.4, .1, M.darkGold, side * .78, 1.75, 0, pivot);
+  });
+
+  // ---------- LE BAR ----------
+  const barZ = -14.6;
+  box(14, 1.05, .8, M.lacquer, 0, .525, barZ);
+  box(14, 1.0, .06, M.barGlow, 0, .55, barZ + .42);
+  const fins = [];
+  for (let x = -6.85; x <= 6.86; x += .35) fins.push({ x, y: .55, z: barZ + .47 });
+  scene.add(instanced(new THREE.BoxGeometry(.05, 1.02, .08), M.darkGold, fins));
+  box(14.5, .09, 1.0, M.lacquer, 0, 1.1, barZ);
+  box(14.5, .03, 1.02, M.gold, 0, 1.06, barZ);
+  { const rail = new THREE.Mesh(new THREE.CylinderGeometry(.035, .035, 14, 10), M.gold);
+    rail.rotation.z = Math.PI / 2; rail.position.set(0, .2, barZ + .62); scene.add(rail); }
+  // Tabourets
+  const stools = [];
+  for (let i = 0; i < 12; i++) stools.push(-6.05 + i * 1.1);
+  scene.add(instanced(new THREE.CylinderGeometry(.04, .04, .72, 8), M.chrome, stools.map((x) => ({ x, y: .36, z: barZ + 1.05 }))));
+  scene.add(instanced(new THREE.CylinderGeometry(.2, .2, .03, 16), M.chrome, stools.map((x) => ({ x, y: .015, z: barZ + 1.05 }))));
+  scene.add(instanced(new THREE.CylinderGeometry(.22, .2, .12, 16), M.leather, stools.map((x) => ({ x, y: .76, z: barZ + 1.05 }))));
+  // Arrière-bar rétroéclairé
+  box(12.6, 2.6, .05, M.barBack, 0, 2.45, -16.95);
+  box(12.8, 1.1, .6, M.lacquer, 0, .55, -16.68);
+  [1.55, 2.25, 2.95].forEach((y) => box(12.4, .05, .34, M.shelfGlow, 0, y, -16.78));
+  [-6.55, 6.55].forEach((x) => box(.4, 3.6, .5, M.gold, x, 1.8, -16.7));
+  box(13.5, .35, .55, M.gold, 0, 3.7, -16.7);
+  const bottleColors = [0x2e5a2a, 0x6a3a12, 0xbfa35a, 0x1d3a4a, 0x8a1c1c, 0xd8d0b0, 0x4a2a0a];
+  const bottles = [];
+  [1.58, 2.28, 2.98].forEach((y, s) => {
+    for (let x = -6; x <= 6; x += .22 + ((x * 7 + s) % 3 === 0 ? .08 : 0)) {
+      const tall = .24 + ((Math.abs(Math.round(x * 17 + s * 5)) % 5) * .03);
+      bottles.push({ x, y: y + .025 + tall / 2, z: -16.8, sy: tall / .3, color: bottleColors[Math.abs(Math.round(x * 13 + s)) % bottleColors.length] });
+    }
+  });
+  const bottleMesh = instanced(new THREE.CylinderGeometry(.04, .045, .3, 8),
+    new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .1, metalness: .2, emissive: 0x201008 }), bottles);
+  scene.add(bottleMesh);
+
+  // ---------- TABLES ----------
+  const tables = [];
+  [-9.3, 9.3].forEach((x) => [-9, -5.9, -2.8, .3, 3.4, 6.5, 9.6, 12.7].forEach((z) => tables.push([x, z])));
+  [[-3.6, 11], [3.6, 11], [-5.8, 13.6], [5.8, 13.6], [-3.6, 14.4], [3.6, 14.4], [-4.2, -9.4], [4.2, -9.4]].forEach((p) => tables.push(p));
+  scene.add(instanced(new THREE.CylinderGeometry(.62, .66, .74, 24), M.cloth, tables.map(([x, z]) => ({ x, y: .37, z }))));
+  scene.add(instanced(new THREE.CylinderGeometry(.03, .05, .22, 8), M.gold, tables.map(([x, z]) => ({ x, y: .85, z }))));
+  scene.add(instanced(new THREE.CylinderGeometry(.07, .11, .13, 12, 1, true), M.lampShade, tables.map(([x, z]) => ({ x, y: 1.0, z }))));
+  const seats = [], backs = [], legs = [], chairSpots = [];
+  tables.forEach(([tx, tz]) => [.785, 2.356, 3.927, 5.498].forEach((a) => {
+    const dx = Math.cos(a), dz = Math.sin(a), ry = Math.atan2(dx, dz);
+    const x = tx + dx * .98, z = tz + dz * .98;
+    seats.push({ x, y: .47, z, ry });
+    legs.push({ x, y: .22, z, ry });
+    backs.push({ x: x + dx * .2, y: .82, z: z + dz * .2, ry });
+    chairSpots.push({ x, z, ry });
+  }));
+  scene.add(instanced(new THREE.BoxGeometry(.44, .07, .44), M.chairSeat, seats));
+  scene.add(instanced(new THREE.BoxGeometry(.4, .44, .4), M.chair, legs.map((o) => ({ ...o, sx: .92, sz: .92 }))));
+  scene.add(instanced(new THREE.BoxGeometry(.44, .62, .05), M.chair, backs));
+
+  // ---------- COULOIR (photos) ----------
+  const CZ0 = 17.3, CZ1 = 21.3, CX = 14, CH = 3.2;
+  roomWalls([
+    [[-CX, CZ0], [CX, CZ0], [{ a: 12.4, b: 15.6, h: 3.4 }]],
+    [[CX, CZ0], [CX, CZ1]],
+    [[CX, CZ1], [-CX, CZ1]],
+    [[-CX, CZ1], [-CX, CZ0]],
+  ], { h: CH, mat: M.cream, wainscot: 1.0, cornice: .2 });
+  floor(-CX, CX, CZ0, CZ1, 0, M.corridorCarpet, 1.2);
+  ceilingPlane(-CX, CX, CZ0, CZ1, CH, M.cream, ceilingGroup);
+  outlineRect(-CX, CX, CZ0, CZ1, CH);
+  function framed(tex, w, h, x, y, z) {
+    box(w + .12, h + .12, .04, M.wood, x, y, z + .02);
+    const p = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshStandardMaterial({ map: tex, roughness: .6 }));
+    p.rotation.y = Math.PI; p.position.set(x, y, z - .005); scene.add(p);
+  }
+  framed(ballPhotoTex, 1.0, .82, 0, 1.75, CZ1 - .05);
+  let pi = 0;
+  for (let x = -12; x <= 12; x += 1.5) {
+    if (Math.abs(x) < 1) continue;
+    [1.35, 2.2].forEach((y) => { framed(smallPhotos[pi++ % smallPhotos.length], .5, .4, x, y, CZ1 - .05); });
+  }
+  const sconces = [];
+  for (let x = -12.75; x <= 12.75; x += 4.25) sconces.push({ x, y: 2.5, z: CZ1 - .12 });
+  scene.add(instanced(new THREE.BoxGeometry(.25, .35, .12), M.lampShade, sconces));
+
+  // ---------- TOILETTES ROUGES ----------
+  const BX0 = 11.3, BX1 = 17.3, BZ0 = -17, BZ1 = -9, BH = 3.2;
+  const bathWalls = [
+    [[BX0, BZ1], [BX0, BZ0], [{ a: 3.2, b: 4.6, h: 2.6 }]],
+    [[BX0, BZ0], [BX1, BZ0]],
+    [[BX1, BZ0], [BX1, BZ1]],
+    [[BX1, BZ1], [BX0, BZ1]],
+  ];
+  roomWalls(bathWalls, { h: BH, mat: M.red, wainscot: 0, cornice: .12, top: M.white });
+  bathWalls.forEach(([p1, p2, o = []]) => {
+    wallRun(p1, p2, { h: .12, y0: 1.0, openings: o, mat: M.white, inset: .02 });
+    wallRun(p1, p2, { h: .06, y0: 2.3, openings: o, mat: M.white, inset: .02 });
+    wallRun(p1, p2, { h: .15, openings: o, mat: M.white, inset: .02 });
+  });
+  floor(BX0, BX1, BZ0, BZ1, 0, M.tile, 1);
+  ceilingPlane(BX0, BX1, BZ0, BZ1, BH, M.white, ceilingGroup);
+  outlineRect(BX0, BX1, BZ0, BZ1, BH);
+  // Passage et encadrement de porte
+  box(.34, 2.7, .12, M.gold, 11.15, 1.35, -13.66);
+  box(.34, 2.7, .12, M.gold, 11.15, 1.35, -12.14);
+  box(.34, .14, 1.64, M.gold, 11.15, 2.65, -12.9);
+  floor(10.98, 11.32, -13.6, -12.2, .01, M.tile, 1);
+  // Lavabos, miroirs, ampoules (mur est)
+  box(.62, .14, 5.2, M.white, 17.0, .86, -13);
+  box(.5, .78, 5.0, M.red, 17.05, .4, -13);
+  [-14.8, -13, -11.2].forEach((z) => {
+    box(.42, .1, .5, M.white, 16.9, .9, z);
+    const mir = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 1.0), M.mirror);
+    mir.rotation.y = -Math.PI / 2; mir.position.set(BX1 - .03, 1.75, z); scene.add(mir);
+    box(.04, 1.12, 1.22, M.white, BX1 - .02, 1.75, z);
+  });
+  const bulbs = [];
+  for (let z = -15.4; z <= -10.6; z += .4) bulbs.push({ x: BX1 - .1, y: 2.45, z });
+  scene.add(instanced(new THREE.SphereGeometry(.06, 10, 8), M.bulb, bulbs));
+  // Urinoirs (mur nord) et cabines (mur sud)
+  [12.6, 13.8, 15.0, 16.2].forEach((x) => box(.46, .95, .34, M.white, x, .95, BZ0 + .17));
+  [12.3, 13.6, 14.9, 16.2].forEach((x) => box(.05, 2.0, 1.4, M.white, x + .6, 1.1, BZ1 - .7));
+  [12.9, 14.2, 15.5].forEach((x) => box(1.2, 1.9, .05, M.red, x + .05, 1.1, BZ1 - 1.4));
+
+  // ---------- Silhouettes ----------
+  const G = {
+    body: new THREE.CylinderGeometry(.17, .2, 1.0, 12),
+    torso: new THREE.CylinderGeometry(.16, .18, .6, 12),
+    dress: new THREE.CylinderGeometry(.14, .34, 1.1, 14),
+    head: new THREE.SphereGeometry(.12, 14, 12),
+    hair: new THREE.SphereGeometry(.125, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2),
+    shirt: new THREE.BoxGeometry(.12, .3, .02),
+    legs: new THREE.CylinderGeometry(.15, .13, .5, 10),
+  };
+  const skin = new THREE.MeshStandardMaterial({ color: 0xe2c1a0, roughness: .7 });
+  const hairMats = [0x2a1c12, 0x4a3322, 0x6a4a2a, 0xa5845a].map((c) => new THREE.MeshStandardMaterial({ color: c, roughness: .6 }));
+  const tux = new THREE.MeshStandardMaterial({ color: 0x121014, roughness: .5 });
+  const shirtM = new THREE.MeshStandardMaterial({ color: 0xf2eee4, roughness: .8 });
+  const dressMats = [0xe9dfc8, 0xc9b48a, 0xb8b8c0, 0xd9b3a8, 0x1a1418, 0x7a8a9a].map((c) => new THREE.MeshStandardMaterial({ color: c, roughness: .55, metalness: .1 }));
+  let rs = 42; const rnd = () => ((rs = (rs * 16807) % 2147483647) / 2147483647);
+
+  function figure({ seated = false, female = rnd() < .5, jacket = tux } = {}) {
+    const g = new THREE.Group();
+    const add = (geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); g.add(m); return m; };
+    const hair = hairMats[Math.floor(rnd() * hairMats.length)];
+    if (seated) {
+      add(G.torso, female ? dressMats[Math.floor(rnd() * dressMats.length)] : jacket, 0, .82, 0);
+      if (!female) add(G.shirt, shirtM, 0, .9, .16);
+      add(G.head, skin, 0, 1.26, 0); add(G.hair, hair, 0, 1.28, -.01);
+    } else if (female) {
+      add(G.dress, dressMats[Math.floor(rnd() * dressMats.length)], 0, .55, 0);
+      add(G.torso, dressMats[Math.floor(rnd() * dressMats.length)], 0, 1.2, 0).scale.set(.85, .7, .8);
+      add(G.head, skin, 0, 1.55, 0); add(G.hair, hair, 0, 1.57, -.01);
+    } else {
+      add(G.legs, tux, 0, .25, 0);
+      add(G.body, jacket, 0, .98, 0);
+      add(G.shirt, shirtM, 0, 1.22, .18);
+      add(G.head, skin, 0, 1.63, 0); add(G.hair, hair, 0, 1.65, -.01);
+    }
+    return g;
+  }
+
+  // Bal de 1921
+  const crowd = new THREE.Group(); scene.add(crowd);
+  const couples = [];
+  for (let i = 0; i < 18; i++) {
+    const c = new THREE.Group();
+    const a = figure({ female: false }), b = figure({ female: true });
+    a.position.x = -.24; a.rotation.y = Math.PI / 2; b.position.x = .24; b.rotation.y = -Math.PI / 2;
+    c.add(a, b);
+    const ring = i < 7 ? 2.2 : 4.3, k = i < 7 ? i / 7 : (i - 7) / 11;
+    couples.push({ g: c, ang: k * Math.PI * 2 + rnd() * .3, ring, spin: .6 + rnd() * .6, phase: rnd() * 6 });
+    crowd.add(c);
+  }
+  chairSpots.forEach((s, i) => {
+    if (rnd() < .45) return;
+    const f = figure({ seated: true });
+    f.position.set(s.x, 0, s.z); f.rotation.y = s.ry + Math.PI; crowd.add(f);
+  });
+  [[-5.2, -13.35], [-4.6, -13.3], [2.6, -13.35], [3.3, -13.2], [5.4, -13.4]].forEach(([x, z]) => {
+    const f = figure(); f.position.set(x, 0, z); f.rotation.y = Math.PI + (rnd() - .5) * .8; crowd.add(f);
+  });
+  [[-9.8, 15.2], [-8.6, 15.4], [8.4, 15.6], [9.1, 15.1], [-3, 16.1], [2.4, 16.3]].forEach(([x, z]) => {
+    const f = figure(); f.position.set(x, 0, z); f.rotation.y = rnd() * Math.PI * 2; crowd.add(f);
+  });
+  const lloyd = figure({ female: false, jacket: new THREE.MeshStandardMaterial({ color: 0xe6e0d2, roughness: .7 }) });
+  lloyd.position.set(.5, 0, -15.7); scene.add(lloyd);
+  // Jack, seul au bar vide (1980)
+  const jack = figure({ seated: true, female: false, jacket: new THREE.MeshStandardMaterial({ color: 0x5a1e16, roughness: .8 }) });
+  jack.position.set(-.55, .15, barZ + .95); jack.rotation.y = Math.PI; scene.add(jack);
+
+  // ---------- Éclairage ----------
+  const hemi = new THREE.HemisphereLight(0xffe6bd, 0x2a1408, .55); scene.add(hemi);
+  const amb = new THREE.AmbientLight(0xffdca8, .18); scene.add(amb);
+  const roomLights = [[-4.5, -8], [4.5, -8], [-4.5, 5], [4.5, 5], [0, 13]].map(([x, z]) => {
+    const l = new THREE.PointLight(0xffd9a0, 1, 30, 1.2); l.position.set(x, H - .8, z); scene.add(l); return l;
+  });
+  const barLight = new THREE.PointLight(0xff9a44, 1.3, 12, 1.4); barLight.position.set(0, 1.4, -12.8); scene.add(barLight);
+  const backLight = new THREE.PointLight(0xffb060, 1, 9, 1.4); backLight.position.set(0, 2.6, -15.8); scene.add(backLight);
+  const bathLight = new THREE.PointLight(0xfff4ea, 1.25, 14, 1.2); bathLight.position.set(14.3, 2.8, -13); scene.add(bathLight);
+  const corrLight = new THREE.PointLight(0xffd8a0, .9, 18, 1.2); corrLight.position.set(0, 2.8, 19.3); scene.add(corrLight);
+
+  // ---------- Lieux ----------
+  const SPOTS = [
+    { id: 'entree', name: 'Entrée', kicker: 'Couloir sud', pos: [0, 3.9, 17.1],
+      cam: { pos: [9, 11, 31], target: [0, 1.2, 16] },
+      body: "<p>Double porte à encadrement doré, ouverte sur le couloir. Jack la franchit deux fois : d'abord dans une salle déserte, un soir d'hiver, puis en plein bal, au milieu d'invités en tenue de soirée qui ne le voient pas.</p>" },
+    { id: 'bar', name: 'Le bar', kicker: 'Fond de salle', pos: [0, 3.2, -15.2],
+      cam: { pos: [5, 4.5, -5.5], target: [0, 1.4, -15.2] },
+      body: "<p>Long comptoir laqué au bandeau rétroéclairé ambré, douze tabourets de cuir rouge, arrière-bar lumineux sur trois étagères. En « Hiver 1980 », les étagères sont vides ; quand Jack relève la tête, Lloyd le barman est là et le bar est plein.</p><blockquote>« I'd give my goddamn soul for just a glass of beer. »<br>« Hi, Lloyd. A little slow tonight, isn't it? »</blockquote>" },
+    { id: 'piste', name: 'Piste de danse', kicker: 'Nef centrale', pos: [0, .6, 1],
+      cam: { pos: [11, 8, 14], target: [0, .4, 1] },
+      body: "<p>Parquet central encadré de laiton, entre les deux colonnades. Les couples y dansent sur <em>Midnight, the Stars and You</em> (Ray Noble, chant Al Bowlly, 1934).</p>" },
+    { id: 'tables', name: 'Tables et colonnes', kicker: 'Bas-côtés', pos: [-9.3, 1.5, 3.4],
+      cam: { pos: [-2.5, 5, 10], target: [-9, .8, 1] },
+      body: "<p>Rangées de tables rondes nappées de blanc, chacune avec sa petite lampe, entre les colonnes et les murs. Colonnes et murs sont couverts de blocs dorés géométriques en relief, dans l'esprit Art déco de l'hôtel.</p>" },
+    { id: 'plafond', name: 'Plafond à caissons', kicker: 'Au-dessus', pos: [0, H - .6, -2],
+      walk: { pos: [0, 1.7, 9], yaw: 0, pitch: .62 },
+      body: "<p>Grille de poutres dorées ; chaque caisson abrite un panneau lumineux. C'est ce plafond qui baigne la salle de la lumière or qui lui donne son nom.</p>" },
+    { id: 'toilettes', name: 'Toilettes rouges', kicker: 'Porte est', pos: [14.3, 3.3, -13],
+      cam: { pos: [21, 9, -3], target: [14.3, .8, -13] },
+      body: "<p>Murs laqués rouge vif, filets blancs, sanitaires blancs et lumière crue. Delbert Grady y nettoie la veste de Jack avant de lui parler de « corriger » sa famille. Le décor est souvent rapproché des toilettes de l'Arizona Biltmore.</p><blockquote>« You've always been the caretaker. I should know, sir. I've always been here. »</blockquote>" },
+    { id: 'photo', name: 'Photo de 1921', kicker: 'Couloir', pos: [0, 2.5, 21.1],
+      walk: { pos: [0, 1.7, 18.6], yaw: Math.PI, pitch: 0 },
+      body: "<p>Le dernier plan du film : parmi les cadres du couloir, la photographie « Overlook Hotel — July 4th Ball — 1921 », avec Jack souriant au premier rang.</p>" },
+  ];
+  const ABOUT = {
+    kicker: 'La salle', title: 'The Gold Room',
+    body: "<p>Salle de bal de l'Overlook : une nef dorée entre deux colonnades, un bar ambré au fond, des toilettes rouges à l'est et le couloir aux photos au sud. Cliquez sur un lieu, ou passez en <strong>Visite</strong> pour marcher à hauteur d'homme.</p><p class=\"note\">Reconstitution d'après le film de Kubrick (décor tourné aux studios Elstree). Dimensions estimées, environ 22 × 34 m, 6,5 m sous plafond.</p>",
+  };
+
+  const listEl = $('#spot-list'), labelsEl = $('#labels');
+  const labelEls = {};
+  SPOTS.forEach((s) => {
+    s.v = new THREE.Vector3(...s.pos);
+    const li = document.createElement('li');
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'spot-btn'; b.dataset.id = s.id; b.textContent = s.name;
+    b.addEventListener('click', () => goTo(s.id));
+    li.appendChild(b); listEl.appendChild(li);
+    const l = document.createElement('button');
+    l.type = 'button'; l.className = 'lbl'; l.textContent = s.name; l.tabIndex = -1;
+    l.addEventListener('click', () => goTo(s.id));
+    labelsEl.appendChild(l); labelEls[s.id] = l;
+  });
+
+  function showInfo(s) {
+    $('#info').hidden = false;
+    $('#info-kicker').textContent = s.kicker;
+    $('#info-title').textContent = s.title || s.name;
+    $('#info-body').innerHTML = s.body;
+    document.querySelectorAll('.spot-btn').forEach((b) => b.setAttribute('aria-current', String(b.dataset.id === s.id)));
+  }
+  $('#info-close').addEventListener('click', () => { $('#info').hidden = true; });
+
+  // ---------- Modes ----------
+  let view = 'plan', era = '1921';
+  const walk = { yaw: 0, pitch: 0, keys: new Set(), pad: 0 };
+  let fly = null;
+
+  function setView(v) {
+    view = v;
+    $('#v-plan').setAttribute('aria-pressed', String(v === 'plan'));
+    $('#v-walk').setAttribute('aria-pressed', String(v === 'walk'));
+    ceilingGroup.visible = v === 'walk';
+    outlines.visible = v === 'plan';
+    controls.enabled = v === 'plan';
+    $('#walkpad').hidden = v !== 'walk';
+    $('#hint').textContent = v === 'plan'
+      ? 'Glisser pour tourner · molette ou pincer pour zoomer · clic droit ou deux doigts pour déplacer'
+      : 'Glisser pour regarder · ZQSD / WASD ou flèches pour marcher';
+    fly = null;
+    if (v === 'walk') {
+      camera.rotation.order = 'YXZ';
+      camera.rotation.set(walk.pitch, walk.yaw, 0);
+    }
+  }
+  function enterWalk(p) {
+    walk.yaw = p.yaw; walk.pitch = p.pitch;
+    camera.position.set(...p.pos);
+    setView('walk');
+  }
+  function setEra(e) {
+    era = e;
+    const party = e === '1921';
+    $('#e-1921').setAttribute('aria-pressed', String(party));
+    $('#e-1980').setAttribute('aria-pressed', String(!party));
+    crowd.visible = party; lloyd.visible = party; bottleMesh.visible = party; jack.visible = !party;
+    M.panel.color.set(party ? 0xffe2a8 : 0x4a3a22);
+    M.lampShade.color.set(party ? 0xffc88a : 0x5a4028);
+    roomLights.forEach((l) => { l.intensity = party ? 1 : .22; });
+    hemi.intensity = party ? .55 : .16;
+    amb.intensity = party ? .18 : .08;
+    corrLight.intensity = party ? .9 : .35;
+    renderer.toneMappingExposure = party ? 1.15 : 1.0;
+  }
+
+  function goTo(id) {
+    const s = SPOTS.find((x) => x.id === id);
+    showInfo(s);
+    if (s.walk) { enterWalk(s.walk); return; }
+    if (view !== 'plan') setView('plan');
+    fly = {
+      t: 0, dur: 1.2,
+      p0: camera.position.clone(), p1: new THREE.Vector3(...s.cam.pos),
+      t0: controls.target.clone(), t1: new THREE.Vector3(...s.cam.target),
+    };
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) fly.t = fly.dur;
+  }
+
+  $('#v-plan').addEventListener('click', () => {
+    if (view === 'plan') return;
+    setView('plan');
+    camera.position.set(...OVERVIEW.pos); controls.target.set(...OVERVIEW.target);
+  });
+  $('#v-walk').addEventListener('click', () => { if (view !== 'walk') enterWalk({ pos: [0, 1.7, 19.2], yaw: 0, pitch: 0 }); });
+  $('#e-1921').addEventListener('click', () => setEra('1921'));
+  $('#e-1980').addEventListener('click', () => setEra('1980'));
+
+  // ---------- Déplacement en visite ----------
+  const areas = [
+    [-10.6, 10.6, -16.6, 16.6], [-1.5, 1.5, 16.4, 17.9], [-13.6, 13.6, 17.7, 20.9],
+    [10.4, 11.9, -13.4, -12.4], [11.7, 16.6, -16.6, -9.4],
+  ];
+  const blocks = [[-7.3, 7.3, -17, barZ + .75]].concat(columns.map(([x, z]) => [x - .7, x + .7, z - .7, z + .7]));
+  const inside = (x, z) => areas.some(([a, b, c, d]) => x > a && x < b && z > c && z < d)
+    && !blocks.some(([a, b, c, d]) => x > a && x < b && z > c && z < d);
+
+  let dragging = null;
+  canvas.addEventListener('pointerdown', (e) => {
+    if (view !== 'walk') return;
+    dragging = { x: e.clientX, y: e.clientY, id: e.pointerId };
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!dragging || dragging.id !== e.pointerId) return;
+    walk.yaw += (e.clientX - dragging.x) * .005;
+    walk.pitch = Math.max(-1.2, Math.min(1.2, walk.pitch + (e.clientY - dragging.y) * .005));
+    dragging.x = e.clientX; dragging.y = e.clientY;
+  });
+  const endDrag = () => { dragging = null; };
+  canvas.addEventListener('pointerup', endDrag);
+  canvas.addEventListener('pointercancel', endDrag);
+  const KEYS = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+  window.addEventListener('keydown', (e) => {
+    if (view !== 'walk' || !KEYS.includes(e.code)) return;
+    walk.keys.add(e.code); e.preventDefault();
+  });
+  window.addEventListener('keyup', (e) => walk.keys.delete(e.code));
+  window.addEventListener('blur', () => walk.keys.clear());
+  [['#wp-fwd', 1], ['#wp-back', -1]].forEach(([sel, dir]) => {
+    const b = $(sel);
+    b.addEventListener('pointerdown', (e) => { walk.pad = dir; b.setPointerCapture(e.pointerId); });
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((ev) => b.addEventListener(ev, () => { walk.pad = 0; }));
+  });
+
+  function updateWalk(dt) {
+    const k = walk.keys;
+    if (k.has('ArrowLeft')) walk.yaw += dt * 1.8;
+    if (k.has('ArrowRight')) walk.yaw -= dt * 1.8;
+    let f = walk.pad, s = 0;
+    if (k.has('KeyW') || k.has('ArrowUp')) f += 1;
+    if (k.has('KeyS') || k.has('ArrowDown')) f -= 1;
+    if (k.has('KeyD')) s += 1;
+    if (k.has('KeyA')) s -= 1;
+    if (f || s) {
+      const sp = 3.2 * dt, sy = Math.sin(walk.yaw), cy = Math.cos(walk.yaw);
+      const mx = (-sy * f + cy * s) * sp, mz = (-cy * f - sy * s) * sp;
+      const p = camera.position;
+      if (inside(p.x + mx, p.z + mz)) { p.x += mx; p.z += mz; }
+      else if (inside(p.x + mx, p.z)) p.x += mx;
+      else if (inside(p.x, p.z + mz)) p.z += mz;
+    }
+    camera.rotation.set(walk.pitch, walk.yaw, 0);
+  }
+
+  // ---------- Boucle ----------
+  const tmp = new THREE.Vector3();
+  function placeLabels(w, h) {
+    SPOTS.forEach((s) => {
+      const el = labelEls[s.id];
+      const dist = camera.position.distanceTo(s.v);
+      tmp.copy(s.v).project(camera);
+      const hide = tmp.z > 1 || Math.abs(tmp.x) > 1.1 || Math.abs(tmp.y) > 1.1
+        || (view === 'walk' && dist > 16) || (view === 'plan' && s.id === 'plafond');
+      el.hidden = hide;
+      if (!hide) el.style.transform = `translate(${(tmp.x * .5 + .5) * w}px, ${(-tmp.y * .5 + .5) * h}px) translate(-50%, -100%)`;
+    });
+  }
+  function resize() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (canvas.width !== Math.floor(w * renderer.getPixelRatio()) || canvas.height !== Math.floor(h * renderer.getPixelRatio())) {
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h; camera.updateProjectionMatrix();
+    }
+    return [w, h];
+  }
+  const ease = (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const clock = new THREE.Clock();
+  function frame() {
+    const raw = clock.getDelta(), dt = Math.min(raw, .05), t = clock.elapsedTime;
+    const [w, h] = resize();
+    if (crowd.visible) couples.forEach((c) => {
+      const a = c.ang + t * .06;
+      c.g.position.set(Math.cos(a) * c.ring * 1.15, 0, 1 + Math.sin(a) * c.ring * 1.35);
+      c.g.rotation.y = t * c.spin + c.phase;
+    });
+    if (view === 'plan') {
+      if (fly) {
+        fly.t += raw;
+        const k = ease(Math.min(fly.t / fly.dur, 1));
+        camera.position.lerpVectors(fly.p0, fly.p1, k);
+        controls.target.lerpVectors(fly.t0, fly.t1, k);
+        if (fly.t >= fly.dur) fly = null;
+      }
+      controls.update();
+    } else updateWalk(dt);
+    renderer.render(scene, camera);
+    placeLabels(w, h);
+    requestAnimationFrame(frame);
+  }
+
+  setView('plan');
+  setEra('1921');
+  showInfo(ABOUT);
+  document.querySelectorAll('.spot-btn').forEach((b) => b.setAttribute('aria-current', 'false'));
+  $('#loading').hidden = true;
+  frame();
+})();
+</script>

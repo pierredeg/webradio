@@ -174,6 +174,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
 
   // Ouvre l'édition d'un accord déjà placé et amène le panneau à l'écran.
   const editSlot = i => {
+    if (performance.now() - dragEndAt.current < 300) return // fin d'un glisser, pas un clic
     setSel(i)
     setPreview(null)
     playChord(chords[i].notes, 0.8)
@@ -190,13 +191,52 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
     setSel(Math.min(i, next.length))
   }
 
-  const move = dir => {
-    const j = sel + dir
-    if (!current || j < 0 || j >= chords.length) return
+  // Déplace l'accord `from` à la place `to` ; la sélection suit son accord.
+  const moveChord = (from, to) => {
+    if (from === to || to < 0 || to >= chords.length) return
     const next = [...chords]
-    ;[next[sel], next[j]] = [next[j], next[sel]]
+    const [c] = next.splice(from, 1)
+    next.splice(to, 0, c)
     update(next)
-    setSel(j)
+    setSel(s =>
+      s === from ? to : from < s && s <= to ? s - 1 : to <= s && s < from ? s + 1 : s,
+    )
+  }
+  const move = dir => current && moveChord(sel, sel + dir)
+
+  // Glisser-déposer des cases (souris et doigt) : réordonne en direct.
+  const slotsRef = useRef(null)
+  const drag = useRef(null)
+  const dragEndAt = useRef(0)
+  const [dragIdx, setDragIdx] = useState(-1)
+  const onSlotDown = (e, i) => {
+    if (e.button > 0 || e.target.closest('.slot-del, .slot-edit')) return
+    drag.current = { idx: i, x0: e.clientX, y0: e.clientY, active: false }
+  }
+  const onSlotMove = e => {
+    const d = drag.current
+    if (!d) return
+    if (!d.active) {
+      if (Math.hypot(e.clientX - d.x0, e.clientY - d.y0) < 8) return
+      d.active = true
+      e.currentTarget.setPointerCapture?.(e.pointerId)
+      setDragIdx(d.idx)
+    }
+    const items = [...slotsRef.current.querySelectorAll('.slot-wrap')]
+    const target = items.findIndex(el => {
+      const r = el.getBoundingClientRect()
+      return e.clientX >= r.left && e.clientX <= r.right
+    })
+    if (target >= 0 && target !== d.idx) {
+      moveChord(d.idx, target)
+      d.idx = target
+      setDragIdx(target)
+    }
+  }
+  const onSlotUp = () => {
+    if (drag.current?.active) dragEndAt.current = performance.now()
+    drag.current = null
+    setDragIdx(-1)
   }
 
   // Revoice tout l'enchaînement pour que les mains bougent le moins possible.
@@ -392,9 +432,16 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
         </div>
       </section>
 
-      <ol className="slots">
+      <ol className="slots" ref={slotsRef}>
         {chords.map((c, i) => (
-          <li key={i} className="slot-wrap">
+          <li
+            key={i}
+            className={`slot-wrap ${i === dragIdx ? 'is-dragging' : ''}`}
+            onPointerDown={e => onSlotDown(e, i)}
+            onPointerMove={onSlotMove}
+            onPointerUp={onSlotUp}
+            onPointerCancel={onSlotUp}
+          >
             <button
               className={`slot ${i === sel ? 'is-sel' : ''} ${i === playStep ? 'is-playing' : ''}`}
               onClick={() => editSlot(i)}

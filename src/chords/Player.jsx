@@ -3,6 +3,7 @@ import Keyboard from './Keyboard.jsx'
 import { NoteCount } from './Creator.jsx'
 import { chordName, noteName, spelling, numeralOf, QUALITY, rootName, MODES } from './theory.js'
 import { playChord, playSequence } from './audio.js'
+import { IconEdit } from './Icons.jsx'
 
 // Vue « jouer » : un accord à la fois, en grand, pour le refaire sur le clavier.
 export default function Player({ progression: p, settings, onClose, onEdit }) {
@@ -55,7 +56,7 @@ export default function Player({ progression: p, settings, onClose, onEdit }) {
           <h1>{p.emoji && <span className="emoji">{p.emoji}</span>}{p.name}</h1>
           <span className="card-key">{rootName(key.tonic, n)} {MODES[key.mode].label}</span>
         </div>
-        <button className="btn-ghost" onClick={onEdit}>Edit</button>
+        <button className="btn-ghost" onClick={onEdit}><IconEdit />Edit</button>
       </header>
 
       <ol className="pl-steps">

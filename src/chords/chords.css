@@ -319,6 +319,9 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 
 .kebab { position: relative; margin-left: auto; }
 .kebab-btn { width: 40px; padding: 0; font-size: var(--fs-h3); line-height: 1; }
+.card-menu { margin-left: 0; flex: none; }
+.kebab-menu button.is-danger { color: var(--bad); }
+.icon { flex: none; font-size: 1.05em; margin-left: -2px; }
 .kebab-menu {
   animation: pop-in .25s var(--ease-out);
   position: absolute; top: calc(100% + 4px); right: 0; z-index: 15; min-width: 230px;

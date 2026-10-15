@@ -1,11 +1,12 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import Keyboard from './Keyboard.jsx'
 import {
-  QUALITIES, QUALITY, MODES, MAX_NOTES, IDEAL_NOTES,
+  QUALITY, MODES, MAX_NOTES, IDEAL_NOTES,
   chordName, noteName, spelling, rootName, numeralOf, rangeOf, makeChord, voiceChord,
   cycleVoicing, shiftOctave, detectChord, suggestNext,
 } from './theory.js'
 import { playChord, playSequence, onMidi } from './audio.js'
+import { IconPlay, IconStop } from './Icons.jsx'
 
 // Identité stable d'un accord pour l'affichage (suit l'objet quand on réordonne).
 const chordKeys = new WeakMap()
@@ -66,7 +67,7 @@ function EmojiPicker({ value, onPick, onClose }) {
 }
 
 export function NoteCount({ count }) {
-  if (!count) return null
+  if (!count || count <= IDEAL_NOTES) return null // seulement l'alerte au-delà de 4 notes
   const cls = count <= IDEAL_NOTES ? 'pill-ok' : count === MAX_NOTES ? 'pill-warn' : 'pill-bad'
   const hint = count <= IDEAL_NOTES ? '' : count === MAX_NOTES ? ' · beyond the JU-06A’s 4 voices' : ' · too many notes'
   return <span className={`pill ${cls}`}>{count} note{count === 1 ? '' : 's'}{hint}</span>
@@ -474,8 +475,8 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
           </span>
         </label>
         <div className="cr-transport">
-          <button className={`btn-round ${playStep >= 0 ? 'is-on' : ''}`} onClick={() => togglePlay()} disabled={!chords.length} aria-label="Play the progression">
-            {playStep >= 0 ? '■' : '▶'}
+          <button className="btn-primary" onClick={() => togglePlay()} disabled={!chords.length} aria-pressed={playStep >= 0}>
+            {playStep >= 0 ? <><IconStop />Stop</> : <><IconPlay />Play</>}
           </button>
           <label className="check">
             <input id="loop" type="checkbox" checked={loop} onChange={e => setLoop(e.target.checked)} /> loop
@@ -681,7 +682,6 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
         )}
 
       </section>
-      <p className="cr-foot">{QUALITIES.length} chord types · keyboard {noteName(range.lo)}–{noteName(range.hi)}</p>
     </main>
   )
 }

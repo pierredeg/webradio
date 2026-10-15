@@ -2,28 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import Keyboard from './Keyboard.jsx'
 import { chordName, spelling, numeralOf, rootName, MODES } from './theory.js'
 import { playSequence } from './audio.js'
+import Kebab from './Kebab.jsx'
+import { IconEdit, IconPlay, IconPlus, IconStop } from './Icons.jsx'
 
 export default function Library({ list, settings, storeMode, onNew, onEdit, onPlay, onDuplicate, onDelete, onSettings, onExport, onImport }) {
   const [query, setQuery] = useState('')
   const [playing, setPlaying] = useState({ id: null, step: -1 })
-  const [confirmDelete, setConfirmDelete] = useState(null)
   const stop = useRef(null)
-  const [menuOpen, setMenuOpen] = useState(false)
-  const menuRef = useRef(null)
   const fileRef = useRef(null)
-
-  // ferme le menu ⋮ au clic ailleurs ou avec Échap
-  useEffect(() => {
-    if (!menuOpen) return
-    const onDown = e => !menuRef.current?.contains(e.target) && setMenuOpen(false)
-    const onKey = e => e.key === 'Escape' && setMenuOpen(false)
-    document.addEventListener('pointerdown', onDown)
-    window.addEventListener('keydown', onKey)
-    return () => {
-      document.removeEventListener('pointerdown', onDown)
-      window.removeEventListener('keydown', onKey)
-    }
-  }, [menuOpen])
   const n = settings.notation
 
   useEffect(() => () => stop.current?.(), [])
@@ -57,7 +43,7 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
         </div>
         <div className="lib-actions">
           <button className="btn-ghost" onClick={onSettings}>Settings</button>
-          <button className="btn-primary" onClick={onNew}>New progression</button>
+          <button className="btn-primary" onClick={onNew}><IconPlus />New progression</button>
         </div>
       </header>
 
@@ -70,42 +56,12 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
           value={query}
           onChange={e => setQuery(e.target.value)}
         />
-        <span className="lib-count">
-          {list.length} progression{list.length === 1 ? '' : 's'}
-        </span>
-        <div className="kebab" ref={menuRef}>
-          <button
-            className="btn-ghost kebab-btn"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="More options"
-            aria-haspopup="menu"
-            aria-expanded={menuOpen}
-          >
-            ⋮
-          </button>
-          {menuOpen && (
-            <div className="kebab-menu" role="menu">
-              <button
-                role="menuitem"
-                disabled={!list.length}
-                onClick={() => {
-                  setMenuOpen(false)
-                  onExport()
-                }}
-              >
-                Export a backup
-              </button>
-              <button
-                role="menuitem"
-                onClick={() => {
-                  setMenuOpen(false)
-                  fileRef.current?.click()
-                }}
-              >
-                Import a backup
-              </button>
-            </div>
-          )}
+        <Kebab
+          items={[
+            { label: 'Export a backup', onClick: onExport, disabled: !list.length },
+            { label: 'Import a backup', onClick: () => fileRef.current?.click() },
+          ]}
+        >
           <input
             ref={fileRef}
             id="import-file"
@@ -118,7 +74,7 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
               e.target.value = ''
             }}
           />
-        </div>
+        </Kebab>
       </div>
 
       {storeMode !== 'db' && (
@@ -138,7 +94,7 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
             Create a first progression of 2 to 5 chords. Each chord is written key by key on a 37-key
             keyboard, with 4 notes preferred for the JU-06A.
           </p>
-          <button className="btn-primary" onClick={onNew}>Create my first progression</button>
+          <button className="btn-primary" onClick={onNew}><IconPlus />Create my first progression</button>
         </section>
       )}
 
@@ -151,16 +107,17 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
               <button className="card-title" onClick={() => onPlay(p)}>
                 <h2>{p.emoji && <span className="emoji">{p.emoji}</span>}{p.name || 'Untitled'}</h2>
                 <span className="card-key">
-                  {rootName(p.key?.tonic ?? 0, n)} {MODES[p.key?.mode || 'major'].label} · {p.chords.length} chords
+                  {rootName(p.key?.tonic ?? 0, n)} {MODES[p.key?.mode || 'major'].label}
                 </span>
               </button>
-              <button
-                className={`btn-round ${playing.id === p.id ? 'is-on' : ''}`}
-                onClick={() => listen(p)}
-                aria-label={playing.id === p.id ? 'Stop' : 'Listen'}
-              >
-                {playing.id === p.id ? '■' : '▶'}
-              </button>
+              <Kebab
+                className="card-menu"
+                label={`More options for ${p.name || 'this progression'}`}
+                items={[
+                  { label: 'Duplicate', onClick: () => onDuplicate(p) },
+                  { label: 'Delete', danger: true, confirm: 'Delete for good', onClick: () => onDelete(p.id) },
+                ]}
+              />
             </div>
             <ol className="card-chords">
               {p.chords.map((c, i) => (
@@ -172,17 +129,10 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
               ))}
             </ol>
             <div className="card-actions">
-              <button className="btn" onClick={() => onPlay(p)}>Play</button>
-              <button className="btn-ghost" onClick={() => onEdit(p)}>Edit</button>
-              <button className="btn-ghost" onClick={() => onDuplicate(p)}>Duplicate</button>
-              {confirmDelete === p.id ? (
-                <span className="confirm">
-                  <button className="btn-danger" onClick={() => onDelete(p.id)}>Delete for good</button>
-                  <button className="btn-ghost" onClick={() => setConfirmDelete(null)}>Cancel</button>
-                </span>
-              ) : (
-                <button className="btn-ghost btn-quiet-danger" onClick={() => setConfirmDelete(p.id)}>Delete</button>
-              )}
+              <button className="btn-primary" onClick={() => listen(p)} aria-pressed={playing.id === p.id}>
+                {playing.id === p.id ? <><IconStop />Stop</> : <><IconPlay />Play</>}
+              </button>
+              <button className="btn" onClick={() => onEdit(p)}><IconEdit />Edit</button>
             </div>
           </li>
         ))}

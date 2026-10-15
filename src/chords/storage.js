@@ -10,7 +10,6 @@ export const DEFAULT_SETTINGS = {
   sevenths: true, // suggestions en accords 4 sons
   internal: true, // son interne
   sound: 'piano', // 'piano' ou 'synth'
-  bpm: 72,
   midiIn: '',
   midiOut: '',
 }

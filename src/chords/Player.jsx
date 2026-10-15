@@ -27,7 +27,6 @@ export default function Player({ progression: p, settings, onClose, onEdit }) {
     }
     setAuto(true)
     stop.current = playSequence(p.chords, {
-      bpm: p.bpm || settings.bpm,
       loop: true,
       onStep: s => s >= 0 && setI(s),
     })
@@ -54,7 +53,7 @@ export default function Player({ progression: p, settings, onClose, onEdit }) {
         <button className="btn-ghost btn-back" onClick={onClose}>← Carnet</button>
         <div className="pl-title">
           <h1>{p.name}</h1>
-          <span className="card-key">{rootName(key.tonic, n)} {MODES[key.mode].label} · {p.bpm || settings.bpm} BPM</span>
+          <span className="card-key">{rootName(key.tonic, n)} {MODES[key.mode].label}</span>
         </div>
         <button className="btn-ghost" onClick={onEdit}>Modifier</button>
       </header>

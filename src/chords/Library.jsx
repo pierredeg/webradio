@@ -19,7 +19,6 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
       return
     }
     stop.current = playSequence(p.chords, {
-      bpm: p.bpm || settings.bpm,
       onStep: step => setPlaying(step < 0 ? { id: null, step: -1 } : { id: p.id, step }),
     })
   }

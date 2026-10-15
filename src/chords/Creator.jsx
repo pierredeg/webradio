@@ -35,7 +35,6 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
   const [keyLocked, setKeyLocked] = useState(!!initial)
   const [chords, setChords] = useState(initial?.chords || [])
   const [sel, setSel] = useState(0)
-  const [bpm, setBpm] = useState(initial?.bpm || settings.bpm)
   const [tab, setTab] = useState('suggest')
   const [pickRoot, setPickRoot] = useState(null)
   const [dirty, setDirty] = useState(false)
@@ -160,7 +159,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
       return
     }
     if (!list.length) return
-    stop.current = playSequence(list, { bpm, loop, onStep: setPlayStep })
+    stop.current = playSequence(list, { loop, onStep: setPlayStep })
   }
 
   // Touche Suppr ou Retour arrière : supprime l'accord sélectionné
@@ -209,7 +208,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
     if (chords.length < MIN_CHORDS) return
     const finalName = name.trim() || chords.map(c => chordName(c, n)).join(' → ')
     try {
-      const saved = await onSave({ id, name: finalName, key, bpm, chords, createdAt: meta.current.createdAt })
+      const saved = await onSave({ id, name: finalName, key, chords, createdAt: meta.current.createdAt })
       setId(saved.id)
       meta.current.createdAt = saved.createdAt
       setName(finalName)
@@ -291,23 +290,6 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
               <option value="major">majeur</option>
               <option value="minor">mineur</option>
             </select>
-          </span>
-        </label>
-        <label className="field">
-          <span>Tempo</span>
-          <span className="field-row">
-            <input
-              id="bpm"
-              type="number"
-              min="40"
-              max="200"
-              value={bpm}
-              onChange={e => {
-                setBpm(+e.target.value || 72)
-                setDirty(true)
-              }}
-            />
-            <span className="unit">BPM</span>
           </span>
         </label>
         <div className="cr-transport">

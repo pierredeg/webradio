@@ -266,8 +266,8 @@ export function playChord(notes, dur = 0.9) {
   }
 }
 
-// Lecture : un accord par mesure (4 temps), à 110 BPM.
-export const PLAYBACK_BPM = 110
+// Lecture : un accord par mesure (4 temps), à 120 BPM.
+export const PLAYBACK_BPM = 120
 const BEATS_PER_CHORD = 4
 
 // Joue un enchaînement ; renvoie une fonction d'arrêt.

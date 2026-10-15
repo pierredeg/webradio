@@ -194,7 +194,15 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
   padding: 8px; background: var(--panel); border: 2px solid var(--line); min-width: 0;
 }
 .slot-wrap { position: relative; min-width: 0; }
-.slot .slot-n { min-height: 24px; padding-right: 26px; }
+.slot .slot-n { min-height: 24px; padding-right: 58px; }
+.slot-edit {
+  position: absolute; top: 4px; right: 36px; width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center; padding: 0; cursor: pointer;
+  background: var(--panel); border: 1px solid var(--line); color: var(--muted); font-size: 14px;
+}
+.slot-edit:hover, .slot-edit:focus-visible { color: var(--panel); background: var(--ink); border-color: var(--ink); }
+.stage.is-editing .stage-eyebrow { color: var(--accent); }
+.stage-eyebrow:empty::before { content: '\00a0'; }
 .slot-del {
   position: absolute; top: 4px; right: 4px; width: 28px; height: 28px; border-radius: 50%;
   display: grid; place-items: center; padding: 0; cursor: pointer;
@@ -242,7 +250,8 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .chip.is-preview { border-color: var(--amber); box-shadow: inset 0 0 0 1px var(--amber); background: var(--sunk); }
 .hint { color: var(--muted); font-size: 13px; margin: -6px 0 10px; }
 .stage.is-preview { border-color: var(--amber); }
-.stage-eyebrow { font: 600 12px var(--f-display); text-transform: uppercase; letter-spacing: .08em; color: var(--warn); margin-bottom: -10px; }
+.stage-eyebrow { font: 600 12px var(--f-display); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: -10px; }
+.stage.is-preview .stage-eyebrow { color: var(--warn); }
 .preview-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .kb-preview .kw.on { fill: var(--amber); stroke: var(--warn); }
 .kb-preview .kbk.on { fill: var(--warn); }
@@ -290,6 +299,8 @@ label.btn-ghost { cursor: pointer; }
   .card-chords li, .slot { padding: 5px; }
   .cc-name, .slot-name { font-size: 15px; }
   .slot-del { width: 22px; height: 22px; top: 3px; right: 3px; font-size: 15px; }
+  .slot-edit { width: 22px; height: 22px; top: 3px; right: 28px; font-size: 12px; }
+  .slot .slot-n { padding-right: 48px; }
   .slot .slot-n { min-height: 22px; }
   .pl-step { font-size: 15px; padding: 6px; }
   .stage { padding: 12px; }

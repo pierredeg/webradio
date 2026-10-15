@@ -86,6 +86,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
   const [preview, setPreview] = useState(null) // accord écouté, pas encore ajouté
   const lastTap = useRef({ key: null, t: 0 })
   const stop = useRef(null)
+  const stageRef = useRef(null)
   const meta = useRef({ createdAt: initial?.createdAt })
 
   useEffect(() => () => stop.current?.(), [])
@@ -168,6 +169,18 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
     else {
       if (chords.length >= MAX_CHORDS) return
       update([...chords, chord])
+    }
+  }
+
+  // Ouvre l'édition d'un accord déjà placé et amène le panneau à l'écran.
+  const editSlot = i => {
+    setSel(i)
+    setPreview(null)
+    playChord(chords[i].notes, 0.8)
+    const el = stageRef.current
+    if (el) {
+      const r = el.getBoundingClientRect()
+      if (r.top < 0 || r.top > window.innerHeight * 0.5) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }
 
@@ -384,16 +397,15 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
           <li key={i} className="slot-wrap">
             <button
               className={`slot ${i === sel ? 'is-sel' : ''} ${i === playStep ? 'is-playing' : ''}`}
-              onClick={() => {
-                setSel(i)
-                setPreview(null)
-                playChord(c.notes, 0.8)
-              }}
+              onClick={() => editSlot(i)}
             >
               <span className="slot-n">{i + 1}</span>
               <span className="slot-name">{chordName(c, n)}</span>
               <span className="slot-num">{numeralOf(c, key) || ' '}</span>
               <Keyboard low={settings.lowKey} notes={c.notes} mini labels={false} />
+            </button>
+            <button className="slot-edit" onClick={() => editSlot(i)} aria-label={`Modifier ${chordName(c, n)}`} title="Modifier cet accord">
+              ✎
             </button>
             <button className="slot-del" onClick={() => removeAt(i)} aria-label={`Supprimer ${chordName(c, n)}`} title="Supprimer cet accord">
               ×
@@ -413,9 +425,13 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
         )}
       </ol>
 
-      <section className={`stage ${preview ? 'is-preview' : ''}`}>
+      <section ref={stageRef} className={`stage ${preview ? 'is-preview' : current ? 'is-editing' : ''}`}>
         {/* hauteur constante : l'aperçu ne doit pas décaler la liste (double-clic) */}
-        <p className="stage-eyebrow">{preview ? 'Aperçu, pas encore ajouté' : '\u00a0'}</p>
+        <p className="stage-eyebrow">
+          {preview
+            ? isAddSlot ? 'Aperçu, pas encore ajouté' : `Aperçu, pas encore à la place de l’accord ${sel + 1}`
+            : current ? `Modification de l’accord ${sel + 1}` : `Nouvel accord ${sel + 1}`}
+        </p>
         <div className="stage-head">
           {preview ? (
             <>
@@ -518,7 +534,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
           </button>
         </div>
 
-        <p className="hint">Clic : écouter · double-clic : ajouter</p>
+        <p className="hint">Clic : écouter · double-clic : {isAddSlot ? 'ajouter' : `remplacer l’accord ${sel + 1}`}</p>
 
         {tab === 'suggest' && (
           <div className="sugg">

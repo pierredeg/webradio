@@ -5,7 +5,7 @@
 :root {
   color-scheme: dark;
 
-  /* Couleurs : gris sombres neutres, accent émeraude (palette Tailwind) */
+  /* Couleurs : gris sombres neutres, accent orange en dégradé */
   --bg: #242625;
   --dots: #303133;
   --panel: #2b2d2c;
@@ -14,9 +14,9 @@
   --ink: #f3f4f6;
   --muted: #99a1af;
   --line: #3a3c3b;
-  --accent: #00d294;
-  --accent-strong: #00bb7f;
-  --accent-ink: #04251b;
+  --accent: #f5610d; /* teinte unie (texte, bordures) */
+  --accent-grad: linear-gradient(#e75713 0%, #f5610d .01%, #ef350c 100%); /* fonds */
+  --accent-ink: #ffffff;
   --amber: #fee685;
   --ok: #5ee9b5;
   --warn: #fee685;
@@ -24,8 +24,8 @@
   --key-w: #e5e7eb;
   --key-w-edge: #4a5565;
   --key-b: #101828;
-  --key-on: #00d294;
-  --key-on-b: #00bb7f;
+  --key-on: #f5610d;
+  --key-on-b: #ef350c;
   --band: #1c1e1d;
   --band-ink: #f3f4f6;
 
@@ -101,7 +101,7 @@ p { margin: 0; }
 .btn:hover:not(:disabled) { border-color: var(--muted); }
 .btn-ghost { background: transparent; border: 1px solid transparent; color: var(--muted); }
 .btn-ghost:hover:not(:disabled) { color: var(--ink); background: var(--raised); }
-.btn-primary { background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent); }
+.btn-primary { background: var(--accent-grad); color: var(--accent-ink); border: 1px solid var(--key-on-b); }
 .btn-primary:hover:not(:disabled) { filter: brightness(1.06); }
 .btn-danger { background: var(--bad); color: var(--accent-ink); border: 1px solid var(--bad); }
 .btn-quiet-danger:hover:not(:disabled) { color: var(--bad); }
@@ -137,8 +137,7 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .kb { display: block; width: 100%; height: auto; user-select: none; }
 .kw { fill: var(--key-w); stroke: var(--key-w-edge); stroke-width: .8; }
 .kbk { fill: var(--key-b); }
-.kw.on { fill: var(--key-on); stroke: var(--key-on-b); }
-.kbk.on { fill: var(--key-on-b); }
+.kw.on { stroke: var(--key-on-b); }
 .kb-interactive g { cursor: pointer; }
 .kb-interactive .kw:not(.on):hover { fill: #d1d5dc; }
 /* tailles des étiquettes fixées par Keyboard.jsx pour rester ≥ 12px à l'écran */
@@ -154,7 +153,7 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .brand h1 { font-size: var(--fs-h1); text-transform: uppercase; letter-spacing: var(--ls); }
 .brand-stripe { display: grid; grid-template-columns: repeat(4, 7px); gap: 3px; align-self: stretch; }
 .brand-stripe i { border-radius: 2px; }
-.brand-stripe i:nth-child(1) { background: var(--accent); }
+.brand-stripe i:nth-child(1) { background: var(--accent-grad); }
 .brand-stripe i:nth-child(2) { background: var(--amber); }
 .brand-stripe i:nth-child(3) { background: var(--ink); }
 .brand-stripe i:nth-child(4) { background: var(--line); }

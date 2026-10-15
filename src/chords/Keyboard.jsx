@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { noteName } from './theory.js'
 
 const WHITE_PCS = [0, 2, 4, 5, 7, 9, 11]
@@ -23,6 +23,8 @@ export default function Keyboard({ low = 48, keys = 37, notes = [], onKey, label
   // noire est trop étroite pour 12px, son étiquette est masquée (les notes
   // sont listées sous le clavier).
   const svgRef = useRef(null)
+  const gradId = 'kg' + useId().replace(/:/g, '')
+  const isPreview = className.includes('kb-preview') // l'aperçu garde sa couleur ambre
   const [pxPerUnit, setPxPerUnit] = useState(2)
   useEffect(() => {
     const el = svgRef.current
@@ -51,9 +53,16 @@ export default function Keyboard({ low = 48, keys = 37, notes = [], onKey, label
       role="img"
       aria-label={notes.map(n => noteName(n, notation)).join(' ')}
     >
+      <defs>
+        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#e75713" />
+          <stop offset=".01%" stopColor="#f5610d" />
+          <stop offset="100%" stopColor="#ef350c" />
+        </linearGradient>
+      </defs>
       {whites.map(({ m, x }) => (
         <g key={m} onClick={() => press(m)}>
-          <rect x={x} y={0} width={W} height={wh} rx={mini ? 1.5 : 3} className={on.has(m) ? 'kw on' : 'kw'} />
+          <rect x={x} y={0} width={W} height={wh} rx={mini ? 1.5 : 3} className={on.has(m) ? 'kw on' : 'kw'} style={on.has(m) && !isPreview ? { fill: `url(#${gradId})` } : undefined} />
           {labels && on.has(m) && (
             <text x={x + W / 2} y={wh - 8} className="kl kl-w" style={{ fontSize: fsWhite }}>
               {noteName(m, notation, false)}
@@ -68,7 +77,7 @@ export default function Keyboard({ low = 48, keys = 37, notes = [], onKey, label
       ))}
       {blacks.map(({ m, x }) => (
         <g key={m} onClick={() => press(m)}>
-          <rect x={x} y={0} width={BW} height={bh} rx={mini ? 1 : 2} className={on.has(m) ? 'kbk on' : 'kbk'} />
+          <rect x={x} y={0} width={BW} height={bh} rx={mini ? 1 : 2} className={on.has(m) ? 'kbk on' : 'kbk'} style={on.has(m) && !isPreview ? { fill: `url(#${gradId})` } : undefined} />
           {labels && showBlack && on.has(m) && (
             <text x={x + BW / 2} y={bh - 6} className="kl kl-b" style={{ fontSize: fsBlack }}>
               {noteName(m, notation, false).replace(/[♭♯]/, '')}

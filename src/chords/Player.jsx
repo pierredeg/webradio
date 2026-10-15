@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Keyboard from './Keyboard.jsx'
 import { NoteCount } from './Creator.jsx'
-import { chordName, noteName, numeralOf, QUALITY, rootName, MODES } from './theory.js'
+import { chordName, noteName, spelling, numeralOf, QUALITY, rootName, MODES } from './theory.js'
 import { playChord, playSequence } from './audio.js'
 
 // Vue « jouer » : un accord à la fois, en grand, pour le refaire sur le clavier.
@@ -9,8 +9,8 @@ export default function Player({ progression: p, settings, onClose, onEdit }) {
   const [i, setI] = useState(0)
   const [auto, setAuto] = useState(false)
   const stop = useRef(null)
-  const n = settings.notation
   const key = p.key || { tonic: 0, mode: 'major' }
+  const n = spelling(settings.notation, key)
   const c = p.chords[Math.min(i, p.chords.length - 1)]
 
   const go = j => {

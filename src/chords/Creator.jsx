@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import Keyboard from './Keyboard.jsx'
 import {
   QUALITIES, QUALITY, MODES, MAX_NOTES, IDEAL_NOTES,
-  chordName, noteName, rootName, numeralOf, rangeOf, makeChord, voiceChord,
+  chordName, noteName, spelling, rootName, numeralOf, rangeOf, makeChord, voiceChord,
   cycleVoicing, shiftOctave, detectChord, suggestNext,
 } from './theory.js'
 import { playChord, playSequence, onMidi } from './audio.js'
@@ -74,12 +74,12 @@ export function NoteCount({ count }) {
 
 export default function Creator({ initial, settings, setSettings, onSave, onClose, onSettings }) {
   const range = rangeOf(settings)
-  const n = settings.notation
   const [id, setId] = useState(initial?.id)
   const [name, setName] = useState(initial?.name || '')
   const [emoji, setEmoji] = useState(initial?.emoji || '')
   const [emojiOpen, setEmojiOpen] = useState(false)
   const [key, setKey] = useState(initial?.key || { tonic: 0, mode: 'major' })
+  const n = spelling(settings.notation, key)
   const [keyLocked, setKeyLocked] = useState(!!initial)
   const [chords, setChords] = useState(initial?.chords || [])
   const [sel, setSel] = useState(0)
@@ -457,7 +457,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
               }}
             >
               {Array.from({ length: 12 }, (_, i) => (
-                <option key={i} value={i}>{rootName(i, n)}</option>
+                <option key={i} value={i}>{rootName(i, settings.notation)}</option>
               ))}
             </select>
             <select

@@ -3,6 +3,21 @@
 
 export const NOTE_NAMES = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B']
 export const NOTE_NAMES_FR = ['Do', 'Ré♭', 'Ré', 'Mi♭', 'Mi', 'Fa', 'Fa♯', 'Sol', 'La♭', 'La', 'Si♭', 'Si']
+const SHARP_NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B']
+const SHARP_NAMES_FR = ['Do', 'Do♯', 'Ré', 'Ré♯', 'Mi', 'Fa', 'Fa♯', 'Sol', 'Sol♯', 'La', 'La♯', 'Si']
+
+// Orthographe : `notation` est 'en' / 'fr', ou { lang, sharps } pour écrire
+// les altérations selon la tonalité (C♯ en la majeur, D♭ en la bémol majeur).
+export function spelling(lang, key) {
+  const sharpKeys = key?.mode === 'minor' ? [4, 11, 6, 1, 8] : [7, 2, 9, 4, 11, 6]
+  return { lang, sharps: !!key && sharpKeys.includes(key.tonic) }
+}
+function namesFor(notation) {
+  const lang = typeof notation === 'object' ? notation.lang : notation
+  const sharps = typeof notation === 'object' && notation.sharps
+  if (lang === 'fr') return sharps ? SHARP_NAMES_FR : NOTE_NAMES_FR
+  return sharps ? SHARP_NAMES : NOTE_NAMES
+}
 
 export const MAX_NOTES = 5
 export const IDEAL_NOTES = 4 // polyphonie du JU-06A
@@ -47,13 +62,13 @@ const mod12 = n => ((n % 12) + 12) % 12
 const pcSet = notes => [...new Set(notes.map(mod12))]
 
 export function noteName(midi, notation = 'en', withOctave = true) {
-  const names = notation === 'fr' ? NOTE_NAMES_FR : NOTE_NAMES
+  const names = namesFor(notation)
   const oct = Math.floor(midi / 12) - 1
   return names[mod12(midi)] + (withOctave ? oct : '')
 }
 
 export function rootName(pc, notation = 'en') {
-  return (notation === 'fr' ? NOTE_NAMES_FR : NOTE_NAMES)[mod12(pc)]
+  return namesFor(notation)[mod12(pc)]
 }
 
 // Nom affiché, avec basse si renversé (ex : C/E).

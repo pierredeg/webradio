@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Keyboard from './Keyboard.jsx'
-import { chordName, numeralOf, rootName, MODES } from './theory.js'
+import { chordName, spelling, numeralOf, rootName, MODES } from './theory.js'
 import { playSequence } from './audio.js'
 
 export default function Library({ list, settings, storeMode, onNew, onEdit, onPlay, onDuplicate, onDelete, onSettings, onExport, onImport }) {
@@ -165,7 +165,7 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
             <ol className="card-chords">
               {p.chords.map((c, i) => (
                 <li key={i} className={playing.id === p.id && playing.step === i ? 'is-playing' : ''}>
-                  <span className="cc-name">{chordName(c, n)}</span>
+                  <span className="cc-name">{chordName(c, spelling(n, p.key))}</span>
                   <span className="cc-num">{numeralOf(c, p.key || { tonic: 0, mode: 'major' })}</span>
                   <Keyboard low={settings.lowKey} notes={c.notes} mini labels={false} />
                 </li>

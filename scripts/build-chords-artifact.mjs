@@ -6,11 +6,11 @@ const out = process.argv[2] || 'dist-chords/carnet-accords.html'
 const css = readFileSync('dist-chords/chords.css', 'utf8')
 const js = readFileSync('dist-chords/chords.js', 'utf8').replace(/<\/script/gi, '<\\/script')
 
-const html = `<title>Carnet d’accords</title>
+const html = `<title>Chord Notebook</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600&display=swap">
 <style>
 ${css}
 </style>

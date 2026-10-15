@@ -133,7 +133,7 @@ const listeners = new Set()
 
 export async function initMidi() {
   if (midiAccess) return midiAccess
-  if (!navigator.requestMIDIAccess) throw new Error('Web MIDI indisponible dans ce navigateur (utilise Chrome ou Edge).')
+  if (!navigator.requestMIDIAccess) throw new Error('Web MIDI isn’t available in this browser (use Chrome or Edge).')
   midiAccess = await navigator.requestMIDIAccess()
   midiAccess.onstatechange = () => listeners.forEach(fn => fn({ type: 'devices' }))
   return midiAccess

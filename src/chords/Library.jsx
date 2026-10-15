@@ -53,11 +53,11 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
       <header className="lib-head">
         <div className="brand">
           <span className="brand-stripe" aria-hidden="true"><i /><i /><i /><i /></span>
-          <h1>Carnet d’accords</h1>
+          <h1>Chord Notebook</h1>
         </div>
         <div className="lib-actions">
-          <button className="btn-ghost" onClick={onSettings}>Réglages</button>
-          <button className="btn-primary" onClick={onNew}>Nouvel enchaînement</button>
+          <button className="btn-ghost" onClick={onSettings}>Settings</button>
+          <button className="btn-primary" onClick={onNew}>New progression</button>
         </div>
       </header>
 
@@ -66,18 +66,18 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
           id="search"
           className="search"
           type="search"
-          placeholder="Chercher par nom ou par accord (ex. Am7, Fa)…"
+          placeholder="Search by name or chord (e.g. Am7, F)…"
           value={query}
           onChange={e => setQuery(e.target.value)}
         />
         <span className="lib-count">
-          {list.length} enchaînement{list.length > 1 ? 's' : ''}
+          {list.length} progression{list.length === 1 ? '' : 's'}
         </span>
         <div className="kebab" ref={menuRef}>
           <button
             className="btn-ghost kebab-btn"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Plus d’options"
+            aria-label="More options"
             aria-haspopup="menu"
             aria-expanded={menuOpen}
           >
@@ -93,7 +93,7 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
                   onExport()
                 }}
               >
-                Exporter une sauvegarde
+                Export a backup
               </button>
               <button
                 role="menuitem"
@@ -102,7 +102,7 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
                   fileRef.current?.click()
                 }}
               >
-                Importer une sauvegarde
+                Import a backup
               </button>
             </div>
           )}
@@ -124,40 +124,40 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
       {storeMode !== 'db' && (
         <p className="store-note">
           {storeMode === 'readonly'
-            ? 'Tes enchaînements sont enregistrés dans ce navigateur : cette vue n’a pas le droit d’écrire dans la base du carnet.'
-            : 'Tes enchaînements sont enregistrés dans ce navigateur.'}{' '}
-          Pense à <button className="link" onClick={onExport} disabled={!list.length}>exporter une sauvegarde</button> de temps en temps.
+            ? 'Your progressions are saved in this browser: this view can’t write to the notebook’s database.'
+            : 'Your progressions are saved in this browser.'}{' '}
+          Remember to <button className="link" onClick={onExport} disabled={!list.length}>export a backup</button> now and then.
         </p>
       )}
 
       {list.length === 0 && (
         <section className="empty">
           <Keyboard low={settings.lowKey} notes={[57, 60, 64, 67]} notation={n} />
-          <h2>Ton carnet est vide</h2>
+          <h2>Your notebook is empty</h2>
           <p>
-            Crée un premier enchaînement de 2 à 5 accords. Chaque accord est noté touche par touche sur un clavier
-            37 touches, en 4 notes de préférence pour le JU-06A.
+            Create a first progression of 2 to 5 chords. Each chord is written key by key on a 37-key
+            keyboard, with 4 notes preferred for the JU-06A.
           </p>
-          <button className="btn-primary" onClick={onNew}>Créer mon premier enchaînement</button>
+          <button className="btn-primary" onClick={onNew}>Create my first progression</button>
         </section>
       )}
 
-      {list.length > 0 && shown.length === 0 && <p className="muted">Aucun enchaînement ne correspond à « {query} ».</p>}
+      {list.length > 0 && shown.length === 0 && <p className="muted">No progression matches “{query}”.</p>}
 
       <ul className="cards">
         {shown.map(p => (
           <li key={p.id} className="card">
             <div className="card-head">
               <button className="card-title" onClick={() => onPlay(p)}>
-                <h2>{p.emoji && <span className="emoji">{p.emoji}</span>}{p.name || 'Sans nom'}</h2>
+                <h2>{p.emoji && <span className="emoji">{p.emoji}</span>}{p.name || 'Untitled'}</h2>
                 <span className="card-key">
-                  {rootName(p.key?.tonic ?? 0, n)} {MODES[p.key?.mode || 'major'].label} · {p.chords.length} accords
+                  {rootName(p.key?.tonic ?? 0, n)} {MODES[p.key?.mode || 'major'].label} · {p.chords.length} chords
                 </span>
               </button>
               <button
                 className={`btn-round ${playing.id === p.id ? 'is-on' : ''}`}
                 onClick={() => listen(p)}
-                aria-label={playing.id === p.id ? 'Arrêter' : 'Écouter'}
+                aria-label={playing.id === p.id ? 'Stop' : 'Listen'}
               >
                 {playing.id === p.id ? '■' : '▶'}
               </button>
@@ -172,16 +172,16 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
               ))}
             </ol>
             <div className="card-actions">
-              <button className="btn" onClick={() => onPlay(p)}>Jouer</button>
-              <button className="btn-ghost" onClick={() => onEdit(p)}>Modifier</button>
-              <button className="btn-ghost" onClick={() => onDuplicate(p)}>Dupliquer</button>
+              <button className="btn" onClick={() => onPlay(p)}>Play</button>
+              <button className="btn-ghost" onClick={() => onEdit(p)}>Edit</button>
+              <button className="btn-ghost" onClick={() => onDuplicate(p)}>Duplicate</button>
               {confirmDelete === p.id ? (
                 <span className="confirm">
-                  <button className="btn-danger" onClick={() => onDelete(p.id)}>Supprimer définitivement</button>
-                  <button className="btn-ghost" onClick={() => setConfirmDelete(null)}>Annuler</button>
+                  <button className="btn-danger" onClick={() => onDelete(p.id)}>Delete for good</button>
+                  <button className="btn-ghost" onClick={() => setConfirmDelete(null)}>Cancel</button>
                 </span>
               ) : (
-                <button className="btn-ghost btn-quiet-danger" onClick={() => setConfirmDelete(p.id)}>Supprimer</button>
+                <button className="btn-ghost btn-quiet-danger" onClick={() => setConfirmDelete(p.id)}>Delete</button>
               )}
             </div>
           </li>

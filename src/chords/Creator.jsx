@@ -19,9 +19,9 @@ const MIN_CHORDS = 2
 const MAX_CHORDS = 5
 
 const GROUPS = [
-  ['Triades', ['maj', 'm', 'dim', 'aug', 'sus2', 'sus4']],
-  ['4 sons', ['maj7', 'm7', '7', 'm7b5', 'dim7', 'mmaj7', '6', 'm6', 'add9', 'madd9', '7sus4']],
-  ['Couleurs (4 notes)', ['maj9', 'm9', '9', '69', 'm11', '13', 'maj7s11', '7b9', '7s9']],
+  ['Triads', ['maj', 'm', 'dim', 'aug', 'sus2', 'sus4']],
+  ['Sevenths', ['maj7', 'm7', '7', 'm7b5', 'dim7', 'mmaj7', '6', 'm6', 'add9', 'madd9', '7sus4']],
+  ['Colors (4 notes)', ['maj9', 'm9', '9', '69', 'm11', '13', 'maj7s11', '7b9', '7s9']],
   ['5 notes', ['maj9full', 'm9full', '9full']],
 ]
 
@@ -57,10 +57,10 @@ function EmojiPicker({ value, onPick, onClose }) {
           if (first) onPick(first)
         }}
       >
-        <input id="emoji-custom" placeholder="Autre emoji…" value={custom} onChange={e => setCustom(e.target.value)} />
+        <input id="emoji-custom" placeholder="Any other emoji…" value={custom} onChange={e => setCustom(e.target.value)} />
         <button className="btn" type="submit" disabled={!custom.trim()}>OK</button>
       </form>
-      {value && <button className="btn-ghost" onClick={() => onPick('')}>Retirer l’emoji</button>}
+      {value && <button className="btn-ghost" onClick={() => onPick('')}>Remove emoji</button>}
     </div>
   )
 }
@@ -68,8 +68,8 @@ function EmojiPicker({ value, onPick, onClose }) {
 export function NoteCount({ count }) {
   if (!count) return null
   const cls = count <= IDEAL_NOTES ? 'pill-ok' : count === MAX_NOTES ? 'pill-warn' : 'pill-bad'
-  const hint = count <= IDEAL_NOTES ? '' : count === MAX_NOTES ? ' · au-delà des 4 voix du JU-06A' : ' · trop de notes'
-  return <span className={`pill ${cls}`}>{count} note{count > 1 ? 's' : ''}{hint}</span>
+  const hint = count <= IDEAL_NOTES ? '' : count === MAX_NOTES ? ' · beyond the JU-06A’s 4 voices' : ' · too many notes'
+  return <span className={`pill ${cls}`}>{count} note{count === 1 ? '' : 's'}{hint}</span>
 }
 
 export default function Creator({ initial, settings, setSettings, onSave, onClose, onSettings }) {
@@ -163,7 +163,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
     const i = notes.indexOf(m)
     if (i >= 0) notes.splice(i, 1)
     else if (notes.length >= MAX_NOTES) {
-      setStatus(`${MAX_NOTES} notes maximum : retire d’abord une note.`)
+      setStatus(`${MAX_NOTES} notes maximum: remove a note first.`)
       return
     } else notes.push(m)
     notes.sort((a, b) => a - b)
@@ -304,7 +304,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
       return { ...c, notes }
     })
     update(next)
-    setStatus('Voicings lissés : chaque accord reste proche du précédent.')
+    setStatus('Voicings smoothed: each chord stays close to the previous one.')
   }
 
   const togglePlay = (list = chords) => {
@@ -369,7 +369,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
       meta.current.createdAt = saved.createdAt
       setName(finalName)
       setDirty(false)
-      setStatus(saved.synced ? 'Enregistré dans ton carnet.' : 'Enregistré dans ce navigateur.')
+      setStatus(saved.synced ? 'Saved to your notebook.' : 'Saved in this browser.')
     } catch {
       // message affiché par l'app
     }
@@ -399,12 +399,12 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
   return (
     <main className="creator">
       <header className="cr-head">
-        <button className="btn-ghost btn-back" onClick={leave}>← Carnet</button>
+        <button className="btn-ghost btn-back" onClick={leave}>← Notebook</button>
         <div className="emoji-wrap">
           <button
             className={`emoji-btn ${emoji ? '' : 'is-empty'}`}
             onClick={() => setEmojiOpen(!emojiOpen)}
-            aria-label={emoji ? `Emoji : ${emoji}, changer` : 'Ajouter un emoji'}
+            aria-label={emoji ? `Emoji: ${emoji}, change` : 'Add an emoji'}
             aria-expanded={emojiOpen}
           >
             {emoji || '☺︎+'}
@@ -424,7 +424,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
         <input
           id="prog-name"
           className="cr-name"
-          placeholder="Nom de l’enchaînement"
+          placeholder="Progression name"
           value={name}
           onChange={e => {
             setName(e.target.value)
@@ -432,21 +432,21 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
           }}
         />
         <button className="btn-primary" disabled={chords.length < MIN_CHORDS || !dirty} onClick={save}>
-          Enregistrer
+          Save
         </button>
       </header>
 
       {confirm === 'leave' && (
         <div className="banner">
-          Tu as des modifications non enregistrées.
-          <button className="btn-danger" onClick={onClose}>Quitter sans enregistrer</button>
-          <button className="btn" onClick={() => setConfirm(null)}>Rester</button>
+          You have unsaved changes.
+          <button className="btn-danger" onClick={onClose}>Leave without saving</button>
+          <button className="btn" onClick={() => setConfirm(null)}>Stay</button>
         </div>
       )}
 
       <section className="cr-bar">
         <label className="field">
-          <span>Tonalité</span>
+          <span>Key</span>
           <span className="field-row">
             <select
               id="key-tonic"
@@ -468,19 +468,19 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
                 setKeyLocked(true)
               }}
             >
-              <option value="major">majeur</option>
-              <option value="minor">mineur</option>
+              <option value="major">major</option>
+              <option value="minor">minor</option>
             </select>
           </span>
         </label>
         <div className="cr-transport">
-          <button className={`btn-round ${playStep >= 0 ? 'is-on' : ''}`} onClick={() => togglePlay()} disabled={!chords.length} aria-label="Écouter l’enchaînement">
+          <button className={`btn-round ${playStep >= 0 ? 'is-on' : ''}`} onClick={() => togglePlay()} disabled={!chords.length} aria-label="Play the progression">
             {playStep >= 0 ? '■' : '▶'}
           </button>
           <label className="check">
-            <input id="loop" type="checkbox" checked={loop} onChange={e => setLoop(e.target.checked)} /> en boucle
+            <input id="loop" type="checkbox" checked={loop} onChange={e => setLoop(e.target.checked)} /> loop
           </label>
-          <button className="btn-ghost" onClick={smoothAll} disabled={chords.length < 2}>Lisser les voicings</button>
+          <button className="btn-ghost" onClick={smoothAll} disabled={chords.length < 2}>Smooth voicings</button>
         </div>
       </section>
 
@@ -504,10 +504,10 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
               <span className="slot-num">{numeralOf(c, key) || ' '}</span>
               <Keyboard low={settings.lowKey} notes={c.notes} mini labels={false} />
             </button>
-            <button className="slot-edit" onClick={() => editSlot(i)} aria-label={`Modifier ${chordName(c, n)}`} title="Modifier cet accord">
+            <button className="slot-edit" onClick={() => editSlot(i)} aria-label={`Edit ${chordName(c, n)}`} title="Edit this chord">
               ✎
             </button>
-            <button className="slot-del" onClick={() => removeAt(i)} aria-label={`Supprimer ${chordName(c, n)}`} title="Supprimer cet accord">
+            <button className="slot-del" onClick={() => removeAt(i)} aria-label={`Delete ${chordName(c, n)}`} title="Delete this chord">
               ×
             </button>
           </li>
@@ -518,7 +518,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
                 setSel(chords.length)
                 setPreview(null)
               }}>
-              <span className="slot-num">{chords.length < MIN_CHORDS ? `accord ${chords.length + 1}` : 'ajouter'}</span>
+              <span className="slot-num">{chords.length < MIN_CHORDS ? `chord ${chords.length + 1}` : 'add'}</span>
             </button>
           </li>
         )}
@@ -528,8 +528,8 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
         {/* hauteur constante : l'aperçu ne doit pas décaler la liste (double-clic) */}
         <p className="stage-eyebrow">
           {preview
-            ? isAddSlot ? 'Aperçu, pas encore ajouté' : `Aperçu, pas encore à la place de l’accord ${sel + 1}`
-            : current ? `Modification de l’accord ${sel + 1}` : `Nouvel accord ${sel + 1}`}
+            ? isAddSlot ? 'Preview, not added yet' : `Preview, not replacing chord ${sel + 1} yet`
+            : current ? `Editing chord ${sel + 1}` : `New chord ${sel + 1}`}
         </p>
         <div className="stage-head">
           {preview ? (
@@ -543,9 +543,9 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
               </div>
               <div className="preview-actions">
                 <button className="btn-primary" disabled={isAddSlot && chords.length >= MAX_CHORDS} onClick={() => place(preview)}>
-                  {isAddSlot ? 'Ajouter' : `Remplacer l’accord ${sel + 1}`}
+                  {isAddSlot ? 'Add' : `Replace chord ${sel + 1}`}
                 </button>
-                <button className="btn-ghost" onClick={() => setPreview(null)}>Fermer l’aperçu</button>
+                <button className="btn-ghost" onClick={() => setPreview(null)}>Close preview</button>
               </div>
             </>
           ) : current ? (
@@ -554,15 +554,15 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
                 <h2 className="stage-name">{chordName(current, n)}</h2>
                 <p className="stage-sub">
                   {numeralOf(current, key) && <b>{numeralOf(current, key)} · </b>}
-                  {current.root != null ? QUALITY[current.quality].label : 'accord libre (non reconnu)'}
+                  {current.root != null ? QUALITY[current.quality].label : 'free chord (not recognized)'}
                 </p>
               </div>
               <NoteCount count={current.notes.length} />
             </>
           ) : (
             <div>
-              <h2 className="stage-name stage-empty">Accord {sel + 1}</h2>
-              <p className="stage-sub">Clique une suggestion pour l’écouter, ou tape les notes sur le clavier.</p>
+              <h2 className="stage-name stage-empty">Chord {sel + 1}</h2>
+              <p className="stage-sub">Click a suggestion to hear it, or tap the notes on the keyboard.</p>
             </div>
           )}
         </div>
@@ -582,14 +582,14 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
         {current && (
           <div className="voicing" style={preview ? { visibility: 'hidden' } : undefined}>
             <div className="seg">
-              <button className="btn" disabled={current.root == null} onClick={() => editCurrent({ notes: cycleVoicing(current, -1, range) })} aria-label="Renversement précédent">◀</button>
-              <span className="seg-label">Renversement</span>
-              <button className="btn" disabled={current.root == null} onClick={() => editCurrent({ notes: cycleVoicing(current, 1, range) })} aria-label="Renversement suivant">▶</button>
+              <button className="btn" disabled={current.root == null} onClick={() => editCurrent({ notes: cycleVoicing(current, -1, range) })} aria-label="Previous inversion">◀</button>
+              <span className="seg-label">Inversion</span>
+              <button className="btn" disabled={current.root == null} onClick={() => editCurrent({ notes: cycleVoicing(current, 1, range) })} aria-label="Next inversion">▶</button>
             </div>
             <div className="seg">
-              <button className="btn" onClick={() => editCurrent({ notes: shiftOctave(current.notes, -1, range) })} aria-label="Octave plus bas">−</button>
+              <button className="btn" onClick={() => editCurrent({ notes: shiftOctave(current.notes, -1, range) })} aria-label="Octave down">−</button>
               <span className="seg-label">Octave</span>
-              <button className="btn" onClick={() => editCurrent({ notes: shiftOctave(current.notes, 1, range) })} aria-label="Octave plus haut">+</button>
+              <button className="btn" onClick={() => editCurrent({ notes: shiftOctave(current.notes, 1, range) })} aria-label="Octave up">+</button>
             </div>
             <button
               className={`btn ${current.bass ? 'is-on' : ''}`}
@@ -599,19 +599,19 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
                 editCurrent({ bass, notes: voiceChord(current.root, current.quality, { prev: prev?.notes, bass, range }) })
               }}
             >
-              Basse doublée
+              Doubled bass
             </button>
             <button
               className="btn"
               disabled={current.root == null || !prev}
               onClick={() => editCurrent({ notes: voiceChord(current.root, current.quality, { prev: prev?.notes, bass: current.bass, range }) })}
             >
-              Rapprocher du précédent
+              Move closer to previous
             </button>
             <span className="seg-spacer" />
-            <button className="btn-ghost" disabled={sel === 0} onClick={() => move(-1)} aria-label="Déplacer à gauche">←</button>
-            <button className="btn-ghost" disabled={sel >= chords.length - 1} onClick={() => move(1)} aria-label="Déplacer à droite">→</button>
-            <button className="btn btn-del" onClick={() => removeAt(sel)}>× Supprimer l’accord</button>
+            <button className="btn-ghost" disabled={sel === 0} onClick={() => move(-1)} aria-label="Move left">←</button>
+            <button className="btn-ghost" disabled={sel >= chords.length - 1} onClick={() => move(1)} aria-label="Move right">→</button>
+            <button className="btn btn-del" onClick={() => removeAt(sel)}>× Delete chord</button>
           </div>
         )}
         {status && <p className="status">{status}</p>}
@@ -619,31 +619,31 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
 
       <section className="picker">
         <div className="tabs" role="tablist">
-          {[['suggest', 'Suggestions'], ['all', 'Tous les accords']].map(([t, label]) => (
+          {[['suggest', 'Suggestions'], ['all', 'All chords']].map(([t, label]) => (
             <button key={t} role="tab" aria-selected={tab === t} className={`tab ${tab === t ? 'is-on' : ''}`} onClick={() => setTab(t)}>
               {label}
             </button>
           ))}
           <span className="tabs-spacer" />
           <label className="check">
-            <input id="sevenths" type="checkbox" checked={settings.sevenths} onChange={e => setSettings({ sevenths: e.target.checked })} /> 4 sons
+            <input id="sevenths" type="checkbox" checked={settings.sevenths} onChange={e => setSettings({ sevenths: e.target.checked })} /> 7ths
           </label>
-          <button className={`btn-ghost ${capture ? 'is-on' : ''}`} onClick={() => (settings.midiIn ? setCapture(!capture) : onSettings())} title="Joue l’accord sur ton clavier MIDI : il est noté dans la case sélectionnée">
+          <button className={`btn-ghost ${capture ? 'is-on' : ''}`} onClick={() => (settings.midiIn ? setCapture(!capture) : onSettings())} title="Play the chord on your MIDI keyboard: it goes into the selected slot">
             {capture ? '● Capture MIDI' : 'Capture MIDI'}
           </button>
         </div>
 
-        <p className="hint">Clic : écouter · double-clic : {isAddSlot ? 'ajouter' : `remplacer l’accord ${sel + 1}`}</p>
+        <p className="hint">Click: listen · double-click: {isAddSlot ? 'add' : `replace chord ${sel + 1}`}</p>
 
         {tab === 'suggest' && (
           <div className="sugg">
-            <h3>{prev ? `Après ${chordName(prev, n)}` : `Pour commencer en ${rootName(key.tonic, n)} ${MODES[key.mode].label}`}</h3>
+            <h3>{prev ? `After ${chordName(prev, n)}` : `To start in ${rootName(key.tonic, n)} ${MODES[key.mode].label}`}</h3>
             <div className="chips">{suggestions.next.slice(0, 7).map(chip)}</div>
-            <h3>Emprunts et dominantes secondaires</h3>
+            <h3>Borrowed chords and secondary dominants</h3>
             <div className="chips">{suggestions.colors.map(chip)}</div>
             {suggestions.variants.length > 0 && (
               <>
-                <h3>Variantes de {chordName(prev, n)}</h3>
+                <h3>Variations of {chordName(prev, n)}</h3>
                 <div className="chips">{suggestions.variants.map(chip)}</div>
               </>
             )}
@@ -681,7 +681,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
         )}
 
       </section>
-      <p className="cr-foot">{QUALITIES.length} types d’accords · clavier {noteName(range.lo)}–{noteName(range.hi)}</p>
+      <p className="cr-foot">{QUALITIES.length} chord types · keyboard {noteName(range.lo)}–{noteName(range.hi)}</p>
     </main>
   )
 }

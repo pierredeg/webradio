@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { initMidi, midiDevices, onMidi, setMidiInput, setMidiOutput } from './audio.js'
 import { diagnose } from './storage.js'
 
-const yesNo = v => (v == null ? 'inconnu' : v ? 'oui' : 'non')
+const yesNo = v => (v == null ? 'unknown' : v ? 'yes' : 'no')
 
 export default function Settings({ settings, setSettings, onClose, onImportText }) {
   const [diag, setDiag] = useState(null)
@@ -20,7 +20,7 @@ export default function Settings({ settings, setSettings, onClose, onImportText 
       setDevices(midiDevices())
       setMidiError('')
     } catch (e) {
-      setMidiError(e?.message || 'Accès MIDI refusé par le navigateur.')
+      setMidiError(e?.message || 'The browser refused MIDI access.')
     }
   }
 
@@ -37,63 +37,63 @@ export default function Settings({ settings, setSettings, onClose, onImportText 
 
   return (
     <div className="modal-bg" onClick={onClose}>
-      <div className="modal" role="dialog" aria-label="Réglages" onClick={e => e.stopPropagation()}>
+      <div className="modal" role="dialog" aria-label="Settings" onClick={e => e.stopPropagation()}>
         <header className="modal-head">
-          <h2>Réglages</h2>
-          <button className="btn-ghost" onClick={onClose}>Fermer</button>
+          <h2>Settings</h2>
+          <button className="btn-ghost" onClick={onClose}>Close</button>
         </header>
 
         <label className="field">
-          <span>Noms des notes</span>
+          <span>Note names</span>
           <select id="set-notation" value={settings.notation} onChange={e => setSettings({ notation: e.target.value })}>
             <option value="en">C D E F G A B</option>
-            <option value="fr">Do Ré Mi Fa Sol La Si</option>
+            <option value="fr">Do Ré Mi Fa Sol La Si (solfège)</option>
           </select>
         </label>
 
         <label className="field">
-          <span>Première touche de ton clavier 37 touches</span>
+          <span>Lowest key of your 37-key keyboard</span>
           <select id="set-low" value={settings.lowKey} onChange={e => setSettings({ lowKey: +e.target.value })}>
-            <option value={36}>C2 (clavier C2–C5)</option>
-            <option value={48}>C3 (clavier C3–C6)</option>
+            <option value={36}>C2 (keyboard C2–C5)</option>
+            <option value={48}>C3 (keyboard C3–C6)</option>
           </select>
         </label>
 
         <label className="check">
           <input id="set-sevenths" type="checkbox" checked={settings.sevenths} onChange={e => setSettings({ sevenths: e.target.checked })} />
-          Suggérer des accords 4 sons (sinon triades)
+          Suggest seventh chords (otherwise triads)
         </label>
 
         <label className="field">
-          <span>Son</span>
+          <span>Sound</span>
           <select id="set-sound" value={settings.sound} onChange={e => setSettings({ sound: e.target.value })}>
             <option value="piano">Grand piano</option>
-            <option value="synth">Synthé (façon Juno)</option>
+            <option value="synth">Synth (Juno style)</option>
           </select>
         </label>
 
         <label className="check">
           <input id="set-internal" type="checkbox" checked={settings.internal} onChange={e => setSettings({ internal: e.target.checked })} />
-          Son interne
+          Built-in sound
         </label>
 
         <section className="midi">
-          <h3>Stockage</h3>
+          <h3>Storage</h3>
           <p className="muted">
-            Vérifie si cette page a le droit d’écrire dans la base du carnet, celle que voient tous tes appareils.
+            Check whether this page may write to the notebook’s database, the one all your devices see.
           </p>
-          <button className="btn" onClick={runDiag} disabled={diag === '…'}>Vérifier l’accès à la base</button>
+          <button className="btn" onClick={runDiag} disabled={diag === '…'}>Check database access</button>
           {diag && diag !== '…' && (
             <ul className="diag">
-              <li>Base disponible : <b>{yesNo(diag.db)}</b></li>
-              <li>Reconnu comme propriétaire : <b>{yesNo(diag.owner)}</b></li>
-              <li>Droit d’édition : <b>{yesNo(diag.canEdit)}</b></li>
-              <li>Droit d’écriture annoncé : <b>{yesNo(diag.write)}</b></li>
-              <li>Essai d’écriture : <b className={diag.test === 'ok' ? 'ok' : 'bad'}>{diag.test === 'ok' ? 'réussi' : diag.test ? `refusé (${diag.test})` : 'impossible'}</b></li>
+              <li>Database available: <b>{yesNo(diag.db)}</b></li>
+              <li>Recognized as owner: <b>{yesNo(diag.owner)}</b></li>
+              <li>Edit right: <b>{yesNo(diag.canEdit)}</b></li>
+              <li>Write right reported: <b>{yesNo(diag.write)}</b></li>
+              <li>Write test: <b className={diag.test === 'ok' ? 'ok' : 'bad'}>{diag.test === 'ok' ? 'passed' : diag.test ? `refused (${diag.test})` : 'not possible'}</b></li>
             </ul>
           )}
           <label className="field">
-            <span>Coller une sauvegarde (texte exporté)</span>
+            <span>Paste a backup (exported text)</span>
             <textarea id="paste-backup" rows="3" value={pasted} onChange={e => setPasted(e.target.value)} placeholder='{"app": "carnet-accords", …}' />
           </label>
           <button
@@ -103,33 +103,33 @@ export default function Settings({ settings, setSettings, onClose, onImportText 
               if (await onImportText(pasted)) setPasted('')
             }}
           >
-            Importer ce texte
+            Import this text
           </button>
         </section>
 
         <section className="midi">
           <h3>MIDI</h3>
           <p className="muted">
-            Envoie les accords vers ton JU-06A en USB, ou capture un accord joué sur ton clavier. Fonctionne dans
-            Chrome ou Edge, si la page a le droit d’accéder au MIDI.
+            Send chords to your JU-06A over USB, or capture a chord played on your keyboard. Works in
+            Chrome or Edge, if the page is allowed MIDI access.
           </p>
           {!devices.inputs.length && !devices.outputs.length && (
-            <button className="btn" onClick={connect}>Connecter le MIDI</button>
+            <button className="btn" onClick={connect}>Connect MIDI</button>
           )}
           {midiError && <p className="status status-bad">{midiError}</p>}
           {(devices.inputs.length > 0 || devices.outputs.length > 0) && (
             <>
               <label className="field">
-                <span>Sortie (vers le synthé)</span>
+                <span>Output (to the synth)</span>
                 <select id="set-midi-out" value={settings.midiOut} onChange={e => chooseOut(e.target.value)}>
-                  <option value="">Aucune</option>
+                  <option value="">None</option>
                   {devices.outputs.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                 </select>
               </label>
               <label className="field">
-                <span>Entrée (capture depuis le clavier)</span>
+                <span>Input (capture from the keyboard)</span>
                 <select id="set-midi-in" value={settings.midiIn} onChange={e => chooseIn(e.target.value)}>
-                  <option value="">Aucune</option>
+                  <option value="">None</option>
                   {devices.inputs.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                 </select>
               </label>

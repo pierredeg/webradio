@@ -50,12 +50,12 @@ export default function Player({ progression: p, settings, onClose, onEdit }) {
   return (
     <main className="player">
       <header className="cr-head">
-        <button className="btn-ghost btn-back" onClick={onClose}>← Carnet</button>
+        <button className="btn-ghost btn-back" onClick={onClose}>← Notebook</button>
         <div className="pl-title">
           <h1>{p.emoji && <span className="emoji">{p.emoji}</span>}{p.name}</h1>
           <span className="card-key">{rootName(key.tonic, n)} {MODES[key.mode].label}</span>
         </div>
-        <button className="btn-ghost" onClick={onEdit}>Modifier</button>
+        <button className="btn-ghost" onClick={onEdit}>Edit</button>
       </header>
 
       <ol className="pl-steps">
@@ -75,7 +75,7 @@ export default function Player({ progression: p, settings, onClose, onEdit }) {
             <h2 className="stage-name">{chordName(c, n)}</h2>
             <p className="stage-sub">
               {numeralOf(c, key) && <b>{numeralOf(c, key)} · </b>}
-              {c.root != null ? QUALITY[c.quality]?.label : 'accord libre'}
+              {c.root != null ? QUALITY[c.quality]?.label : 'free chord'}
             </p>
           </div>
           <NoteCount count={c.notes.length} />
@@ -84,7 +84,7 @@ export default function Player({ progression: p, settings, onClose, onEdit }) {
         <ol className="notes-big">
           {c.notes.map((m, k) => (
             <li key={m}>
-              <span className="nb-finger">{k === 0 ? 'grave' : k === c.notes.length - 1 ? 'aigu' : ''}</span>
+              <span className="nb-finger">{k === 0 ? 'lowest' : k === c.notes.length - 1 ? 'highest' : ''}</span>
               <span className="nb-note">{noteName(m, n)}</span>
             </li>
           ))}
@@ -92,10 +92,10 @@ export default function Player({ progression: p, settings, onClose, onEdit }) {
       </section>
 
       <nav className="pl-nav">
-        <button className="btn btn-lg" onClick={() => go(i - 1)}>← Précédent</button>
-        <button className="btn btn-lg" onClick={() => playChord(c.notes)}>Écouter</button>
-        <button className={`btn btn-lg ${auto ? 'is-on' : ''}`} onClick={toggleAuto}>{auto ? '■ Stop' : '▶ Tout jouer'}</button>
-        <button className="btn btn-lg" onClick={() => go(i + 1)}>Suivant →</button>
+        <button className="btn btn-lg" onClick={() => go(i - 1)}>← Previous</button>
+        <button className="btn btn-lg" onClick={() => playChord(c.notes)}>Listen</button>
+        <button className={`btn btn-lg ${auto ? 'is-on' : ''}`} onClick={toggleAuto}>{auto ? '■ Stop' : '▶ Play all'}</button>
+        <button className="btn btn-lg" onClick={() => go(i + 1)}>Next →</button>
       </nav>
     </main>
   )

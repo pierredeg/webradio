@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { noteName } from './theory.js'
 
 const WHITE_PCS = [0, 2, 4, 5, 7, 9, 11]
@@ -17,6 +18,26 @@ export default function Keyboard({ low = 48, keys = 37, notes = [], onKey, label
   }
   const on = new Set(notes)
   const width = wi * W
+
+  // Taille des étiquettes : jamais moins de 12px à l'écran. Si la touche
+  // noire est trop étroite pour 12px, son étiquette est masquée (les notes
+  // sont listées sous le clavier).
+  const svgRef = useRef(null)
+  const [pxPerUnit, setPxPerUnit] = useState(2)
+  useEffect(() => {
+    const el = svgRef.current
+    if (!el || mini || !labels) return
+    const measure = () => el.clientWidth && setPxPerUnit(el.clientWidth / (width + 2))
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [width, mini, labels])
+  const minUnits = 12 / pxPerUnit
+  const fsWhite = Math.max(9, minUnits)
+  const fsC = Math.max(7, minUnits)
+  const fsBlack = Math.max(7.5, minUnits)
+  const showBlack = fsBlack <= BW - 2
   const height = mini ? 64 : H + 2
   const bh = mini ? 40 : BH
   const wh = mini ? 62 : H
@@ -24,6 +45,7 @@ export default function Keyboard({ low = 48, keys = 37, notes = [], onKey, label
 
   return (
     <svg
+      ref={svgRef}
       className={`kb ${mini ? 'kb-mini' : ''} ${onKey ? 'kb-interactive' : ''} ${className}`}
       viewBox={`-1 -1 ${width + 2} ${height}`}
       role="img"
@@ -33,12 +55,12 @@ export default function Keyboard({ low = 48, keys = 37, notes = [], onKey, label
         <g key={m} onClick={() => press(m)}>
           <rect x={x} y={0} width={W} height={wh} rx={mini ? 1.5 : 3} className={on.has(m) ? 'kw on' : 'kw'} />
           {labels && on.has(m) && (
-            <text x={x + W / 2} y={wh - 10} className="kl kl-w">
+            <text x={x + W / 2} y={wh - 8} className="kl kl-w" style={{ fontSize: fsWhite }}>
               {noteName(m, notation, false)}
             </text>
           )}
           {labels && !on.has(m) && m % 12 === 0 && (
-            <text x={x + W / 2} y={wh - 8} className="kl kl-c">
+            <text x={x + W / 2} y={wh - 6} className="kl kl-c" style={{ fontSize: fsC }}>
               {noteName(m, notation)}
             </text>
           )}
@@ -47,8 +69,8 @@ export default function Keyboard({ low = 48, keys = 37, notes = [], onKey, label
       {blacks.map(({ m, x }) => (
         <g key={m} onClick={() => press(m)}>
           <rect x={x} y={0} width={BW} height={bh} rx={mini ? 1 : 2} className={on.has(m) ? 'kbk on' : 'kbk'} />
-          {labels && on.has(m) && (
-            <text x={x + BW / 2} y={bh - 8} className="kl kl-b">
+          {labels && showBlack && on.has(m) && (
+            <text x={x + BW / 2} y={bh - 6} className="kl kl-b" style={{ fontSize: fsBlack }}>
               {noteName(m, notation, false).replace(/[♭♯]/, '')}
               <tspan className="kl-acc">{noteName(m, notation, false).match(/[♭♯]/)?.[0]}</tspan>
             </text>

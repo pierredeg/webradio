@@ -52,7 +52,7 @@ export default function App() {
       const downloads = await window.claude?.use?.('downloads')
       if (downloads) {
         await downloads.save({ filename, data })
-        setNotice('Sauvegarde enregistrée.')
+        setNotice('Backup saved.')
         return
       }
     } catch (e) {
@@ -60,9 +60,9 @@ export default function App() {
     }
     try {
       await navigator.clipboard.writeText(data)
-      setNotice('Téléchargement indisponible ici : la sauvegarde a été copiée dans le presse-papiers.')
+      setNotice('Download isn’t available here: the backup was copied to the clipboard.')
     } catch {
-      setError('Impossible d’exporter la sauvegarde depuis cette vue.')
+      setError('Can’t export the backup from this view.')
     }
   }
 
@@ -73,15 +73,15 @@ export default function App() {
       const data = JSON.parse(text)
       const incoming = (data.progressions || []).filter(p => p && Array.isArray(p.chords) && p.chords.length)
       await store.current.importMany(incoming.map(p => ({ ...p, id: p.id || newId() })))
-      setNotice(`${incoming.length} enchaînement${incoming.length > 1 ? 's' : ''} importé${incoming.length > 1 ? 's' : ''}.`)
+      setNotice(`${incoming.length} progression${incoming.length === 1 ? '' : 's'} imported.`)
       return true
     } catch {
-      setError('Ce texte n’est pas une sauvegarde du carnet d’accords.')
+      setError('This text isn’t a Chord Notebook backup.')
       return false
     }
   }
 
-  const duplicate = p => save({ ...p, id: undefined, createdAt: undefined, name: p.name + ' (copie)' })
+  const duplicate = p => save({ ...p, id: undefined, createdAt: undefined, name: p.name + ' (copy)' })
 
   const current = view.id ? list.find(p => p.id === view.id) : null
 
@@ -90,13 +90,13 @@ export default function App() {
       {error && (
         <div className="toast toast-error" role="alert">
           {error}
-          <button className="btn-ghost" onClick={() => setError('')}>Fermer</button>
+          <button className="btn-ghost" onClick={() => setError('')}>Close</button>
         </div>
       )}
       {notice && (
         <div className="toast toast-ok" role="status">
           {notice}
-          <button className="btn-ghost" onClick={() => setNotice('')}>Fermer</button>
+          <button className="btn-ghost" onClick={() => setNotice('')}>Close</button>
         </div>
       )}
       {view.name === 'library' && (

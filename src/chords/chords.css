@@ -17,7 +17,8 @@
   --accent: #f5610d; /* teinte unie (texte, bordures) */
   --accent-grad: linear-gradient(#e75713 0%, #f5610d .01%, #ef350c 100%); /* fonds */
   --accent-ink: #160a05; /* texte sur l'orange : contraste ≥ 4.5:1 sur tout le dégradé */
-  --amber: #fee685;
+  --amber: #d9a20b; /* aperçu d'un accord (pas encore ajouté) */
+  --amber-strong: #b8860b;
   --ok: #5ee9b5;
   --warn: #fee685;
   --bad: #ff6568;
@@ -276,9 +277,9 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .status { color: var(--muted); font-size: var(--fs-small); }
 .status-bad { color: var(--bad); }
 .preview-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.kb-preview .kw.on { fill: var(--amber); stroke: var(--warn); }
-.kb-preview .kbk.on { fill: var(--warn); }
-.kb-preview .kl-w { fill: var(--key-b); }
+.kb-preview .kw.on { fill: var(--amber); stroke: var(--amber-strong); }
+.kb-preview .kbk.on { fill: var(--amber-strong); }
+.kb-preview .kl-w, .kb-preview .kl-b { fill: var(--key-b); }
 
 .picker { margin-top: 16px; }
 .tabs { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; border-bottom: 2px solid var(--line); margin-bottom: 14px; }

@@ -217,7 +217,6 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .slot-name { font: 700 19px/1.05 var(--f-display); overflow-wrap: anywhere; }
 .slot-num { font: 500 11px/1.2 var(--f-mono); color: var(--muted); }
 .slot-add { border-style: dashed; place-content: center; justify-items: center; min-height: 92px; }
-.slot-plus { font: 300 34px/1 var(--f-display); color: var(--muted); }
 
 .stage { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: grid; gap: 14px; }
 .stage-head { min-height: 78px; display: flex; justify-content: space-between; align-items: start; gap: 12px; flex-wrap: wrap; }

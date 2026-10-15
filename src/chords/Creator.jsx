@@ -418,7 +418,6 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
                 setSel(chords.length)
                 setPreview(null)
               }}>
-              <span className="slot-plus">+</span>
               <span className="slot-num">{chords.length < MIN_CHORDS ? `accord ${chords.length + 1}` : 'ajouter'}</span>
             </button>
           </li>

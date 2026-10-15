@@ -55,18 +55,18 @@ function saveLocal(list) {
 export const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7)
 
 const PENDING_KEY = LOCAL_KEY + ':pending'
+const HIDDEN_KEY = LOCAL_KEY + ':hidden'
 
-function loadPending() {
+const loadSet = k => {
   try {
-    return new Set(JSON.parse(localStorage.getItem(PENDING_KEY) || '[]'))
+    return new Set(JSON.parse(localStorage.getItem(k) || '[]'))
   } catch {
     return new Set()
   }
 }
-
-function savePending(set) {
+const saveSet = (k, set) => {
   try {
-    localStorage.setItem(PENDING_KEY, JSON.stringify([...set]))
+    localStorage.setItem(k, JSON.stringify([...set]))
   } catch {
     // ignoré
   }
@@ -76,44 +76,52 @@ function savePending(set) {
 function toDoc(p) {
   const body = JSON.parse(JSON.stringify(p))
   delete body.id
+  delete body.pending
+  delete body.local
   return body
 }
 
-// Ce que la plateforme dit des droits du visiteur (aide au diagnostic).
-async function accessInfo() {
+// Ce que la plateforme dit des droits du visiteur.
+async function canWrite() {
   try {
     const user = await window.claude?.use?.('user')
-    if (!user) return 'visiteur non identifié'
-    const [owner, write] = await Promise.all([user.isOwner(), user.can('data.write')])
-    return `propriétaire : ${owner ? 'oui' : 'non'}, droit d’écriture : ${write == null ? 'inconnu' : write ? 'oui' : 'non'}`
+    if (!user) return null
+    if (await user.isOwner()) return true
+    return await user.can('data.write')
   } catch {
-    return 'droits inconnus'
+    return null
   }
 }
 
 // Ouvre le carnet. `onChange(list, mode)` est appelé à chaque mise à jour.
-// Un enchaînement que la base refuse reste sur l'appareil (« en attente »)
-// et est renvoyé à la prochaine ouverture.
+// mode : 'db' (base partagée, écriture OK), 'readonly' (base lisible mais
+// écriture refusée : les changements restent dans ce navigateur), 'local'.
+// Les enchaînements de ce navigateur ont priorité sur ceux de la base ; un
+// enchaînement de la base supprimé ici sans droit d'écriture est masqué.
 export function openStore(onChange) {
   let local = loadLocal()
   let remote = []
-  let pending = loadPending()
+  const pending = loadSet(PENDING_KEY) // à envoyer dans la base
+  const hidden = loadSet(HIDDEN_KEY) // de la base, masqués ici
   let col = null
+  let writable = false
   let unsub = null
   let cancelled = false
 
   const emit = () => {
     if (!col) return onChange(local, 'local')
-    const ids = new Set(remote.map(p => p.id))
-    const waiting = local.filter(p => pending.has(p.id) && !ids.has(p.id)).map(p => ({ ...p, pending: true }))
-    onChange([...remote, ...waiting], 'db')
+    const localIds = new Set(local.map(p => p.id))
+    const fromDb = remote.filter(p => !hidden.has(p.id) && !(localIds.has(p.id) && pending.has(p.id)))
+    const dbIds = new Set(fromDb.map(p => p.id))
+    const mine = local.filter(p => !dbIds.has(p.id)).map(p => ({ ...p, local: true }))
+    onChange([...fromDb, ...mine], writable ? 'db' : 'readonly')
   }
   onChange(local, 'local')
 
   const push = async p => {
     await col.doc(p.id).set(toDoc(p))
     pending.delete(p.id)
-    savePending(pending)
+    saveSet(PENDING_KEY, pending)
   }
 
   const ready = (async () => {
@@ -126,36 +134,26 @@ export function openStore(onChange) {
     if (!db || cancelled) return
     try {
       col = db.collection('progressions')
-      let migrated = false
-      try {
-        migrated = !!localStorage.getItem(LOCAL_KEY + ':migrated')
-      } catch {
-        migrated = true
-      }
-      if (!migrated) {
-        // première connexion : ce qui était enregistré localement part dans la base
-        const first = await col.get()
-        const known = new Set(first.docs.map(d => d.id))
-        for (const p of local) if (!known.has(p.id)) pending.add(p.id)
-        try {
-          localStorage.setItem(LOCAL_KEY + ':migrated', '1')
-        } catch {
-          // ignoré
-        }
-      }
-      for (const p of local.filter(x => pending.has(x.id))) {
-        try {
-          await push(p)
-        } catch {
-          // reste en attente
+      writable = (await canWrite()) !== false
+      // tout ce qui n'est que dans ce navigateur est à envoyer dès que possible
+      const first = await col.get()
+      const known = new Set(first.docs.map(d => d.id))
+      for (const p of local) if (!known.has(p.id)) pending.add(p.id)
+      saveSet(PENDING_KEY, pending)
+      if (writable) {
+        for (const p of local.filter(x => pending.has(x.id))) {
+          try {
+            await push(p)
+          } catch {
+            writable = false
+            break
+          }
         }
       }
       if (cancelled) return
       unsub = col.onSnapshot(
         snap => {
           remote = snap.docs.map(d => ({ ...d.data(), id: d.id }))
-          local = [...remote, ...local.filter(p => pending.has(p.id) && !remote.some(r => r.id === p.id))]
-          saveLocal(local)
           emit()
         },
         () => {
@@ -170,34 +168,51 @@ export function openStore(onChange) {
 
   return {
     ready,
-    // Résout { synced } : false si la base a refusé (gardé sur l'appareil).
+    // Résout { synced } : false si gardé seulement dans ce navigateur.
     async save(p) {
       const clean = { ...toDoc(p), id: p.id }
-      delete clean.pending
       local = [...local.filter(x => x.id !== p.id), clean]
       saveLocal(local)
-      if (!col) {
-        emit()
-        return { synced: false }
-      }
       pending.add(p.id)
-      savePending(pending)
-      try {
-        await push(clean)
-        return { synced: true }
-      } catch (e) {
-        console.warn('carnet-accords: écriture refusée', e?.code, e?.message)
-        emit()
-        return { synced: false, error: e, access: await accessInfo() }
+      saveSet(PENDING_KEY, pending)
+      if (col && writable) {
+        try {
+          await push(clean)
+          local = local.filter(x => x.id !== p.id) // la base fait foi
+          saveLocal(local)
+        } catch (e) {
+          console.warn('carnet-accords: écriture refusée', e?.code, e?.message)
+          writable = false
+        }
       }
+      emit()
+      return { synced: !col || !pending.has(p.id) }
     },
     async remove(id) {
       local = local.filter(x => x.id !== id)
       saveLocal(local)
       pending.delete(id)
-      savePending(pending)
-      if (col && remote.some(r => r.id === id)) await col.doc(id).delete()
-      else emit()
+      saveSet(PENDING_KEY, pending)
+      if (col && remote.some(r => r.id === id)) {
+        let done = false
+        if (writable) {
+          try {
+            await col.doc(id).delete()
+            done = true
+          } catch {
+            writable = false
+          }
+        }
+        if (!done) {
+          hidden.add(id)
+          saveSet(HIDDEN_KEY, hidden)
+        }
+      }
+      emit()
+    },
+    // Remplace / ajoute des enchaînements importés (fichier de sauvegarde).
+    async importMany(list) {
+      for (const p of list) await this.save(p)
     },
     close() {
       cancelled = true

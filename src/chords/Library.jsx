@@ -3,7 +3,7 @@ import Keyboard from './Keyboard.jsx'
 import { chordName, numeralOf, rootName, MODES } from './theory.js'
 import { playSequence } from './audio.js'
 
-export default function Library({ list, settings, storeMode, onNew, onEdit, onPlay, onDuplicate, onDelete, onSettings }) {
+export default function Library({ list, settings, storeMode, onNew, onEdit, onPlay, onDuplicate, onDelete, onSettings, onExport, onImport }) {
   const [query, setQuery] = useState('')
   const [playing, setPlaying] = useState({ id: null, step: -1 })
   const [confirmDelete, setConfirmDelete] = useState(null)
@@ -56,9 +56,34 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
         />
         <span className="lib-count">
           {list.length} enchaînement{list.length > 1 ? 's' : ''}
-          {storeMode === 'local' && <span className="pill pill-warn" title="Base de l’artifact indisponible : enregistré dans ce navigateur uniquement">local</span>}
+        </span>
+        <span className="backup">
+          <button className="btn-ghost" onClick={onExport} disabled={!list.length}>Exporter</button>
+          <label className="btn-ghost">
+            Importer
+            <input
+              id="import-file"
+              type="file"
+              accept="application/json,.json"
+              hidden
+              onChange={e => {
+                const f = e.target.files?.[0]
+                if (f) onImport(f)
+                e.target.value = ''
+              }}
+            />
+          </label>
         </span>
       </div>
+
+      {storeMode !== 'db' && (
+        <p className="store-note">
+          {storeMode === 'readonly'
+            ? 'Tes enchaînements sont enregistrés dans ce navigateur : cette vue n’a pas le droit d’écrire dans la base du carnet.'
+            : 'Tes enchaînements sont enregistrés dans ce navigateur.'}{' '}
+          Pense à <button className="link" onClick={onExport} disabled={!list.length}>exporter une sauvegarde</button> de temps en temps.
+        </p>
+      )}
 
       {list.length === 0 && (
         <section className="empty">
@@ -83,7 +108,6 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
                 <span className="card-key">
                   {rootName(p.key?.tonic ?? 0, n)} {MODES[p.key?.mode || 'major'].label} · {p.chords.length} accords
                 </span>
-                {p.pending && <span className="pill pill-warn">sur cet appareil seulement</span>}
               </button>
               <button
                 className={`btn-round ${playing.id === p.id ? 'is-on' : ''}`}

@@ -13,6 +13,7 @@ export default function App() {
   const [view, setView] = useState({ name: 'library' })
   const [showSettings, setShowSettings] = useState(false)
   const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
   const store = useRef(null)
 
   useEffect(() => {
@@ -36,20 +37,43 @@ export default function App() {
   const save = async p => {
     const now = Date.now()
     const item = { ...p, id: p.id || newId(), createdAt: p.createdAt || now, updatedAt: now }
+    delete item.local
     const res = await store.current.save(item)
-    if (res.synced || storeMode === 'local') setError('')
-    else {
-      const code = ` (${[res.error?.code, res.access].filter(Boolean).join(' · ')})`
-      setError(`Gardé sur cet appareil : la base de l’artifact a refusé l’enregistrement${code}. Il sera renvoyé automatiquement à la prochaine ouverture.`)
-    }
-    return { ...item, synced: res.synced || storeMode === 'local' }
+    return { ...item, synced: res.synced }
   }
 
-  const remove = async id => {
+  const remove = id => store.current.remove(id)
+
+  // Sauvegarde : un fichier JSON de tout le carnet, réimportable.
+  const exportBackup = async () => {
+    const data = JSON.stringify({ app: 'carnet-accords', version: 1, progressions: list.map(p => ({ ...p, local: undefined })) }, null, 2)
+    const filename = `carnet-accords-${new Date().toISOString().slice(0, 10)}.json`
     try {
-      await store.current.remove(id)
+      const downloads = await window.claude?.use?.('downloads')
+      if (downloads) {
+        await downloads.save({ filename, data })
+        setNotice('Sauvegarde enregistrée.')
+        return
+      }
     } catch (e) {
-      setError('Suppression impossible : ' + (e?.message || 'base indisponible'))
+      if (e?.code === 'declined') return
+    }
+    try {
+      await navigator.clipboard.writeText(data)
+      setNotice('Téléchargement indisponible ici : la sauvegarde a été copiée dans le presse-papiers.')
+    } catch {
+      setError('Impossible d’exporter la sauvegarde depuis cette vue.')
+    }
+  }
+
+  const importBackup = async file => {
+    try {
+      const data = JSON.parse(await file.text())
+      const incoming = (data.progressions || []).filter(p => p && Array.isArray(p.chords) && p.chords.length)
+      await store.current.importMany(incoming.map(p => ({ ...p, id: p.id || newId() })))
+      setNotice(`${incoming.length} enchaînement${incoming.length > 1 ? 's' : ''} importé${incoming.length > 1 ? 's' : ''}.`)
+    } catch {
+      setError('Ce fichier n’est pas une sauvegarde du carnet d’accords.')
     }
   }
 
@@ -65,6 +89,12 @@ export default function App() {
           <button className="btn-ghost" onClick={() => setError('')}>Fermer</button>
         </div>
       )}
+      {notice && (
+        <div className="toast toast-ok" role="status">
+          {notice}
+          <button className="btn-ghost" onClick={() => setNotice('')}>Fermer</button>
+        </div>
+      )}
       {view.name === 'library' && (
         <Library
           list={list}
@@ -76,6 +106,8 @@ export default function App() {
           onDuplicate={duplicate}
           onDelete={remove}
           onSettings={() => setShowSettings(true)}
+          onExport={exportBackup}
+          onImport={importBackup}
         />
       )}
       {view.name === 'create' && (

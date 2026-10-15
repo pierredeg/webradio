@@ -58,7 +58,7 @@ p { margin: 0; }
 }
 
 /* ---------- Boutons ---------- */
-.btn, .btn-ghost, .btn-primary, .btn-danger, .btn-round, .chip, .tab, .root, .slot, .tpl, .pl-step {
+.btn, .btn-ghost, .btn-primary, .btn-danger, .btn-round, .chip, .tab, .root, .slot, .pl-step {
   cursor: pointer;
   border-radius: var(--r);
   transition: background-color .12s, border-color .12s, transform .08s;
@@ -238,7 +238,7 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
   background: var(--panel); border: 1px solid var(--line);
 }
 .chip:hover { border-color: var(--ink); }
-.chip, .tpl { touch-action: manipulation; user-select: none; }
+.chip { touch-action: manipulation; user-select: none; }
 .chip.is-preview { border-color: var(--amber); box-shadow: inset 0 0 0 1px var(--amber); background: var(--sunk); }
 .hint { color: var(--muted); font-size: 13px; margin: -6px 0 10px; }
 .stage.is-preview { border-color: var(--amber); }
@@ -253,13 +253,6 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .roots { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px; }
 .root { padding: 8px 0; background: var(--panel); border: 1px solid var(--line); font: 700 15px var(--f-display); }
 .root.is-on { background: var(--ink); color: var(--panel); border-color: var(--ink); }
-.tpls { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 8px; }
-.tpl { width: 100%; height: 100%; text-align: left; display: grid; gap: 3px; padding: 10px 12px; background: var(--panel); border: 1px solid var(--line); }
-.tpl:hover { border-color: var(--ink); }
-.tpl-name { font: 700 18px/1.1 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
-.tpl-num { font: 500 12px var(--f-mono); color: var(--accent); }
-.tpl-chords { font: 500 13px var(--f-mono); color: var(--muted); }
-.tpl-confirm { color: var(--warn); font-size: 13px; font-weight: 600; }
 .cr-foot { margin-top: 18px; color: var(--muted); font-size: 12px; font-family: var(--f-mono); }
 
 /* ---------- Jouer ---------- */

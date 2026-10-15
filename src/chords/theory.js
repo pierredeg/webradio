@@ -378,32 +378,3 @@ export function suggestNext(prev, key, { sevenths = true } = {}) {
 
   return { next: out, colors, variants }
 }
-
-// ---------- Modèles d'enchaînements ----------
-// [demi-tons depuis la tonique, triade, 4 sons]
-export const TEMPLATES = [
-  { name: 'Pop', numerals: 'I – V – vi – IV', mode: 'major', chords: [[0, 'maj', 'maj7'], [7, 'maj', '7'], [9, 'm', 'm7'], [5, 'maj', 'maj7']] },
-  { name: 'Mélancolique', numerals: 'vi – IV – I – V', mode: 'major', chords: [[9, 'm', 'm7'], [5, 'maj', 'maj7'], [0, 'maj', 'maj7'], [7, 'maj', '7']] },
-  { name: 'Doo-wop', numerals: 'I – vi – IV – V', mode: 'major', chords: [[0, 'maj', 'maj7'], [9, 'm', 'm7'], [5, 'maj', 'maj7'], [7, 'maj', '7']] },
-  { name: 'Jazz ii–V–I', numerals: 'ii – V – I', mode: 'major', chords: [[2, 'm', 'm9'], [7, '7', '13'], [0, 'maj', 'maj9']] },
-  { name: 'Turnaround', numerals: 'I – vi – ii – V', mode: 'major', chords: [[0, 'maj', 'maj7'], [9, 'm', 'm7'], [2, 'm', 'm7'], [7, '7', '7']] },
-  { name: 'Canon', numerals: 'I – V – vi – iii – IV', mode: 'major', chords: [[0, 'maj', 'maj7'], [7, 'maj', '7'], [9, 'm', 'm7'], [4, 'm', 'm7'], [5, 'maj', 'maj7']] },
-  { name: 'Royal Road', numerals: 'IV – V – iii – vi', mode: 'major', chords: [[5, 'maj', 'maj7'], [7, 'maj', '7'], [4, 'm', 'm7'], [9, 'm', 'm7']] },
-  { name: 'Néo-soul', numerals: 'IV – iii – ii – I', mode: 'major', chords: [[5, 'maj', 'maj9'], [4, 'm', 'm7'], [2, 'm', 'm9'], [0, 'maj', 'maj9']] },
-  { name: 'Emprunt mineur', numerals: 'I – IV – iv – I', mode: 'major', chords: [[0, 'maj', 'maj7'], [5, 'maj', 'maj7'], [5, 'm', 'm6'], [0, 'maj', 'maj7']] },
-  { name: 'Épique', numerals: 'i – ♭VI – ♭III – ♭VII', mode: 'minor', chords: [[0, 'm', 'm7'], [8, 'maj', 'maj7'], [3, 'maj', 'maj7'], [10, 'maj', '7']] },
-  { name: 'Andalouse', numerals: 'i – ♭VII – ♭VI – V', mode: 'minor', chords: [[0, 'm', 'm7'], [10, 'maj', 'maj7'], [8, 'maj', 'maj7'], [7, 'maj', '7']] },
-  { name: 'Dorien', numerals: 'i – IV', mode: 'minor', chords: [[0, 'm', 'm9'], [5, 'maj', '9']] },
-  { name: 'Mineur nocturne', numerals: 'i – iv – ♭VII – ♭III', mode: 'minor', chords: [[0, 'm', 'm9'], [5, 'm', 'm7'], [10, 'maj', '7'], [3, 'maj', 'maj7']] },
-]
-
-export function buildTemplate(tpl, tonic, { sevenths, range }) {
-  const chords = []
-  let prev = null
-  for (const [semis, q3, q4] of tpl.chords) {
-    const c = makeChord(mod12(tonic + semis), sevenths ? q4 : q3, { prev, range })
-    chords.push(c)
-    prev = c.notes
-  }
-  return chords
-}

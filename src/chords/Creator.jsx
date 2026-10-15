@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Keyboard from './Keyboard.jsx'
 import {
-  QUALITIES, QUALITY, MODES, TEMPLATES, MAX_NOTES, IDEAL_NOTES,
+  QUALITIES, QUALITY, MODES, MAX_NOTES, IDEAL_NOTES,
   chordName, noteName, rootName, numeralOf, rangeOf, makeChord, voiceChord,
-  cycleVoicing, shiftOctave, detectChord, suggestNext, buildTemplate,
+  cycleVoicing, shiftOctave, detectChord, suggestNext,
 } from './theory.js'
 import { playChord, playSequence, onMidi } from './audio.js'
 
@@ -79,7 +79,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
   const [pickRoot, setPickRoot] = useState(null)
   const [dirty, setDirty] = useState(false)
   const [status, setStatus] = useState('')
-  const [confirm, setConfirm] = useState(null) // 'leave' | template name
+  const [confirm, setConfirm] = useState(null) // 'leave'
   const [playStep, setPlayStep] = useState(-1)
   const [loop, setLoop] = useState(false)
   const [capture, setCapture] = useState(false)
@@ -200,18 +200,6 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
     })
     update(next)
     setStatus('Voicings lissés : chaque accord reste proche du précédent.')
-  }
-
-  const applyTemplate = tpl => {
-    const tonic = key.tonic
-    setKey({ tonic, mode: tpl.mode })
-    setKeyLocked(true)
-    const next = buildTemplate(tpl, tonic, { sevenths: settings.sevenths, range })
-    update(next)
-    setSel(next.length < MAX_CHORDS ? next.length : 0)
-    if (!name) setName(tpl.name)
-    setConfirm(null)
-    togglePlay(next)
   }
 
   const togglePlay = (list = chords) => {
@@ -516,7 +504,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
 
       <section className="picker">
         <div className="tabs" role="tablist">
-          {[['suggest', 'Suggestions'], ['all', 'Tous les accords'], ['templates', 'Modèles']].map(([t, label]) => (
+          {[['suggest', 'Suggestions'], ['all', 'Tous les accords']].map(([t, label]) => (
             <button key={t} role="tab" aria-selected={tab === t} className={`tab ${tab === t ? 'is-on' : ''}`} onClick={() => setTab(t)}>
               {label}
             </button>
@@ -530,7 +518,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
           </button>
         </div>
 
-        <p className="hint">{tab === 'templates' ? 'Clic : écouter le modèle · double-clic : l’utiliser' : 'Clic : écouter · double-clic : ajouter'}</p>
+        <p className="hint">Clic : écouter · double-clic : ajouter</p>
 
         {tab === 'suggest' && (
           <div className="sugg">
@@ -577,36 +565,6 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
           </div>
         )}
 
-        {tab === 'templates' && (
-          <ul className="tpls">
-            {TEMPLATES.map(t => {
-              const tplChords = buildTemplate(t, key.tonic, { sevenths: settings.sevenths, range })
-              return (
-                <li key={t.name}>
-                  <button
-                    className="tpl"
-                    onClick={() =>
-                      tap(
-                        'tpl' + t.name,
-                        () => {
-                          stop.current?.()
-                          setPlayStep(-1)
-                          stop.current = playSequence(tplChords, {})
-                        },
-                        () => (chords.length && confirm !== t.name ? setConfirm(t.name) : applyTemplate(t)),
-                      )
-                    }
-                  >
-                    <span className="tpl-name">{t.name}</span>
-                    <span className="tpl-num">{t.numerals}</span>
-                    <span className="tpl-chords">{tplChords.map(c => chordName(c, n)).join('  ')}</span>
-                    {confirm === t.name && <span className="tpl-confirm">Remplacer les accords actuels ? Double-clique à nouveau pour confirmer.</span>}
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
-        )}
       </section>
       <p className="cr-foot">{QUALITIES.length} types d’accords · clavier {noteName(range.lo)}–{noteName(range.hi)}</p>
     </main>

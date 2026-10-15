@@ -68,6 +68,7 @@ export default function Settings({ settings, setSettings, onClose, onImportText 
           <span>Sound</span>
           <select id="set-sound" value={settings.sound} onChange={e => setSettings({ sound: e.target.value })}>
             <option value="piano">Grand piano</option>
+            <option value="fm">Velvet FM (DX7 style)</option>
             <option value="synth">Synth (Juno style)</option>
           </select>
         </label>

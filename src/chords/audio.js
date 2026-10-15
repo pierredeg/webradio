@@ -5,6 +5,7 @@ import PIANO_SAMPLES from './pianoSamples.js'
 let ctx = null
 let bus = null
 let pianoBus = null
+let fmBus = null
 
 function ensureCtx() {
   if (ctx) {
@@ -46,6 +47,14 @@ function ensureCtx() {
   const verbWet = ctx.createGain()
   verbWet.gain.value = 0.18
   pianoBus.connect(verb).connect(verbWet).connect(comp)
+
+  // FM : passe par le chorus (bus) et envoie davantage dans la réverbération
+  fmBus = ctx.createGain()
+  fmBus.gain.value = 1
+  fmBus.connect(bus)
+  const fmSend = ctx.createGain()
+  fmSend.gain.value = 0.55
+  fmBus.connect(fmSend).connect(verb)
   return ctx
 }
 
@@ -93,6 +102,54 @@ function pianoNote(midi, t0, dur, level) {
 }
 
 const freq = midi => 440 * 2 ** ((midi - 69) / 12)
+
+// ---------- FM façon DX7 ----------
+// Deux paires d'opérateurs par note : un « corps » doux (modulateur 1:1 dont
+// l'indice retombe vite, donc un son rond) et une « lame » brillante (14:1)
+// très brève pour l'attaque cristalline des pianos électriques FM. Une
+// seconde voix légèrement désaccordée donne l'ampleur ; chorus et réverb.
+function fmPair(f, ratio, index0, index1, tau, t0, end, out, detune = 0) {
+  const car = ctx.createOscillator()
+  car.frequency.value = f
+  car.detune.value = detune
+  const mod = ctx.createOscillator()
+  mod.frequency.value = f * ratio
+  mod.detune.value = detune
+  const depth = ctx.createGain()
+  depth.gain.setValueAtTime(index0 * f * ratio, t0)
+  depth.gain.setTargetAtTime(index1 * f * ratio, t0 + 0.005, tau)
+  mod.connect(depth).connect(car.frequency)
+  car.connect(out)
+  for (const o of [car, mod]) {
+    o.start(t0)
+    o.stop(end)
+  }
+  return car
+}
+
+function fmNote(midi, t0, dur, level) {
+  const f = freq(midi)
+  const end = t0 + dur + 1.2
+  const amp = ctx.createGain()
+  amp.gain.setValueAtTime(0, t0)
+  amp.gain.linearRampToValueAtTime(level, t0 + 0.006)
+  amp.gain.setTargetAtTime(level * 0.42, t0 + 0.006, 0.9)
+  amp.gain.setTargetAtTime(0, t0 + dur, 0.28)
+  amp.connect(fmBus)
+
+  const body = ctx.createGain()
+  body.gain.value = 0.5
+  body.connect(amp)
+  fmPair(f, 1, 1.6, 0.35, 0.5, t0, end, body, -4)
+  fmPair(f, 1, 1.4, 0.3, 0.6, t0, end, body, 5)
+
+  const tine = ctx.createGain()
+  tine.gain.setValueAtTime(0.22, t0)
+  tine.gain.setTargetAtTime(0.02, t0, 0.18)
+  tine.connect(amp)
+  const last = fmPair(f, 14, 1.8, 0, 0.06, t0, end, tine)
+  last.onended = () => amp.disconnect()
+}
 
 function voice(midi, t0, dur, level) {
   const out = ctx.createGain()
@@ -183,6 +240,10 @@ export function playChord(notes, dur = 0.9) {
       const t0 = ctx.currentTime + 0.01
       const level = 0.22 / Math.sqrt(notes.length)
       notes.forEach(n => voice(n, t0, dur, level))
+    } else if (settings.sound === 'fm') {
+      const t0 = ctx.currentTime + 0.01
+      const level = 0.3 / Math.sqrt(notes.length)
+      notes.forEach(n => fmNote(n, t0, dur, level))
     } else {
       const start = () => {
         const t0 = ctx.currentTime + 0.01

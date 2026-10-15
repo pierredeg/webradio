@@ -228,16 +228,18 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
     const el = d?.active && slotEls().find(x => x.dataset.key === String(d.key))
     if (!el) return
     const dx = d.x - d.grab - el.offsetLeft
+    const dy = d.y - d.grabY - el.offsetTop
     el.style.transition = 'none'
-    el.style.transform = `translate(${dx}px, -6px) scale(1.06) rotate(-2deg)`
+    el.style.transform = `translate(${dx}px, ${dy - 6}px) scale(1.06) rotate(-2deg)`
   }
 
   const onSlotDown = (e, i, key) => {
     if (e.button > 0 || e.target.closest('.slot-del, .slot-edit')) return
     const ol = slotsRef.current.getBoundingClientRect()
     drag.current = {
-      idx: i, key, x0: e.clientX, y0: e.clientY, x: e.clientX - ol.left,
-      grab: e.clientX - ol.left - e.currentTarget.offsetLeft, active: false,
+      idx: i, key, x0: e.clientX, y0: e.clientY, x: e.clientX - ol.left, y: e.clientY - ol.top,
+      grab: e.clientX - ol.left - e.currentTarget.offsetLeft,
+      grabY: e.clientY - ol.top - e.currentTarget.offsetTop, active: false,
     }
   }
   const onSlotMove = e => {
@@ -249,9 +251,13 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
       e.currentTarget.setPointerCapture?.(e.pointerId)
       setDragKey(d.key)
     }
-    d.x = e.clientX - slotsRef.current.getBoundingClientRect().left
+    const ol = slotsRef.current.getBoundingClientRect()
+    d.x = e.clientX - ol.left
+    d.y = e.clientY - ol.top
     // case visée : d'après les positions de mise en page (sans les animations)
-    const target = slotEls().findIndex(el => d.x >= el.offsetLeft && d.x <= el.offsetLeft + el.offsetWidth)
+    const target = slotEls().findIndex(el =>
+      d.x >= el.offsetLeft && d.x <= el.offsetLeft + el.offsetWidth &&
+      d.y >= el.offsetTop && d.y <= el.offsetTop + el.offsetHeight)
     if (target >= 0 && target !== d.idx) {
       moveChord(d.idx, target)
       d.idx = target
@@ -279,34 +285,18 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
     for (const el of els) {
       const key = el.dataset.key
       const before = lastLeft.current.get(key)
-      const now = el.offsetLeft
-      if (before != null && before !== now && key !== String(drag.current?.active && drag.current.key) && !reduce) {
+      const now = [el.offsetLeft, el.offsetTop]
+      if (before && (before[0] !== now[0] || before[1] !== now[1]) && key !== String(drag.current?.active && drag.current.key) && !reduce) {
         el.style.transition = 'none'
-        el.style.transform = `translateX(${before - now}px)`
+        el.style.transform = `translate(${before[0] - now[0]}px, ${before[1] - now[1]}px)`
         void el.offsetWidth
         el.style.transition = 'transform 240ms ease-in-out'
         el.style.transform = ''
       }
     }
-    lastLeft.current = new Map(els.map(el => [el.dataset.key, el.offsetLeft]))
+    lastLeft.current = new Map(els.map(el => [el.dataset.key, [el.offsetLeft, el.offsetTop]]))
     placeDragged()
   })
-
-  // Revoice tout l'enchaînement pour que les mains bougent le moins possible.
-  const smoothAll = () => {
-    let p = null
-    const next = chords.map(c => {
-      if (c.root == null) {
-        p = c.notes
-        return c
-      }
-      const notes = voiceChord(c.root, c.quality, { prev: p, bass: c.bass, range })
-      p = notes
-      return { ...c, notes }
-    })
-    update(next)
-    setStatus('Voicings smoothed: each chord stays close to the previous one.')
-  }
 
   const togglePlay = (list = chords) => {
     stop.current?.()
@@ -370,7 +360,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
       meta.current.createdAt = saved.createdAt
       setName(finalName)
       setDirty(false)
-      setStatus(saved.synced ? 'Saved to your notebook.' : 'Saved in this browser.')
+      onClose() // retour au carnet
     } catch {
       // message affiché par l'app
     }
@@ -481,7 +471,6 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
           <label className="check">
             <input id="loop" type="checkbox" checked={loop} onChange={e => setLoop(e.target.checked)} /> loop
           </label>
-          <button className="btn-ghost" onClick={smoothAll} disabled={chords.length < 2}>Smooth voicings</button>
         </div>
       </section>
 
@@ -526,12 +515,6 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
       </ol>
 
       <section ref={stageRef} className={`stage ${preview ? 'is-preview' : current ? 'is-editing' : ''}`}>
-        {/* hauteur constante : l'aperçu ne doit pas décaler la liste (double-clic) */}
-        <p className="stage-eyebrow">
-          {preview
-            ? isAddSlot ? 'Preview, not added yet' : `Preview, not replacing chord ${sel + 1} yet`
-            : current ? `Editing chord ${sel + 1}` : `New chord ${sel + 1}`}
-        </p>
         <div className="stage-head">
           {preview ? (
             <>

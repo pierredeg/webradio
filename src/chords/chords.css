@@ -285,8 +285,18 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .modal-head h2 { font: 700 24px var(--f-display); text-transform: uppercase; }
 .midi { display: grid; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line); }
 
-.backup { display: inline-flex; gap: 2px; margin-left: auto; }
-label.btn-ghost { cursor: pointer; }
+.kebab { position: relative; margin-left: auto; }
+.kebab-btn { width: 38px; padding: 0; font-size: 20px; line-height: 1; }
+.kebab-menu {
+  position: absolute; top: calc(100% + 4px); right: 0; z-index: 15; min-width: 220px;
+  display: grid; padding: 4px; border-radius: var(--r);
+  background: var(--panel); border: 1px solid var(--line); box-shadow: 0 8px 24px rgba(0, 0, 0, .16);
+}
+.kebab-menu button {
+  text-align: left; padding: 10px 12px; border: 0; border-radius: calc(var(--r) - 2px);
+  background: none; cursor: pointer; font-weight: 500;
+}
+.kebab-menu button:hover:not(:disabled), .kebab-menu button:focus-visible { background: var(--sunk); }
 .store-note { margin: -4px 0 16px; color: var(--muted); font-size: 14px; }
 .link { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font: inherit; }
 .toast-ok { border-color: var(--ok) !important; color: var(--ok) !important; }

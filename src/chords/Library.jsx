@@ -8,6 +8,22 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
   const [playing, setPlaying] = useState({ id: null, step: -1 })
   const [confirmDelete, setConfirmDelete] = useState(null)
   const stop = useRef(null)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef(null)
+  const fileRef = useRef(null)
+
+  // ferme le menu ⋮ au clic ailleurs ou avec Échap
+  useEffect(() => {
+    if (!menuOpen) return
+    const onDown = e => !menuRef.current?.contains(e.target) && setMenuOpen(false)
+    const onKey = e => e.key === 'Escape' && setMenuOpen(false)
+    document.addEventListener('pointerdown', onDown)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('pointerdown', onDown)
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [menuOpen])
   const n = settings.notation
 
   useEffect(() => () => stop.current?.(), [])
@@ -57,23 +73,52 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
         <span className="lib-count">
           {list.length} enchaînement{list.length > 1 ? 's' : ''}
         </span>
-        <span className="backup">
-          <button className="btn-ghost" onClick={onExport} disabled={!list.length}>Exporter</button>
-          <label className="btn-ghost">
-            Importer
-            <input
-              id="import-file"
-              type="file"
-              accept="application/json,.json"
-              hidden
-              onChange={e => {
-                const f = e.target.files?.[0]
-                if (f) onImport(f)
-                e.target.value = ''
-              }}
-            />
-          </label>
-        </span>
+        <div className="kebab" ref={menuRef}>
+          <button
+            className="btn-ghost kebab-btn"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Plus d’options"
+            aria-haspopup="menu"
+            aria-expanded={menuOpen}
+          >
+            ⋮
+          </button>
+          {menuOpen && (
+            <div className="kebab-menu" role="menu">
+              <button
+                role="menuitem"
+                disabled={!list.length}
+                onClick={() => {
+                  setMenuOpen(false)
+                  onExport()
+                }}
+              >
+                Exporter une sauvegarde
+              </button>
+              <button
+                role="menuitem"
+                onClick={() => {
+                  setMenuOpen(false)
+                  fileRef.current?.click()
+                }}
+              >
+                Importer une sauvegarde
+              </button>
+            </div>
+          )}
+          <input
+            ref={fileRef}
+            id="import-file"
+            type="file"
+            accept="application/json,.json"
+            hidden
+            onChange={e => {
+              const f = e.target.files?.[0]
+              if (f) onImport(f)
+              e.target.value = ''
+            }}
+          />
+        </div>
       </div>
 
       {storeMode !== 'db' && (

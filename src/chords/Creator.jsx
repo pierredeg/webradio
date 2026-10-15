@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import Keyboard from './Keyboard.jsx'
 import {
   QUALITIES, QUALITY, MODES, MAX_NOTES, IDEAL_NOTES,
@@ -6,6 +6,14 @@ import {
   cycleVoicing, shiftOctave, detectChord, suggestNext,
 } from './theory.js'
 import { playChord, playSequence, onMidi } from './audio.js'
+
+// Identité stable d'un accord pour l'affichage (suit l'objet quand on réordonne).
+const chordKeys = new WeakMap()
+let nextChordKey = 1
+const keyOf = c => {
+  if (!chordKeys.has(c)) chordKeys.set(c, nextChordKey++)
+  return chordKeys.get(c)
+}
 
 const MIN_CHORDS = 2
 const MAX_CHORDS = 5
@@ -204,14 +212,32 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
   }
   const move = dir => current && moveChord(sel, sel + dir)
 
-  // Glisser-déposer des cases (souris et doigt) : réordonne en direct.
+  // Glisser-déposer des cases (souris et doigt) : la carte tenue suit le
+  // pointeur, les autres glissent à leur nouvelle place (animation FLIP).
   const slotsRef = useRef(null)
   const drag = useRef(null)
   const dragEndAt = useRef(0)
-  const [dragIdx, setDragIdx] = useState(-1)
-  const onSlotDown = (e, i) => {
+  const [dragKey, setDragKey] = useState(null)
+  const lastLeft = useRef(new Map()) // clé -> position de la case au dernier rendu
+
+  const slotEls = () => [...(slotsRef.current?.querySelectorAll('.slot-wrap[data-key]') || [])]
+
+  const placeDragged = () => {
+    const d = drag.current
+    const el = d?.active && slotEls().find(x => x.dataset.key === String(d.key))
+    if (!el) return
+    const dx = d.x - d.grab - el.offsetLeft
+    el.style.transition = 'none'
+    el.style.transform = `translate(${dx}px, -6px) scale(1.06) rotate(-2deg)`
+  }
+
+  const onSlotDown = (e, i, key) => {
     if (e.button > 0 || e.target.closest('.slot-del, .slot-edit')) return
-    drag.current = { idx: i, x0: e.clientX, y0: e.clientY, active: false }
+    const ol = slotsRef.current.getBoundingClientRect()
+    drag.current = {
+      idx: i, key, x0: e.clientX, y0: e.clientY, x: e.clientX - ol.left,
+      grab: e.clientX - ol.left - e.currentTarget.offsetLeft, active: false,
+    }
   }
   const onSlotMove = e => {
     const d = drag.current
@@ -220,24 +246,50 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
       if (Math.hypot(e.clientX - d.x0, e.clientY - d.y0) < 8) return
       d.active = true
       e.currentTarget.setPointerCapture?.(e.pointerId)
-      setDragIdx(d.idx)
+      setDragKey(d.key)
     }
-    const items = [...slotsRef.current.querySelectorAll('.slot-wrap')]
-    const target = items.findIndex(el => {
-      const r = el.getBoundingClientRect()
-      return e.clientX >= r.left && e.clientX <= r.right
-    })
+    d.x = e.clientX - slotsRef.current.getBoundingClientRect().left
+    // case visée : d'après les positions de mise en page (sans les animations)
+    const target = slotEls().findIndex(el => d.x >= el.offsetLeft && d.x <= el.offsetLeft + el.offsetWidth)
     if (target >= 0 && target !== d.idx) {
       moveChord(d.idx, target)
       d.idx = target
-      setDragIdx(target)
     }
+    placeDragged()
   }
   const onSlotUp = () => {
-    if (drag.current?.active) dragEndAt.current = performance.now()
+    const d = drag.current
     drag.current = null
-    setDragIdx(-1)
+    if (!d?.active) return
+    dragEndAt.current = performance.now()
+    const el = slotEls().find(x => x.dataset.key === String(d.key))
+    if (el) {
+      el.style.transition = 'transform 220ms ease-in-out'
+      el.style.transform = ''
+    }
+    setDragKey(null)
   }
+
+  // Après chaque réordonnancement : les cases qui ont bougé partent de leur
+  // ancienne position et glissent vers la nouvelle.
+  useLayoutEffect(() => {
+    const els = slotEls()
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    for (const el of els) {
+      const key = el.dataset.key
+      const before = lastLeft.current.get(key)
+      const now = el.offsetLeft
+      if (before != null && before !== now && key !== String(drag.current?.active && drag.current.key) && !reduce) {
+        el.style.transition = 'none'
+        el.style.transform = `translateX(${before - now}px)`
+        void el.offsetWidth
+        el.style.transition = 'transform 240ms ease-in-out'
+        el.style.transform = ''
+      }
+    }
+    lastLeft.current = new Map(els.map(el => [el.dataset.key, el.offsetLeft]))
+    placeDragged()
+  })
 
   // Revoice tout l'enchaînement pour que les mains bougent le moins possible.
   const smoothAll = () => {
@@ -435,9 +487,10 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
       <ol className="slots" ref={slotsRef}>
         {chords.map((c, i) => (
           <li
-            key={i}
-            className={`slot-wrap ${i === dragIdx ? 'is-dragging' : ''}`}
-            onPointerDown={e => onSlotDown(e, i)}
+            key={keyOf(c)}
+            data-key={keyOf(c)}
+            className={`slot-wrap ${keyOf(c) === dragKey ? 'is-dragging' : ''}`}
+            onPointerDown={e => onSlotDown(e, i, keyOf(c))}
             onPointerMove={onSlotMove}
             onPointerUp={onSlotUp}
             onPointerCancel={onSlotUp}

@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react'
 import { initMidi, midiDevices, onMidi, setMidiInput, setMidiOutput } from './audio.js'
+import { diagnose } from './storage.js'
 
-export default function Settings({ settings, setSettings, onClose }) {
+const yesNo = v => (v == null ? 'inconnu' : v ? 'oui' : 'non')
+
+export default function Settings({ settings, setSettings, onClose, onImportText }) {
+  const [diag, setDiag] = useState(null)
+  const [pasted, setPasted] = useState('')
+  const runDiag = async () => {
+    setDiag('…')
+    setDiag(await diagnose())
+  }
   const [devices, setDevices] = useState({ inputs: [], outputs: [] })
   const [midiError, setMidiError] = useState('')
 
@@ -67,6 +76,36 @@ export default function Settings({ settings, setSettings, onClose }) {
           <input id="set-internal" type="checkbox" checked={settings.internal} onChange={e => setSettings({ internal: e.target.checked })} />
           Son interne
         </label>
+
+        <section className="midi">
+          <h3>Stockage</h3>
+          <p className="muted">
+            Vérifie si cette page a le droit d’écrire dans la base du carnet, celle que voient tous tes appareils.
+          </p>
+          <button className="btn" onClick={runDiag} disabled={diag === '…'}>Vérifier l’accès à la base</button>
+          {diag && diag !== '…' && (
+            <ul className="diag">
+              <li>Base disponible : <b>{yesNo(diag.db)}</b></li>
+              <li>Reconnu comme propriétaire : <b>{yesNo(diag.owner)}</b></li>
+              <li>Droit d’édition : <b>{yesNo(diag.canEdit)}</b></li>
+              <li>Droit d’écriture annoncé : <b>{yesNo(diag.write)}</b></li>
+              <li>Essai d’écriture : <b className={diag.test === 'ok' ? 'ok' : 'bad'}>{diag.test === 'ok' ? 'réussi' : diag.test ? `refusé (${diag.test})` : 'impossible'}</b></li>
+            </ul>
+          )}
+          <label className="field">
+            <span>Coller une sauvegarde (texte exporté)</span>
+            <textarea id="paste-backup" rows="3" value={pasted} onChange={e => setPasted(e.target.value)} placeholder='{"app": "carnet-accords", …}' />
+          </label>
+          <button
+            className="btn"
+            disabled={!pasted.trim()}
+            onClick={async () => {
+              if (await onImportText(pasted)) setPasted('')
+            }}
+          >
+            Importer ce texte
+          </button>
+        </section>
 
         <section className="midi">
           <h3>MIDI</h3>

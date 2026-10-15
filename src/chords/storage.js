@@ -93,6 +93,39 @@ async function canWrite() {
   }
 }
 
+// Diagnostic affiché dans les réglages : ce que la plateforme dit de ce
+// visiteur, et un vrai essai d'écriture (document créé puis supprimé).
+export async function diagnose() {
+  const out = { db: false, owner: null, canEdit: null, write: null, test: null }
+  try {
+    const user = await window.claude?.use?.('user')
+    if (user) {
+      out.owner = await user.isOwner()
+      out.canEdit = await user.canEdit()
+      out.write = await user.can('data.write')
+    }
+  } catch {
+    // ignoré
+  }
+  let db = null
+  try {
+    db = (await window.claude?.use?.('db')) ?? null
+  } catch {
+    db = null
+  }
+  if (!db) return out
+  out.db = true
+  try {
+    const ref = db.collection('diagnostic').doc('essai')
+    await ref.set({ at: Date.now() })
+    await ref.delete()
+    out.test = 'ok'
+  } catch (e) {
+    out.test = e?.code || 'refusé'
+  }
+  return out
+}
+
 // Ouvre le carnet. `onChange(list, mode)` est appelé à chaque mise à jour.
 // mode : 'db' (base partagée, écriture OK), 'readonly' (base lisible mais
 // écriture refusée : les changements restent dans ce navigateur), 'local'.

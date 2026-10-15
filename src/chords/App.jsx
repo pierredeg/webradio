@@ -66,14 +66,18 @@ export default function App() {
     }
   }
 
-  const importBackup = async file => {
+  const importBackup = async file => importText(await file.text())
+
+  const importText = async text => {
     try {
-      const data = JSON.parse(await file.text())
+      const data = JSON.parse(text)
       const incoming = (data.progressions || []).filter(p => p && Array.isArray(p.chords) && p.chords.length)
       await store.current.importMany(incoming.map(p => ({ ...p, id: p.id || newId() })))
       setNotice(`${incoming.length} enchaînement${incoming.length > 1 ? 's' : ''} importé${incoming.length > 1 ? 's' : ''}.`)
+      return true
     } catch {
-      setError('Ce fichier n’est pas une sauvegarde du carnet d’accords.')
+      setError('Ce texte n’est pas une sauvegarde du carnet d’accords.')
+      return false
     }
   }
 
@@ -129,7 +133,7 @@ export default function App() {
           onEdit={() => setView({ name: 'create', id: current.id })}
         />
       )}
-      {showSettings && <Settings settings={settings} setSettings={setSettings} onClose={() => setShowSettings(false)} />}
+      {showSettings && <Settings settings={settings} setSettings={setSettings} onClose={() => setShowSettings(false)} onImportText={importText} />}
     </div>
   )
 }

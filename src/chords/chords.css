@@ -5,27 +5,31 @@
 :root {
   color-scheme: dark;
 
-  /* Couleurs */
-  --bg: #121418;
-  --panel: #1b1e24;
-  --raised: #242830;
-  --sunk: #0d0f12;
-  --ink: #eceef2;
-  --muted: #9aa2af;
-  --line: #2f343d;
-  --accent: #ff6a45;
-  --accent-ink: #1a0b06;
-  --amber: #f2b33d;
-  --ok: #5cc48c;
-  --warn: #f0ae3e;
-  --bad: #ff7a6e;
-  --key-w: #e4e6ea;
-  --key-w-edge: #4a505b;
-  --key-b: #08090b;
-  --key-on: #ff6a45;
-  --key-on-b: #ff8b6d;
-  --band: #0a0b0e;
-  --band-ink: #eceef2;
+  /* Couleurs : gris sombres neutres, accent émeraude (palette Tailwind) */
+  --bg: #242625;
+  --dots: #303133;
+  --panel: #2b2d2c;
+  --raised: #333534;
+  --sunk: #1c1e1d;
+  --ink: #f3f4f6;
+  --muted: #99a1af;
+  --line: #3a3c3b;
+  --accent: #00d294;
+  --accent-strong: #00bb7f;
+  --accent-ink: #04251b;
+  --amber: #fee685;
+  --ok: #5ee9b5;
+  --warn: #fee685;
+  --bad: #ff6568;
+  --key-w: #e5e7eb;
+  --key-w-edge: #4a5565;
+  --key-b: #101828;
+  --key-on: #00d294;
+  --key-on-b: #00bb7f;
+  --band: #1c1e1d;
+  --band-ink: #f3f4f6;
+
+  --ease-out: cubic-bezier(.16, .84, .44, 1);
 
   /* Typographie */
   --font: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
@@ -45,12 +49,20 @@
   --ls-head: .01em;
   --ls-caps: .08em;
 
-  --r: 6px;
+  --r: 8px;
 }
 
 * { box-sizing: border-box; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+@keyframes slide-up { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes pop-in { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
 body {
-  background: var(--bg); color: var(--ink);
+  background: radial-gradient(var(--dots) 1.5px, transparent 1.5px) 0 0 / 22px 22px var(--bg);
+  background-attachment: fixed;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
   font-family: var(--font); font-weight: var(--w-regular); font-size: var(--fs-body);
   line-height: var(--lh-body); letter-spacing: var(--ls);
 }
@@ -128,12 +140,12 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .kw.on { fill: var(--key-on); stroke: var(--key-on-b); }
 .kbk.on { fill: var(--key-on-b); }
 .kb-interactive g { cursor: pointer; }
-.kb-interactive .kw:not(.on):hover { fill: #c9ccd2; }
+.kb-interactive .kw:not(.on):hover { fill: #d1d5dc; }
 /* tailles des étiquettes fixées par Keyboard.jsx pour rester ≥ 12px à l'écran */
 .kl { text-anchor: middle; font-family: var(--font); font-weight: var(--w-semibold); pointer-events: none; letter-spacing: 0; }
 .kl-w { fill: var(--accent-ink); }
 .kl-b { fill: var(--key-w); }
-.kl-c { fill: #5b616c; }
+.kl-c { fill: #6a7282; }
 .kb-mini .kw { stroke-width: .6; }
 
 /* ---------- Carnet ---------- */
@@ -188,6 +200,7 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .emoji-btn.is-empty { font-size: var(--fs-small); opacity: .7; }
 .emoji-btn:hover { background: var(--raised); }
 .emoji-pop {
+  animation: pop-in .25s var(--ease-out);
   position: absolute; top: calc(100% + 8px); left: 10px; z-index: 20; width: min(316px, calc(100vw - 32px));
   display: grid; gap: 10px; padding: 12px; border-radius: var(--r);
   background: var(--raised); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 10px 28px rgba(0, 0, 0, .5);
@@ -299,8 +312,8 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .pl-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
 
 /* ---------- Réglages, menus, messages ---------- */
-.modal-bg { position: fixed; inset: 0; background: rgba(0, 0, 0, .65); display: grid; place-items: center; padding: 16px; z-index: 10; }
-.modal { width: min(520px, 100%); max-height: calc(100% - 32px); overflow: auto; background: var(--panel); border-radius: var(--r); padding: 18px; display: grid; gap: 14px; border: 1px solid var(--line); }
+.modal-bg { position: fixed; inset: 0; background: rgba(16, 24, 40, .7); display: grid; place-items: center; padding: 16px; z-index: 10; }
+.modal { animation: slide-up .45s var(--ease-out); width: min(520px, 100%); max-height: calc(100% - 32px); overflow: auto; background: var(--panel); border-radius: var(--r); padding: 18px; display: grid; gap: 14px; border: 1px solid var(--line); }
 .modal-head { display: flex; justify-content: space-between; align-items: center; }
 .modal-head h2 { font-size: var(--fs-h2); text-transform: uppercase; }
 .midi { display: grid; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line); }
@@ -308,6 +321,7 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .kebab { position: relative; margin-left: auto; }
 .kebab-btn { width: 40px; padding: 0; font-size: var(--fs-h3); line-height: 1; }
 .kebab-menu {
+  animation: pop-in .25s var(--ease-out);
   position: absolute; top: calc(100% + 4px); right: 0; z-index: 15; min-width: 230px;
   display: grid; padding: 4px; border-radius: var(--r);
   background: var(--raised); border: 1px solid var(--line); box-shadow: 0 10px 28px rgba(0, 0, 0, .5);
@@ -323,7 +337,7 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .diag .ok { color: var(--ok); }
 .diag .bad { color: var(--bad); }
 textarea { font-size: var(--fs-small); line-height: 1.4; padding: 8px 10px; border-radius: var(--r); border: 1px solid var(--line); background: var(--sunk); color: var(--ink); resize: vertical; width: 100%; }
-.toast { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 10px 12px; margin-bottom: 12px; border-radius: var(--r); background: var(--panel); border: 1px solid var(--bad); color: var(--bad); font-size: var(--fs-small); }
+.toast { animation: pop-in .3s var(--ease-out); display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 10px 12px; margin-bottom: 12px; border-radius: var(--r); background: var(--panel); border: 1px solid var(--bad); color: var(--bad); font-size: var(--fs-small); }
 .toast-ok { border-color: var(--ok); color: var(--ok); }
 
 @media (max-width: 640px) {
@@ -355,5 +369,5 @@ textarea { font-size: var(--fs-small); line-height: 1.4; padding: 8px 10px; bord
   .notes-big li { min-width: 62px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; }
+  * { transition: none !important; animation: none !important; }
 }

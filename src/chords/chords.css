@@ -218,6 +218,15 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
   background: var(--panel); border: 1px solid var(--line);
 }
 .chip:hover { border-color: var(--ink); }
+.chip, .tpl { touch-action: manipulation; user-select: none; }
+.chip.is-preview { border-color: var(--amber); box-shadow: inset 0 0 0 1px var(--amber); background: var(--sunk); }
+.hint { color: var(--muted); font-size: 13px; margin: -6px 0 10px; }
+.stage.is-preview { border-color: var(--amber); }
+.stage-eyebrow { font: 600 12px var(--f-display); text-transform: uppercase; letter-spacing: .08em; color: var(--warn); margin-bottom: 2px; }
+.preview-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.kb-preview .kw.on { fill: var(--amber); stroke: var(--warn); }
+.kb-preview .kbk.on { fill: var(--warn); }
+.kb-preview .kl-w { fill: var(--key-b); }
 .chip-name { font: 700 18px/1 var(--f-display); }
 .chip-diatonic:nth-child(-n+3) { border-color: var(--ink); }
 .chip-color .chip-name { color: var(--accent); }

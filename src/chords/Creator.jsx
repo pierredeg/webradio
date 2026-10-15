@@ -43,6 +43,8 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
   const [playStep, setPlayStep] = useState(-1)
   const [loop, setLoop] = useState(false)
   const [capture, setCapture] = useState(false)
+  const [preview, setPreview] = useState(null) // accord écouté, pas encore ajouté
+  const lastTap = useRef({ key: null, t: 0 })
   const stop = useRef(null)
   const meta = useRef({ createdAt: initial?.createdAt })
 
@@ -72,11 +74,31 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
       setKey({ tonic: chord.root, mode: isMinorish(chord.quality) ? 'minor' : 'major' })
     }
     update(next)
+    setPreview(null)
     playChord(chord.notes)
   }
 
-  const pick = (root, quality) =>
-    place(makeChord(root, quality, { prev: prev?.notes, bass: current?.bass || false, range }))
+  const voiced = (root, quality) => makeChord(root, quality, { prev: prev?.notes, bass: current?.bass || false, range })
+  const pick = (root, quality) => place(voiced(root, quality))
+
+  // Clic : écouter (aperçu sur le clavier). Double-clic : ajouter.
+  const tap = (key, single, double) => {
+    const now = performance.now()
+    if (lastTap.current.key === key && now - lastTap.current.t < 400) {
+      lastTap.current = { key: null, t: 0 }
+      double()
+    } else {
+      lastTap.current = { key, t: now }
+      single()
+    }
+  }
+  const listen = (root, quality) => {
+    const c = voiced(root, quality)
+    setPreview(c)
+    playChord(c.notes)
+  }
+  const chordTap = (root, quality) => tap(root + quality, () => listen(root, quality), () => pick(root, quality))
+  const isPreview = (root, quality) => preview && preview.root === root && preview.quality === quality
 
   const editCurrent = patch => {
     if (!current) return
@@ -87,6 +109,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
 
   // Clic sur une touche : ajoute / retire la note, l'accord est reconnu.
   const toggleKey = m => {
+    setPreview(null)
     const notes = current ? [...current.notes] : []
     const i = notes.indexOf(m)
     if (i >= 0) notes.splice(i, 1)
@@ -228,7 +251,11 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
   }
 
   const chip = (s, i) => (
-    <button key={s.kind + i + s.root + s.quality} className={`chip chip-${s.kind}`} onClick={() => pick(s.root, s.quality)}>
+    <button
+      key={s.kind + i + s.root + s.quality}
+      className={`chip chip-${s.kind} ${isPreview(s.root, s.quality) ? 'is-preview' : ''}`}
+      onClick={() => chordTap(s.root, s.quality)}
+    >
       <span className="chip-name">{rootName(s.root, n) + QUALITY[s.quality].symbol}</span>
       {s.numeral && <span className="chip-num">{s.numeral}</span>}
     </button>
@@ -310,6 +337,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
               className={`slot ${i === sel ? 'is-sel' : ''} ${i === playStep ? 'is-playing' : ''}`}
               onClick={() => {
                 setSel(i)
+                setPreview(null)
                 playChord(c.notes, 0.8)
               }}
             >
@@ -325,7 +353,10 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
         ))}
         {chords.length < MAX_CHORDS && (
           <li>
-            <button className={`slot slot-add ${isAddSlot ? 'is-sel' : ''}`} onClick={() => setSel(chords.length)}>
+            <button className={`slot slot-add ${isAddSlot ? 'is-sel' : ''}`} onClick={() => {
+                setSel(chords.length)
+                setPreview(null)
+              }}>
               <span className="slot-plus">+</span>
               <span className="slot-num">{chords.length < MIN_CHORDS ? `accord ${chords.length + 1}` : 'ajouter'}</span>
             </button>
@@ -333,9 +364,26 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
         )}
       </ol>
 
-      <section className="stage">
+      <section className={`stage ${preview ? 'is-preview' : ''}`}>
         <div className="stage-head">
-          {current ? (
+          {preview ? (
+            <>
+              <div>
+                <p className="stage-eyebrow">Aperçu, pas encore ajouté</p>
+                <h2 className="stage-name">{chordName(preview, n)}</h2>
+                <p className="stage-sub">
+                  {numeralOf(preview, key) && <b>{numeralOf(preview, key)} · </b>}
+                  {QUALITY[preview.quality].label}
+                </p>
+              </div>
+              <div className="preview-actions">
+                <button className="btn-primary" disabled={isAddSlot && chords.length >= MAX_CHORDS} onClick={() => place(preview)}>
+                  {isAddSlot ? 'Ajouter' : `Remplacer l’accord ${sel + 1}`}
+                </button>
+                <button className="btn-ghost" onClick={() => setPreview(null)}>Fermer l’aperçu</button>
+              </div>
+            </>
+          ) : current ? (
             <>
               <div>
                 <h2 className="stage-name">{chordName(current, n)}</h2>
@@ -354,15 +402,23 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
           )}
         </div>
 
-        <Keyboard low={settings.lowKey} notes={current?.notes || []} notation={n} onKey={toggleKey} />
+        <Keyboard
+          low={settings.lowKey}
+          notes={preview ? preview.notes : current?.notes || []}
+          notation={n}
+          onKey={toggleKey}
+          className={preview ? 'kb-preview' : ''}
+        />
 
-        {current && (
+        {preview && <p className="notes-line">{preview.notes.map(m => noteName(m, n)).join('  ·  ')}</p>}
+
+        {current && !preview && (
           <p className="notes-line">
             {current.notes.map(m => noteName(m, n)).join('  ·  ')}
           </p>
         )}
 
-        {current && (
+        {current && !preview && (
           <div className="voicing">
             <div className="seg">
               <button className="btn" disabled={current.root == null} onClick={() => editCurrent({ notes: cycleVoicing(current, -1, range) })} aria-label="Renversement précédent">◀</button>
@@ -416,6 +472,8 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
           </button>
         </div>
 
+        <p className="hint">{tab === 'templates' ? 'Clic : écouter le modèle · double-clic : l’utiliser' : 'Clic : écouter · double-clic : ajouter'}</p>
+
         {tab === 'suggest' && (
           <div className="sugg">
             <h3>{prev ? `Après ${chordName(prev, n)}` : `Pour commencer en ${rootName(key.tonic, n)} ${MODES[key.mode].label}`}</h3>
@@ -445,7 +503,12 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
                 <h3>{label}</h3>
                 <div className="chips">
                   {ids.map(qid => (
-                    <button key={qid} className="chip" onClick={() => pick(rootForPicker, qid)} title={QUALITY[qid].label}>
+                    <button
+                      key={qid}
+                      className={`chip ${isPreview(rootForPicker, qid) ? 'is-preview' : ''}`}
+                      onClick={() => chordTap(rootForPicker, qid)}
+                      title={QUALITY[qid].label}
+                    >
                       <span className="chip-name">{rootName(rootForPicker, n) + QUALITY[qid].symbol}</span>
                       <span className="chip-num">{QUALITY[qid].intervals.length}</span>
                     </button>
@@ -459,17 +522,27 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
         {tab === 'templates' && (
           <ul className="tpls">
             {TEMPLATES.map(t => {
-              const preview = buildTemplate(t, key.tonic, { sevenths: settings.sevenths, range })
+              const tplChords = buildTemplate(t, key.tonic, { sevenths: settings.sevenths, range })
               return (
                 <li key={t.name}>
                   <button
                     className="tpl"
-                    onClick={() => (chords.length && confirm !== t.name ? setConfirm(t.name) : applyTemplate(t))}
+                    onClick={() =>
+                      tap(
+                        'tpl' + t.name,
+                        () => {
+                          stop.current?.()
+                          setPlayStep(-1)
+                          stop.current = playSequence(tplChords, {})
+                        },
+                        () => (chords.length && confirm !== t.name ? setConfirm(t.name) : applyTemplate(t)),
+                      )
+                    }
                   >
                     <span className="tpl-name">{t.name}</span>
                     <span className="tpl-num">{t.numerals}</span>
-                    <span className="tpl-chords">{preview.map(c => chordName(c, n)).join('  ')}</span>
-                    {confirm === t.name && <span className="tpl-confirm">Remplacer les accords actuels ? Touche à nouveau pour confirmer.</span>}
+                    <span className="tpl-chords">{tplChords.map(c => chordName(c, n)).join('  ')}</span>
+                    {confirm === t.name && <span className="tpl-confirm">Remplacer les accords actuels ? Double-clique à nouveau pour confirmer.</span>}
                   </button>
                 </li>
               )

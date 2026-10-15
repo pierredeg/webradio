@@ -205,12 +205,13 @@ export function playChord(notes, dur = 0.9) {
   }
 }
 
-// Lecture : un accord par temps, à 110 BPM.
+// Lecture : un accord par mesure (4 temps), à 110 BPM.
 export const PLAYBACK_BPM = 110
+const BEATS_PER_CHORD = 4
 
 // Joue un enchaînement ; renvoie une fonction d'arrêt.
 export function playSequence(chords, { loop = false, onStep, onEnd }) {
-  const stepMs = 60000 / PLAYBACK_BPM
+  const stepMs = (60000 / PLAYBACK_BPM) * BEATS_PER_CHORD
   let i = 0
   let timer = null
   const tick = () => {
@@ -223,7 +224,7 @@ export function playSequence(chords, { loop = false, onStep, onEnd }) {
       i = 0
     }
     onStep?.(i)
-    playChord(chords[i].notes, Math.min(stepMs / 1000 - 0.08, 1.2))
+    playChord(chords[i].notes, stepMs / 1000 - 0.08)
     i++
     timer = setTimeout(tick, stepMs)
   }

@@ -83,7 +83,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
     if (!current) return
     const c = { ...current, ...patch }
     update(chords.map((x, i) => (i === sel ? c : x)))
-    playChord(c.notes, 1.2)
+    playChord(c.notes, 0.8)
   }
 
   // Clic sur une touche : ajoute / retire la note, l'accord est reconnu.
@@ -162,6 +162,20 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
     if (!list.length) return
     stop.current = playSequence(list, { bpm, loop, onStep: setPlayStep })
   }
+
+  // Touche Suppr ou Retour arrière : supprime l'accord sélectionné
+  useEffect(() => {
+    const onKey = e => {
+      if (e.key !== 'Delete' && e.key !== 'Backspace') return
+      if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || '')) return
+      if (sel < chords.length) {
+        e.preventDefault()
+        removeAt(sel)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
 
   const placeRef = useRef(place)
   placeRef.current = place
@@ -309,18 +323,21 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
 
       <ol className="slots">
         {chords.map((c, i) => (
-          <li key={i}>
+          <li key={i} className="slot-wrap">
             <button
               className={`slot ${i === sel ? 'is-sel' : ''} ${i === playStep ? 'is-playing' : ''}`}
               onClick={() => {
                 setSel(i)
-                playChord(c.notes, 1.2)
+                playChord(c.notes, 0.8)
               }}
             >
               <span className="slot-n">{i + 1}</span>
               <span className="slot-name">{chordName(c, n)}</span>
               <span className="slot-num">{numeralOf(c, key) || ' '}</span>
               <Keyboard low={settings.lowKey} notes={c.notes} mini labels={false} />
+            </button>
+            <button className="slot-del" onClick={() => removeAt(i)} aria-label={`Supprimer ${chordName(c, n)}`} title="Supprimer cet accord">
+              ×
             </button>
           </li>
         ))}
@@ -395,7 +412,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
             <span className="seg-spacer" />
             <button className="btn-ghost" disabled={sel === 0} onClick={() => move(-1)} aria-label="Déplacer à gauche">←</button>
             <button className="btn-ghost" disabled={sel >= chords.length - 1} onClick={() => move(1)} aria-label="Déplacer à droite">→</button>
-            <button className="btn-ghost btn-quiet-danger" onClick={() => removeAt(sel)}>Retirer</button>
+            <button className="btn btn-del" onClick={() => removeAt(sel)}>× Supprimer l’accord</button>
           </div>
         )}
         {status && <p className="status">{status}</p>}

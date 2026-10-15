@@ -42,16 +42,17 @@ const freq = midi => 440 * 2 ** ((midi - 69) / 12)
 function voice(midi, t0, dur, level) {
   const out = ctx.createGain()
   out.gain.setValueAtTime(0, t0)
-  out.gain.linearRampToValueAtTime(level, t0 + 0.03)
-  out.gain.setTargetAtTime(level * 0.75, t0 + 0.03, 0.3)
-  out.gain.setTargetAtTime(0, t0 + dur, 0.18)
+  // attaque nette, decay rapide vers un sustain bas, release court
+  out.gain.linearRampToValueAtTime(level, t0 + 0.015)
+  out.gain.setTargetAtTime(level * 0.3, t0 + 0.015, 0.12)
+  out.gain.setTargetAtTime(0, t0 + dur, 0.05)
 
   const filter = ctx.createBiquadFilter()
   filter.type = 'lowpass'
   filter.Q.value = 3
   filter.frequency.setValueAtTime(500, t0)
-  filter.frequency.linearRampToValueAtTime(2600, t0 + 0.05)
-  filter.frequency.setTargetAtTime(1300, t0 + 0.05, 0.4)
+  filter.frequency.linearRampToValueAtTime(2600, t0 + 0.03)
+  filter.frequency.setTargetAtTime(1000, t0 + 0.03, 0.15)
   filter.connect(out).connect(bus)
 
   const oscs = [[-7, 'sawtooth', 1], [7, 'sawtooth', 1], [0, 'square', 0.35]].map(([detune, type, g]) => {
@@ -63,7 +64,7 @@ function voice(midi, t0, dur, level) {
     gain.gain.value = g
     o.connect(gain).connect(filter)
     o.start(t0)
-    o.stop(t0 + dur + 1.2)
+    o.stop(t0 + dur + 0.4)
     return o
   })
   oscs[0].onended = () => out.disconnect()
@@ -119,7 +120,7 @@ export function configureAudio(s) {
   settings = { ...settings, ...s }
 }
 
-export function playChord(notes, dur = 1.6) {
+export function playChord(notes, dur = 0.9) {
   if (!notes?.length) return
   if (settings.internal) {
     ensureCtx()
@@ -150,7 +151,7 @@ export function playSequence(chords, { bpm = 80, beats = 4, loop = false, onStep
       i = 0
     }
     onStep?.(i)
-    playChord(chords[i].notes, stepMs / 1000 - 0.08)
+    playChord(chords[i].notes, Math.min(stepMs / 1000 - 0.08, 1.2))
     i++
     timer = setTimeout(tick, stepMs)
   }

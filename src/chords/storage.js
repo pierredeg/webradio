@@ -9,6 +9,7 @@ export const DEFAULT_SETTINGS = {
   lowKey: 48, // première touche du clavier 37 touches (48 = C3)
   sevenths: true, // suggestions en accords 4 sons
   internal: true, // son interne
+  sound: 'piano', // 'piano' ou 'synth'
   bpm: 72,
   midiIn: '',
   midiOut: '',

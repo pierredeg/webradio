@@ -55,6 +55,14 @@ export default function Settings({ settings, setSettings, onClose }) {
           Suggérer des accords 4 sons (sinon triades)
         </label>
 
+        <label className="field">
+          <span>Son</span>
+          <select id="set-sound" value={settings.sound} onChange={e => setSettings({ sound: e.target.value })}>
+            <option value="piano">Grand piano</option>
+            <option value="synth">Synthé (façon Juno)</option>
+          </select>
+        </label>
+
         <label className="check">
           <input id="set-internal" type="checkbox" checked={settings.internal} onChange={e => setSettings({ internal: e.target.checked })} />
           Son interne

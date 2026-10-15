@@ -24,7 +24,7 @@ export default function App() {
     return () => s.close()
   }, [])
 
-  useEffect(() => configureAudio({ internal: settings.internal }), [settings.internal])
+  useEffect(() => configureAudio({ internal: settings.internal, sound: settings.sound }), [settings.internal, settings.sound])
 
   const setSettings = patch =>
     setSettingsState(s => {

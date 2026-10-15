@@ -1,8 +1,10 @@
-// Son interne (petit synthé façon Juno : scies désaccordées + chorus)
-// et sortie / entrée MIDI (Web MIDI, Chrome & Edge).
+// Son interne : grand piano échantillonné (par défaut) ou petit synthé façon
+// Juno, et sortie / entrée MIDI (Web MIDI, Chrome & Edge).
+import PIANO_SAMPLES from './pianoSamples.js'
 
 let ctx = null
 let bus = null
+let pianoBus = null
 
 function ensureCtx() {
   if (ctx) {
@@ -34,7 +36,60 @@ function ensureCtx() {
     wet.gain.value = 0.5
     bus.connect(d).connect(wet).connect(p).connect(comp)
   }
+
+  // piano : sortie directe + petite réverbération de pièce
+  pianoBus = ctx.createGain()
+  pianoBus.gain.value = 0.9
+  pianoBus.connect(comp)
+  const verb = ctx.createConvolver()
+  verb.buffer = roomImpulse(1.4)
+  const verbWet = ctx.createGain()
+  verbWet.gain.value = 0.18
+  pianoBus.connect(verb).connect(verbWet).connect(comp)
   return ctx
+}
+
+function roomImpulse(seconds) {
+  const len = Math.floor(ctx.sampleRate * seconds)
+  const buf = ctx.createBuffer(2, len, ctx.sampleRate)
+  for (let c = 0; c < 2; c++) {
+    const d = buf.getChannelData(c)
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 3
+  }
+  return buf
+}
+
+// ---------- Piano ----------
+
+let pianoBuffers = null // [{ midi, buffer }]
+let pianoLoading = null
+
+function loadPiano() {
+  if (pianoLoading) return pianoLoading
+  pianoLoading = Promise.all(
+    Object.entries(PIANO_SAMPLES).map(async ([midi, b64]) => {
+      const bytes = Uint8Array.from(atob(b64), ch => ch.charCodeAt(0))
+      return { midi: +midi, buffer: await ctx.decodeAudioData(bytes.buffer) }
+    }),
+  ).then(list => {
+    pianoBuffers = list.sort((a, b) => a.midi - b.midi)
+    return pianoBuffers
+  })
+  return pianoLoading
+}
+
+function pianoNote(midi, t0, dur, level) {
+  const s = pianoBuffers.reduce((a, b) => (Math.abs(b.midi - midi) < Math.abs(a.midi - midi) ? b : a))
+  const src = ctx.createBufferSource()
+  src.buffer = s.buffer
+  src.playbackRate.value = 2 ** ((midi - s.midi) / 12)
+  const g = ctx.createGain()
+  g.gain.setValueAtTime(level, t0)
+  g.gain.setTargetAtTime(0, t0 + dur, 0.07) // relâché de la touche
+  src.connect(g).connect(pianoBus)
+  src.start(t0)
+  src.stop(t0 + dur + 0.5)
+  src.onended = () => g.disconnect()
 }
 
 const freq = midi => 440 * 2 ** ((midi - 69) / 12)
@@ -115,7 +170,7 @@ export function onMidi(fn) {
 
 // ---------- Lecture ----------
 
-let settings = { internal: true, channel: 0 }
+let settings = { internal: true, sound: 'piano', channel: 0 }
 export function configureAudio(s) {
   settings = { ...settings, ...s }
 }
@@ -124,9 +179,23 @@ export function playChord(notes, dur = 0.9) {
   if (!notes?.length) return
   if (settings.internal) {
     ensureCtx()
-    const t0 = ctx.currentTime + 0.01
-    const level = 0.22 / Math.sqrt(notes.length)
-    notes.forEach(n => voice(n, t0, dur, level))
+    if (settings.sound === 'synth') {
+      const t0 = ctx.currentTime + 0.01
+      const level = 0.22 / Math.sqrt(notes.length)
+      notes.forEach(n => voice(n, t0, dur, level))
+    } else {
+      const start = () => {
+        const t0 = ctx.currentTime + 0.01
+        const level = 0.9 / Math.sqrt(notes.length)
+        notes.forEach(n => pianoNote(n, t0, dur, level))
+      }
+      if (pianoBuffers) start()
+      else {
+        // premier son : on décode les échantillons, puis on joue si c'est encore d'actualité
+        const asked = performance.now()
+        loadPiano().then(() => performance.now() - asked < 1500 && start())
+      }
+    }
   }
   if (output) {
     const ch = settings.channel & 0x0f

@@ -214,7 +214,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
       meta.current.createdAt = saved.createdAt
       setName(finalName)
       setDirty(false)
-      setStatus('Enregistré dans ton carnet.')
+      setStatus(saved.synced ? 'Enregistré dans ton carnet.' : 'Gardé sur cet appareil, pas encore dans la base.')
     } catch {
       // message affiché par l'app
     }

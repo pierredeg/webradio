@@ -84,6 +84,7 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
                 <span className="card-key">
                   {rootName(p.key?.tonic ?? 0, n)} {MODES[p.key?.mode || 'major'].label} · {p.chords.length} accords
                 </span>
+                {p.pending && <span className="pill pill-warn">sur cet appareil seulement</span>}
               </button>
               <button
                 className={`btn-round ${playing.id === p.id ? 'is-on' : ''}`}

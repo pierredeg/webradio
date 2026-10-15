@@ -36,14 +36,13 @@ export default function App() {
   const save = async p => {
     const now = Date.now()
     const item = { ...p, id: p.id || newId(), createdAt: p.createdAt || now, updatedAt: now }
-    try {
-      await store.current.save(item)
-      setError('')
-      return item
-    } catch (e) {
-      setError("L'enregistrement a échoué : " + (e?.message || 'base indisponible') + '. Réessaie dans un instant.')
-      throw e
+    const res = await store.current.save(item)
+    if (res.synced || storeMode === 'local') setError('')
+    else {
+      const code = res.error?.code ? ` (${res.error.code})` : ''
+      setError(`Gardé sur cet appareil : la base de l’artifact a refusé l’enregistrement${code}. Il sera renvoyé automatiquement à la prochaine ouverture.`)
     }
+    return { ...item, synced: res.synced || storeMode === 'local' }
   }
 
   const remove = async id => {

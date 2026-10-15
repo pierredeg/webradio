@@ -19,6 +19,44 @@ const GROUPS = [
 
 const isMinorish = q => /^m(?!aj)|dim|m7b5/.test(q || '')
 
+const EMOJIS = [
+  '🙂', '😌', '🥲', '😢', '😍', '🤩', '😎', '🌙', '☀️', '🌅', '🌊', '🌧️',
+  '🔥', '❄️', '🍋', '🍊', '🍒', '🌸', '🌿', '🍂', '✨', '💫', '🌈', '⚡',
+  '🎹', '🎸', '🎷', '🎺', '🥁', '🎧', '🎬', '🕺', '💜', '💙', '🖤', '❤️',
+]
+
+function EmojiPicker({ value, onPick, onClose }) {
+  const [custom, setCustom] = useState('')
+  useEffect(() => {
+    const onKey = e => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+  return (
+    <div className="emoji-pop" role="dialog" aria-label="Choisir un emoji">
+      <div className="emoji-grid">
+        {EMOJIS.map(e => (
+          <button key={e} className={`emoji-cell ${e === value ? 'is-on' : ''}`} onClick={() => onPick(e)}>
+            {e}
+          </button>
+        ))}
+      </div>
+      <form
+        className="emoji-custom"
+        onSubmit={ev => {
+          ev.preventDefault()
+          const first = [...new Intl.Segmenter().segment(custom.trim())][0]?.segment
+          if (first) onPick(first)
+        }}
+      >
+        <input id="emoji-custom" placeholder="Autre emoji…" value={custom} onChange={e => setCustom(e.target.value)} />
+        <button className="btn" type="submit" disabled={!custom.trim()}>OK</button>
+      </form>
+      {value && <button className="btn-ghost" onClick={() => onPick('')}>Retirer l’emoji</button>}
+    </div>
+  )
+}
+
 export function NoteCount({ count }) {
   if (!count) return null
   const cls = count <= IDEAL_NOTES ? 'pill-ok' : count === MAX_NOTES ? 'pill-warn' : 'pill-bad'
@@ -31,6 +69,8 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
   const n = settings.notation
   const [id, setId] = useState(initial?.id)
   const [name, setName] = useState(initial?.name || '')
+  const [emoji, setEmoji] = useState(initial?.emoji || '')
+  const [emojiOpen, setEmojiOpen] = useState(false)
   const [key, setKey] = useState(initial?.key || { tonic: 0, mode: 'major' })
   const [keyLocked, setKeyLocked] = useState(!!initial)
   const [chords, setChords] = useState(initial?.chords || [])
@@ -231,7 +271,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
     if (chords.length < MIN_CHORDS) return
     const finalName = name.trim() || chords.map(c => chordName(c, n)).join(' → ')
     try {
-      const saved = await onSave({ id, name: finalName, key, chords, createdAt: meta.current.createdAt })
+      const saved = await onSave({ id, name: finalName, emoji, key, chords, createdAt: meta.current.createdAt })
       setId(saved.id)
       meta.current.createdAt = saved.createdAt
       setName(finalName)
@@ -267,6 +307,27 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
     <main className="creator">
       <header className="cr-head">
         <button className="btn-ghost btn-back" onClick={leave}>← Carnet</button>
+        <div className="emoji-wrap">
+          <button
+            className={`emoji-btn ${emoji ? '' : 'is-empty'}`}
+            onClick={() => setEmojiOpen(!emojiOpen)}
+            aria-label={emoji ? `Emoji : ${emoji}, changer` : 'Ajouter un emoji'}
+            aria-expanded={emojiOpen}
+          >
+            {emoji || '☺︎+'}
+          </button>
+          {emojiOpen && (
+            <EmojiPicker
+              value={emoji}
+              onPick={e => {
+                setEmoji(e)
+                setDirty(true)
+                setEmojiOpen(false)
+              }}
+              onClose={() => setEmojiOpen(false)}
+            />
+          )}
+        </div>
         <input
           id="prog-name"
           className="cr-name"
@@ -365,11 +426,12 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
       </ol>
 
       <section className={`stage ${preview ? 'is-preview' : ''}`}>
+        {/* hauteur constante : l'aperçu ne doit pas décaler la liste (double-clic) */}
+        <p className="stage-eyebrow">{preview ? 'Aperçu, pas encore ajouté' : '\u00a0'}</p>
         <div className="stage-head">
           {preview ? (
             <>
               <div>
-                <p className="stage-eyebrow">Aperçu, pas encore ajouté</p>
                 <h2 className="stage-name">{chordName(preview, n)}</h2>
                 <p className="stage-sub">
                   {numeralOf(preview, key) && <b>{numeralOf(preview, key)} · </b>}
@@ -397,7 +459,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
           ) : (
             <div>
               <h2 className="stage-name stage-empty">Accord {sel + 1}</h2>
-              <p className="stage-sub">Choisis un accord dans les suggestions, ou tape ses notes sur le clavier.</p>
+              <p className="stage-sub">Clique une suggestion pour l’écouter, ou tape les notes sur le clavier.</p>
             </div>
           )}
         </div>
@@ -410,16 +472,12 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
           className={preview ? 'kb-preview' : ''}
         />
 
-        {preview && <p className="notes-line">{preview.notes.map(m => noteName(m, n)).join('  ·  ')}</p>}
+        <p className="notes-line">
+          {(preview || current)?.notes.map(m => noteName(m, n)).join('  ·  ') || '\u00a0'}
+        </p>
 
-        {current && !preview && (
-          <p className="notes-line">
-            {current.notes.map(m => noteName(m, n)).join('  ·  ')}
-          </p>
-        )}
-
-        {current && !preview && (
-          <div className="voicing">
+        {current && (
+          <div className="voicing" style={preview ? { visibility: 'hidden' } : undefined}>
             <div className="seg">
               <button className="btn" disabled={current.root == null} onClick={() => editCurrent({ notes: cycleVoicing(current, -1, range) })} aria-label="Renversement précédent">◀</button>
               <span className="seg-label">Renversement</span>

@@ -29,7 +29,7 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
     .filter(p => {
       if (!q) return true
       const names = p.chords.map(c => chordName(c, 'en') + ' ' + chordName(c, 'fr')).join(' ')
-      return (p.name + ' ' + names).toLowerCase().includes(q)
+      return ((p.emoji || '') + ' ' + p.name + ' ' + names).toLowerCase().includes(q)
     })
 
   return (
@@ -79,7 +79,7 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
           <li key={p.id} className="card">
             <div className="card-head">
               <button className="card-title" onClick={() => onPlay(p)}>
-                <h2>{p.name || 'Sans nom'}</h2>
+                <h2>{p.emoji && <span className="emoji">{p.emoji}</span>}{p.name || 'Sans nom'}</h2>
                 <span className="card-key">
                   {rootName(p.key?.tonic ?? 0, n)} {MODES[p.key?.mode || 'major'].label} · {p.chords.length} accords
                 </span>

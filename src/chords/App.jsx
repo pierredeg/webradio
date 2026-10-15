@@ -39,7 +39,7 @@ export default function App() {
     const res = await store.current.save(item)
     if (res.synced || storeMode === 'local') setError('')
     else {
-      const code = res.error?.code ? ` (${res.error.code})` : ''
+      const code = ` (${[res.error?.code, res.access].filter(Boolean).join(' · ')})`
       setError(`Gardé sur cet appareil : la base de l’artifact a refusé l’enregistrement${code}. Il sera renvoyé automatiquement à la prochaine ouverture.`)
     }
     return { ...item, synced: res.synced || storeMode === 'local' }

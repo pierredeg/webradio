@@ -52,7 +52,7 @@ export default function Player({ progression: p, settings, onClose, onEdit }) {
       <header className="cr-head">
         <button className="btn-ghost btn-back" onClick={onClose}>← Carnet</button>
         <div className="pl-title">
-          <h1>{p.name}</h1>
+          <h1>{p.emoji && <span className="emoji">{p.emoji}</span>}{p.name}</h1>
           <span className="card-key">{rootName(key.tonic, n)} {MODES[key.mode].label}</span>
         </div>
         <button className="btn-ghost" onClick={onEdit}>Modifier</button>

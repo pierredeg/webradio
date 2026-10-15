@@ -79,6 +79,18 @@ function toDoc(p) {
   return body
 }
 
+// Ce que la plateforme dit des droits du visiteur (aide au diagnostic).
+async function accessInfo() {
+  try {
+    const user = await window.claude?.use?.('user')
+    if (!user) return 'visiteur non identifié'
+    const [owner, write] = await Promise.all([user.isOwner(), user.can('data.write')])
+    return `propriétaire : ${owner ? 'oui' : 'non'}, droit d’écriture : ${write == null ? 'inconnu' : write ? 'oui' : 'non'}`
+  } catch {
+    return 'droits inconnus'
+  }
+}
+
 // Ouvre le carnet. `onChange(list, mode)` est appelé à chaque mise à jour.
 // Un enchaînement que la base refuse reste sur l'appareil (« en attente »)
 // et est renvoyé à la prochaine ouverture.
@@ -176,7 +188,7 @@ export function openStore(onChange) {
       } catch (e) {
         console.warn('carnet-accords: écriture refusée', e?.code, e?.message)
         emit()
-        return { synced: false, error: e }
+        return { synced: false, error: e, access: await accessInfo() }
       }
     },
     async remove(id) {

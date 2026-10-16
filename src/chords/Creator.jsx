@@ -6,7 +6,7 @@ import {
   cycleVoicing, shiftOctave, detectChord, suggestNext,
 } from './theory.js'
 import { playChord, playSequence, onMidi } from './audio.js'
-import { IconPlay, IconStop } from './Icons.jsx'
+import { IconBack, IconClose, IconLoop, IconEdit, IconMinus, IconNext, IconPlay, IconPlus, IconPrev, IconStop, IconTrash } from './Icons.jsx'
 
 // Identité stable d'un accord pour l'affichage (suit l'objet quand on réordonne).
 const chordKeys = new WeakMap()
@@ -442,7 +442,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
   return (
     <main className="creator">
       <header className="cr-head">
-        <button className="btn-ghost btn-back" onClick={leave}>← Notebook</button>
+        <button className="btn-ghost btn-back" onClick={leave}><IconBack />Notebook</button>
         <div className="emoji-wrap">
           <button
             className={`emoji-btn ${emoji ? '' : 'is-empty'}`}
@@ -521,7 +521,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
             {playStep >= 0 ? <><IconStop />Stop</> : <><IconPlay />Play</>}
           </button>
           <label className="check">
-            <input id="loop" type="checkbox" checked={loop} onChange={e => setLoop(e.target.checked)} /> loop
+            <input id="loop" type="checkbox" checked={loop} onChange={e => setLoop(e.target.checked)} /> <IconLoop />loop
           </label>
         </div>
       </section>
@@ -547,10 +547,10 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
               <Keyboard low={settings.lowKey} notes={c.notes} mini labels={false} />
             </button>
             <button className="slot-edit" onClick={() => editSlot(i)} aria-label={`Edit ${chordName(c, n)}`} title="Edit this chord">
-              ✎
+              <IconEdit />
             </button>
             <button className="slot-del" onClick={() => removeAt(i)} aria-label={`Delete ${chordName(c, n)}`} title="Delete this chord">
-              ×
+              <IconClose />
             </button>
           </li>
         ))}
@@ -618,14 +618,14 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
         {current && (
           <div className="voicing" style={preview ? { visibility: 'hidden' } : undefined}>
             <div className="seg">
-              <button className="btn" disabled={current.root == null} onClick={() => editCurrent({ notes: cycleVoicing(current, -1, range) })} aria-label="Previous inversion">◀</button>
+              <button className="btn" disabled={current.root == null} onClick={() => editCurrent({ notes: cycleVoicing(current, -1, range) })} aria-label="Previous inversion"><IconPrev /></button>
               <span className="seg-label">Inversion</span>
-              <button className="btn" disabled={current.root == null} onClick={() => editCurrent({ notes: cycleVoicing(current, 1, range) })} aria-label="Next inversion">▶</button>
+              <button className="btn" disabled={current.root == null} onClick={() => editCurrent({ notes: cycleVoicing(current, 1, range) })} aria-label="Next inversion"><IconNext /></button>
             </div>
             <div className="seg">
-              <button className="btn" onClick={() => editCurrent({ notes: shiftOctave(current.notes, -1, range) })} aria-label="Octave down">−</button>
+              <button className="btn" onClick={() => editCurrent({ notes: shiftOctave(current.notes, -1, range) })} aria-label="Octave down"><IconMinus /></button>
               <span className="seg-label">Octave</span>
-              <button className="btn" onClick={() => editCurrent({ notes: shiftOctave(current.notes, 1, range) })} aria-label="Octave up">+</button>
+              <button className="btn" onClick={() => editCurrent({ notes: shiftOctave(current.notes, 1, range) })} aria-label="Octave up"><IconPlus /></button>
             </div>
             <button
               className={`btn ${current.bass ? 'is-on' : ''}`}
@@ -645,9 +645,9 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
               Move closer to previous
             </button>
             <span className="seg-spacer" />
-            <button className="btn-ghost" disabled={sel === 0} onClick={() => move(-1)} aria-label="Move left">←</button>
-            <button className="btn-ghost" disabled={sel >= chords.length - 1} onClick={() => move(1)} aria-label="Move right">→</button>
-            <button className="btn btn-del" onClick={() => removeAt(sel)}>× Delete chord</button>
+            <button className="btn-ghost" disabled={sel === 0} onClick={() => move(-1)} aria-label="Move left"><IconPrev /></button>
+            <button className="btn-ghost" disabled={sel >= chords.length - 1} onClick={() => move(1)} aria-label="Move right"><IconNext /></button>
+            <button className="btn btn-del" onClick={() => removeAt(sel)}><IconTrash />Delete chord</button>
           </div>
         )}
         {status && <p className="status">{status}</p>}

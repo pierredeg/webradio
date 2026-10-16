@@ -3,7 +3,7 @@ import Keyboard from './Keyboard.jsx'
 import { NoteCount } from './Creator.jsx'
 import { chordName, noteName, spelling, numeralOf, QUALITY, rootName, MODES } from './theory.js'
 import { playChord, playSequence } from './audio.js'
-import { IconEdit } from './Icons.jsx'
+import { IconBack, IconEdit, IconListen, IconNext, IconPlay, IconPrev, IconStop } from './Icons.jsx'
 
 // Vue « jouer » : un accord à la fois, en grand, pour le refaire sur le clavier.
 export default function Player({ progression: p, settings, onClose, onEdit }) {
@@ -51,7 +51,7 @@ export default function Player({ progression: p, settings, onClose, onEdit }) {
   return (
     <main className="player">
       <header className="cr-head">
-        <button className="btn-ghost btn-back" onClick={onClose}>← Notebook</button>
+        <button className="btn-ghost btn-back" onClick={onClose}><IconBack />Notebook</button>
         <div className="pl-title">
           <h1>{p.emoji && <span className="emoji">{p.emoji}</span>}{p.name}</h1>
           <span className="card-key">{rootName(key.tonic, n)} {MODES[key.mode].label}</span>
@@ -93,10 +93,10 @@ export default function Player({ progression: p, settings, onClose, onEdit }) {
       </section>
 
       <nav className="pl-nav">
-        <button className="btn btn-lg" onClick={() => go(i - 1)}>← Previous</button>
-        <button className="btn btn-lg" onClick={() => playChord(c.notes)}>Listen</button>
-        <button className={`btn btn-lg ${auto ? 'is-on' : ''}`} onClick={toggleAuto}>{auto ? '■ Stop' : '▶ Play all'}</button>
-        <button className="btn btn-lg" onClick={() => go(i + 1)}>Next →</button>
+        <button className="btn btn-lg" onClick={() => go(i - 1)}><IconPrev />Previous</button>
+        <button className="btn btn-lg" onClick={() => playChord(c.notes)}><IconListen />Listen</button>
+        <button className={`btn btn-lg ${auto ? 'is-on' : ''}`} onClick={toggleAuto}>{auto ? <><IconStop />Stop</> : <><IconPlay />Play all</>}</button>
+        <button className="btn btn-lg" onClick={() => go(i + 1)}>Next<IconNext /></button>
       </nav>
     </main>
   )

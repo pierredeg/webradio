@@ -329,7 +329,10 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .kebab-btn { width: var(--tap); padding: 0; font-size: var(--fs-h3); line-height: 1; }
 .card-menu { margin-left: 0; flex: none; }
 .kebab-menu button.is-danger { color: var(--bad); }
-.icon { flex: none; font-size: 1.05em; margin-left: -2px; }
+.icon { flex: none; font-size: 1.1em; }
+.kebab-menu button { display: flex; align-items: center; gap: 10px; }
+.slot-edit .icon, .slot-del .icon { font-size: 15px; }
+.seg .btn .icon { font-size: 1.2em; }
 .kebab-menu {
   animation: pop-in .25s var(--ease-out);
   position: absolute; top: calc(100% + 4px); right: 0; z-index: 15; min-width: 230px;

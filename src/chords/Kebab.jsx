@@ -46,6 +46,7 @@ export default function Kebab({ items, label = 'More options', className = '', c
                 disabled={it.disabled}
                 onClick={() => (it.confirm ? setAsking(it) : (close(), it.onClick()))}
               >
+                {it.icon}
                 {it.label}
               </button>
             ))

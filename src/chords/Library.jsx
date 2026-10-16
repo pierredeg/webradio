@@ -3,7 +3,7 @@ import Keyboard from './Keyboard.jsx'
 import { chordName, spelling, numeralOf, rootName, MODES } from './theory.js'
 import { playSequence } from './audio.js'
 import Kebab from './Kebab.jsx'
-import { IconEdit, IconPlay, IconPlus, IconStop } from './Icons.jsx'
+import { IconCopy, IconEdit, IconPlay, IconPlus, IconSettings, IconStop, IconTrash } from './Icons.jsx'
 
 export default function Library({ list, settings, storeMode, onNew, onEdit, onPlay, onDuplicate, onDelete, onSettings, onExport, onImport }) {
   const [query, setQuery] = useState('')
@@ -42,7 +42,7 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
           <h1>Chord Notebook</h1>
         </div>
         <div className="lib-actions">
-          <button className="btn-ghost" onClick={onSettings}>Settings</button>
+          <button className="btn-ghost" onClick={onSettings}><IconSettings />Settings</button>
           <button className="btn-primary" onClick={onNew}><IconPlus />New progression</button>
         </div>
       </header>
@@ -114,8 +114,8 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
                 className="card-menu"
                 label={`More options for ${p.name || 'this progression'}`}
                 items={[
-                  { label: 'Duplicate', onClick: () => onDuplicate(p) },
-                  { label: 'Delete', danger: true, confirm: 'Delete for good', onClick: () => onDelete(p.id) },
+                  { label: 'Duplicate', icon: <IconCopy />, onClick: () => onDuplicate(p) },
+                  { label: 'Delete', icon: <IconTrash />, danger: true, confirm: 'Delete for good', onClick: () => onDelete(p.id) },
                 ]}
               />
             </div>

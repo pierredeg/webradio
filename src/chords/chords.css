@@ -222,12 +222,12 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .cr-bar { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; margin-block: 16px; }
 .cr-transport { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-left: auto; }
 
-.slots { list-style: none; margin: 0 0 14px; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.slots { position: relative; list-style: none; margin: 0 0 14px; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
 .slot {
   width: 100%; height: 100%; display: grid; gap: 3px; align-content: start; text-align: left;
   padding: 8px; background: var(--panel); border: 2px solid var(--line); min-width: 0;
 }
-.slot-wrap { position: relative; min-width: 0; touch-action: pan-y; will-change: transform; }
+.slot-wrap { position: relative; min-width: 0; touch-action: pan-y; will-change: transform; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .slot-wrap .slot { cursor: grab; transition: box-shadow 160ms ease-in-out, border-color 160ms ease-in-out; }
 .slot-wrap.is-dragging { z-index: 5; }
 .slot-wrap.is-dragging .slot {

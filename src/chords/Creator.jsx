@@ -233,41 +233,84 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
     el.style.transform = `translate(${dx}px, ${dy - 6}px) scale(1.06) rotate(-2deg)`
   }
 
+  // Coordonnées dans le repère de la rangée de cases (la rangée est
+  // position: relative, donc offsetLeft/offsetTop des cases y sont relatifs).
+  const toLocal = e => {
+    const r = slotsRef.current.getBoundingClientRect()
+    return { x: e.clientX - r.left, y: e.clientY - r.top }
+  }
+
+  const activate = () => {
+    const d = drag.current
+    if (!d || d.active) return
+    d.active = true
+    clearTimeout(d.timer)
+    try {
+      d.el.setPointerCapture(d.pid)
+    } catch {
+      // le pointeur a déjà été relâché
+    }
+    navigator.vibrate?.(12)
+    setDragKey(d.key)
+    placeDragged()
+  }
+
   const onSlotDown = (e, i, key) => {
     if (e.button > 0 || e.target.closest('.slot-del, .slot-edit')) return
-    const ol = slotsRef.current.getBoundingClientRect()
+    const el = e.currentTarget
+    const p = toLocal(e)
     drag.current = {
-      idx: i, key, x0: e.clientX, y0: e.clientY, x: e.clientX - ol.left, y: e.clientY - ol.top,
-      grab: e.clientX - ol.left - e.currentTarget.offsetLeft,
-      grabY: e.clientY - ol.top - e.currentTarget.offsetTop, active: false,
+      idx: i, key, el, pid: e.pointerId, touch: e.pointerType !== 'mouse',
+      x0: e.clientX, y0: e.clientY, x: p.x, y: p.y,
+      grab: p.x - el.offsetLeft, grabY: p.y - el.offsetTop, active: false,
     }
+    // Au doigt : appui long pour saisir, sinon le geste fait défiler la page.
+    if (drag.current.touch) drag.current.timer = setTimeout(activate, 260)
   }
+
   const onSlotMove = e => {
     const d = drag.current
-    if (!d) return
+    if (!d || e.pointerId !== d.pid) return
     if (!d.active) {
-      if (Math.hypot(e.clientX - d.x0, e.clientY - d.y0) < 8) return
-      d.active = true
-      e.currentTarget.setPointerCapture?.(e.pointerId)
-      setDragKey(d.key)
+      const moved = Math.hypot(e.clientX - d.x0, e.clientY - d.y0)
+      if (d.touch) {
+        if (moved > 10) {
+          clearTimeout(d.timer) // c'est un défilement
+          drag.current = null
+        }
+        return
+      }
+      if (moved < 6) return
+      activate()
     }
-    const ol = slotsRef.current.getBoundingClientRect()
-    d.x = e.clientX - ol.left
-    d.y = e.clientY - ol.top
-    // case visée : d'après les positions de mise en page (sans les animations)
-    const target = slotEls().findIndex(el =>
-      d.x >= el.offsetLeft && d.x <= el.offsetLeft + el.offsetWidth &&
-      d.y >= el.offsetTop && d.y <= el.offsetTop + el.offsetHeight)
-    if (target >= 0 && target !== d.idx) {
+    const p = toLocal(e)
+    d.x = p.x
+    d.y = p.y
+    // case visée : la plus proche du pointeur, d'après la mise en page (sans les animations)
+    let target = -1
+    let best = Infinity
+    slotEls().forEach((el, k) => {
+      const cx = el.offsetLeft + el.offsetWidth / 2
+      const cy = el.offsetTop + el.offsetHeight / 2
+      const dist = Math.hypot((d.x - cx) / el.offsetWidth, (d.y - cy) / el.offsetHeight)
+      if (dist < best) {
+        best = dist
+        target = k
+      }
+    })
+    if (target >= 0 && target !== d.idx && best < 0.75) {
       moveChord(d.idx, target)
       d.idx = target
     }
     placeDragged()
   }
+
   const onSlotUp = () => {
     const d = drag.current
     drag.current = null
-    if (!d?.active) return
+    if (!d) return
+    clearTimeout(d.timer)
+    if (!d.active) return
     dragEndAt.current = performance.now()
     const el = slotEls().find(x => x.dataset.key === String(d.key))
     if (el) {
@@ -276,6 +319,15 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
     }
     setDragKey(null)
   }
+
+  // Pendant un glisser au doigt, on bloque le défilement de la page.
+  useEffect(() => {
+    const ol = slotsRef.current
+    if (!ol) return
+    const block = e => drag.current?.active && e.cancelable && e.preventDefault()
+    ol.addEventListener('touchmove', block, { passive: false })
+    return () => ol.removeEventListener('touchmove', block)
+  }, [])
 
   // Après chaque réordonnancement : les cases qui ont bougé partent de leur
   // ancienne position et glissent vers la nouvelle.

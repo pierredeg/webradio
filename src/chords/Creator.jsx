@@ -86,7 +86,7 @@ export default function Creator({ initial, settings, setSettings, onSave, onClos
   const [sel, setSel] = useState(0)
   const [tab, setTab] = useState('suggest')
   const [pickRoot, setPickRoot] = useState(null)
-  const [dirty, setDirty] = useState(false)
+  const [dirty, setDirty] = useState(!!initial && !initial.id) // brouillon importé : à enregistrer
   const [status, setStatus] = useState('')
   const [confirm, setConfirm] = useState(null) // 'leave'
   const [playStep, setPlayStep] = useState(-1)

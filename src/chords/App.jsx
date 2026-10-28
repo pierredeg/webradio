@@ -3,6 +3,7 @@ import Library from './Library.jsx'
 import Creator from './Creator.jsx'
 import Player from './Player.jsx'
 import Settings from './Settings.jsx'
+import FindChords from './FindChords.jsx'
 import { openStore, loadSettings, saveSettings, newId } from './storage.js'
 import { configureAudio } from './audio.js'
 
@@ -12,6 +13,7 @@ export default function App() {
   const [settings, setSettingsState] = useState(loadSettings)
   const [view, setView] = useState({ name: 'library' })
   const [showSettings, setShowSettings] = useState(false)
+  const [showFind, setShowFind] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const store = useRef(null)
@@ -83,7 +85,7 @@ export default function App() {
 
   const duplicate = p => save({ ...p, id: undefined, createdAt: undefined, name: p.name + ' (copy)' })
 
-  const current = view.id ? list.find(p => p.id === view.id) : null
+  const current = view.id ? list.find(p => p.id === view.id) : view.draft || null
 
   return (
     <div className={`app view-${view.name}`}>
@@ -110,13 +112,14 @@ export default function App() {
           onDuplicate={duplicate}
           onDelete={remove}
           onSettings={() => setShowSettings(true)}
+          onFind={() => setShowFind(true)}
           onExport={exportBackup}
           onImport={importBackup}
         />
       )}
       {view.name === 'create' && (
         <Creator
-          key={view.id || 'new'}
+          key={view.id || (view.draft ? 'draft' : 'new')}
           initial={current}
           settings={settings}
           setSettings={setSettings}
@@ -131,6 +134,16 @@ export default function App() {
           settings={settings}
           onClose={() => setView({ name: 'library' })}
           onEdit={() => setView({ name: 'create', id: current.id })}
+        />
+      )}
+      {showFind && (
+        <FindChords
+          settings={settings}
+          onClose={() => setShowFind(false)}
+          onOpen={draft => {
+            setShowFind(false)
+            setView({ name: 'create', draft })
+          }}
         />
       )}
       {showSettings && <Settings settings={settings} setSettings={setSettings} onClose={() => setShowSettings(false)} onImportText={importText} />}

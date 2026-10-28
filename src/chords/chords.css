@@ -323,6 +323,13 @@ input[type="number"] { width: 76px; font-variant-numeric: tabular-nums; }
 .modal { animation: slide-up .45s var(--ease-out); width: min(520px, 100%); max-height: calc(100% - 32px); overflow: auto; background: var(--panel); border-radius: var(--r); padding: 18px; display: grid; gap: 14px; border: 1px solid var(--line); }
 .modal-head { display: flex; justify-content: space-between; align-items: center; }
 .modal-head h2 { font-size: var(--fs-h2); text-transform: uppercase; }
+.modal-wide { width: min(760px, 100%); }
+.find-go { justify-self: start; }
+.found { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.found-item { display: grid; gap: 10px; padding: 12px; border-radius: var(--r); background: var(--sunk); border: 1px solid var(--line); }
+.found-item .card-chords li { background: var(--panel); }
+.found-head { display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.found-title { font-size: var(--fs-h3); text-transform: none; letter-spacing: var(--ls-head); color: var(--ink); }
 .midi { display: grid; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line); }
 
 .kebab { position: relative; margin-left: auto; }

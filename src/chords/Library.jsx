@@ -3,9 +3,9 @@ import Keyboard from './Keyboard.jsx'
 import { chordName, spelling, numeralOf, rootName, MODES } from './theory.js'
 import { playSequence } from './audio.js'
 import Kebab from './Kebab.jsx'
-import { IconCopy, IconEdit, IconPlay, IconPlus, IconSettings, IconStop, IconTrash } from './Icons.jsx'
+import { IconCopy, IconEdit, IconPlay, IconPlus, IconSearch, IconSettings, IconStop, IconTrash } from './Icons.jsx'
 
-export default function Library({ list, settings, storeMode, onNew, onEdit, onPlay, onDuplicate, onDelete, onSettings, onExport, onImport }) {
+export default function Library({ list, settings, storeMode, onNew, onEdit, onPlay, onDuplicate, onDelete, onSettings, onFind, onExport, onImport }) {
   const [query, setQuery] = useState('')
   const [playing, setPlaying] = useState({ id: null, step: -1 })
   const stop = useRef(null)
@@ -43,6 +43,7 @@ export default function Library({ list, settings, storeMode, onNew, onEdit, onPl
         </div>
         <div className="lib-actions">
           <button className="btn-ghost" onClick={onSettings}><IconSettings />Settings</button>
+          <button className="btn" onClick={onFind}><IconSearch />Find chords</button>
           <button className="btn-primary" onClick={onNew}><IconPlus />New progression</button>
         </div>
       </header>

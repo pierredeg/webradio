@@ -185,9 +185,12 @@ export function rangeOf(settings) {
 
 // Choisit le voicing : le plus proche du précédent (voice leading),
 // sinon une position fondamentale au centre du clavier.
-export function voiceChord(root, quality, { prev = null, bass = false, range }) {
+// rootPosition : garder la fondamentale à la basse (grilles importées).
+export function voiceChord(root, quality, { prev = null, bass = false, range, rootPosition = false }) {
   const { lo, hi, center } = range
-  const shapes = voicingShapes(root, quality)
+  const all = voicingShapes(root, quality)
+  const rooted = all.filter(sh => sh[0] % 12 === ((root % 12) + 12) % 12)
+  const shapes = rootPosition && rooted.length ? rooted : all
   if (!shapes.length) return []
   const upperLo = bass ? lo + 7 : lo
   let best = null
